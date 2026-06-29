@@ -2,4 +2,3 @@ node_modules/
 .pi/
 *.log
 .DS_Store
-pnpm-lock.yaml
