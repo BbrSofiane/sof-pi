@@ -1,0 +1,14 @@
+{
+  "name": "sof-pi",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Personal pi package — workflows and resources for Sofiane.",
+  "keywords": ["pi-package"],
+  "license": "Apache-2.0",
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills"],
+    "prompts": ["./prompts"],
+    "themes": ["./themes"]
+  }
+}
