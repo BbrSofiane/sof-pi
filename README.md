@@ -23,7 +23,7 @@ sof-pi/
 | **[mise](./skills/mise)** | Manage dev tools, runtime versions, and environment variables with `mise`, and run mise tasks (make-like commands). |
 | **[github-cli](./skills/github-cli)** | Interact with GitHub via the `gh` CLI — cloning repos for inspecting dependencies/third-party projects, checking GitHub Actions pipeline logs and statuses, viewing workflow runs, and ad-hoc GitHub API calls. |
 | **[stripe-projects](./skills/stripe-projects)** | Use Stripe Projects via the `stripe projects` CLI plugin — initializing a project, browsing the provider/service catalog, provisioning third-party services (databases, auth, hosting, analytics, AI, storage, observability, etc.) into an app stack, managing environments/credentials and syncing them to .env, and inspecting project status. Also covers the classic `stripe` CLI (webhook listen/trigger, resources, logs) as a secondary reference. |
-| **[fly-io](./skills/fly-io)** | Interact with Fly.io via the `flyctl` (`fly`) CLI — deploying apps, launching new apps from source, inspecting app/machine status and logs, scaling resources, and managing Machines, volumes, secrets, IPs, and certificates. |
+| **[fly-io](./skills/fly-io)** | Interact with Fly.io via the `flyctl` CLI — deploying apps, launching new apps from source, inspecting app/machine status and logs, scaling resources, and managing Machines, volumes, secrets, IPs, certificates, and Managed Postgres (MPG). Also covers Fly.io provisioned through Stripe Projects (macaroon-token auth, lifecycle handoff). |
 
 ## Extensions
 
