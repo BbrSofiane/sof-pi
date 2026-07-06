@@ -1,7 +1,7 @@
 ---
 name: stripe-projects
 description: Use this skill when the user wants to use Stripe Projects via the `stripe projects` CLI plugin — initializing a project, browsing the provider/service catalog, provisioning third-party services (databases, auth, hosting, analytics, AI, storage, observability, etc.) into an app stack, managing environments/credentials and syncing them to .env, and inspecting project status. Triggers on tasks like "provision a database", "add supabase to my project", "list stripe projects", "pull a stripe project", "browse the stripe catalog", "sync stripe project env vars", or "what providers does stripe projects support". Also covers the classic `stripe` CLI (webhook listen/trigger, resources, logs) as a secondary reference.
-compatibility: Requires the `stripe` CLI installed (via mise: `stripe-cli`), the `projects` plugin installed (`stripe plugin install projects`), and the Stripe CLI authenticated. Verify with `stripe whoami` and `stripe projects status`; run `stripe login` if not logged in, `stripe plugin install projects` if the subcommand is missing.
+compatibility: "Requires the `stripe` CLI installed (via mise: `stripe-cli`), the `projects` plugin installed (`stripe plugin install projects`), and the Stripe CLI authenticated. Verify with `stripe whoami` and `stripe projects status`; run `stripe login` if not logged in, `stripe plugin install projects` if the subcommand is missing."
 ---
 
 # Stripe Projects (`stripe projects`) Skill

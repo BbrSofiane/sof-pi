@@ -1,7 +1,7 @@
 ---
 name: fly-io
 description: Use this skill when the user wants to interact with Fly.io via the `flyctl` CLI — deploying apps, launching new apps from source, inspecting app/machine status and logs, scaling resources, and managing Machines, volumes, secrets, IPs, certificates, and Managed Postgres (MPG). Also covers Fly.io provisioned through Stripe Projects (macaroon-token auth, lifecycle handoff). Triggers on tasks like "deploy to fly", "launch a fly app", "check fly app status", "view fly logs", "scale my fly app", "set a fly secret", "manage my fly machines", or "set up a managed postgres cluster".
-compatibility: Requires the `flyctl` CLI installed (via mise: `flyctl`) and on PATH, and authenticated. Verify with `flyctl auth whoami`; run `flyctl auth login` if not logged in, or set `FLY_API_TOKEN` (or a Stripe Projects macaroon token) for headless/CI use.
+compatibility: "Requires the `flyctl` CLI installed (via mise: `flyctl`) and on PATH, and authenticated. Verify with `flyctl auth whoami`; run `flyctl auth login` if not logged in, or set `FLY_API_TOKEN` (or a Stripe Projects macaroon token) for headless/CI use."
 ---
 
 # Fly.io CLI (`flyctl`) Skill
