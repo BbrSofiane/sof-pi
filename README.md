@@ -21,6 +21,7 @@ sof-pi/
 | **[notion-cli](./skills/notion)** | Interact with Notion via the `ntn` CLI — reading/writing pages, querying databases, managing blocks, automating Notion workflows from the terminal. |
 | **[google-workspace](./skills/google-workspace)** | Interact with Google Workspace via the `gog` CLI — Gmail, Calendar, Drive, Tasks, Sheets, Docs, Slides, Chat, Contacts, People, Keep, Forms, Meet, Apps Script, and more. |
 | **[mise](./skills/mise)** | Manage dev tools, runtime versions, and environment variables with `mise`, and run mise tasks (make-like commands). |
+| **[github-cli](./skills/github-cli)** | Interact with GitHub via the `gh` CLI — cloning repos for inspecting dependencies/third-party projects, checking GitHub Actions pipeline logs and statuses, viewing workflow runs, and ad-hoc GitHub API calls. |
 
 ## Extensions
 
