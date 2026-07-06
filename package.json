@@ -11,7 +11,8 @@
   "type": "module",
   "pi": {
     "extensions": [
-      "./extensions/*.ts"
+      "./extensions/*.ts",
+      "./extensions/perplexity/index.ts"
     ],
     "skills": [
       "./skills"
