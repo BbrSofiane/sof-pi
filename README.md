@@ -22,6 +22,8 @@ sof-pi/
 | **[google-workspace](./skills/google-workspace)** | Interact with Google Workspace via the `gog` CLI — Gmail, Calendar, Drive, Tasks, Sheets, Docs, Slides, Chat, Contacts, People, Keep, Forms, Meet, Apps Script, and more. |
 | **[mise](./skills/mise)** | Manage dev tools, runtime versions, and environment variables with `mise`, and run mise tasks (make-like commands). |
 | **[github-cli](./skills/github-cli)** | Interact with GitHub via the `gh` CLI — cloning repos for inspecting dependencies/third-party projects, checking GitHub Actions pipeline logs and statuses, viewing workflow runs, and ad-hoc GitHub API calls. |
+| **[stripe-cli](./skills/stripe-cli)** | Interact with Stripe via the `stripe` CLI — forwarding webhooks locally, triggering test events, inspecting API request logs, and creating/listing/updating Stripe resources (customers, products, prices, payment intents, charges, etc.) from the terminal. |
+| **[fly-io](./skills/fly-io)** | Interact with Fly.io via the `flyctl` (`fly`) CLI — deploying apps, launching new apps from source, inspecting app/machine status and logs, scaling resources, and managing Machines, volumes, secrets, IPs, and certificates. |
 
 ## Extensions
 
