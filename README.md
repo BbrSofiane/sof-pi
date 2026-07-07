@@ -52,6 +52,20 @@ Web search and interactive research via the [Perplexity API](https://docs.perple
 
 See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for details.
 
+## Design
+
+### Impeccable
+
+[Impeccable](https://github.com/pbakaus/impeccable) ([impeccable.style](https://impeccable.style/docs/)) is the design skill used across projects — a frontend design language with design commands (shape, craft, audit, polish, critique, etc.) and deterministic anti-pattern detection. It's installed as a standalone pi skill (not bundled into this package) so it updates independently via its own CLI.
+
+Install globally so it's available in every project:
+
+```bash
+npx impeccable skills install -y --providers=pi --scope=user
+```
+
+This writes to `~/.pi/skills/impeccable/`. Reload pi, then run `/impeccable init` in a project to generate its `PRODUCT.md` / `DESIGN.md` context. Update later with `npx impeccable skills update`.
+
 ## License
 
 [Apache License 2.0](./LICENSE)
