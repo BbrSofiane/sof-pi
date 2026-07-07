@@ -1,7 +1,7 @@
 ---
 name: browser
 description: Use this skill when the user wants to drive a real headless browser from the terminal to check for things on the web — inspect rendered pages, extract text/HTML/title/attributes, run JS, assert conditions, capture screenshots, or audit accessibility. Uses `rodney`, a Go CLI that drives a persistent headless Chrome over CDP (via the rod library). Triggers on tasks like "check what's on this page", "screenshot this URL", "open this in a browser and look at it", "is this element on the page", "does the page show X", "run this JS in the browser", "grab the text of the h1", "does the page have a login button", or "audit accessibility on this page".
-compatibility: Requires the `rodney` CLI installed (mise: `rodney`) and on PATH, plus a Chrome/Chromium binary. If Google Chrome is not installed, set `ROD_CHROME_BIN` to a Chrome-for-Testing binary — get one with `npx playwright install chromium`, then `export ROD_CHROME_BIN="$(find "$HOME/Library/Caches/ms-playwright" -path '*MacOS/Google Chrome for Testing' -type f | head -1)"` (macOS; on Linux the binary is at `.../chrome-linux/chrome`). Verify with `rodney status` after `rodney start`.
+compatibility: "Requires the `rodney` CLI installed (mise: `rodney`) and on PATH, plus a Chrome/Chromium binary. If Google Chrome is not installed, set `ROD_CHROME_BIN` to a Chrome-for-Testing binary — get one with `npx playwright install chromium`, then `export ROD_CHROME_BIN=\"$(find \"$HOME/Library/Caches/ms-playwright\" -path '*MacOS/Google Chrome for Testing' -type f | head -1)\"` (macOS; on Linux the binary is at `.../chrome-linux/chrome`). Verify with `rodney status` after `rodney start`."
 ---
 
 # Browser (`rodney`) Skill
