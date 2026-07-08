@@ -55,6 +55,30 @@ Web search and interactive research via the [Perplexity API](https://docs.perple
 
 See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for details.
 
+## Installed Packages
+
+Beyond the extensions bundled in this package, I rely on a couple of npm-installed pi packages that add their own extensions/skills.
+
+### [`@robhowley/pi-openrouter`](https://github.com/robhowley/pi-userland)
+
+Live OpenRouter visibility and environment sync for pi: usage/account TUI overlays, automatic `session_id` tagging, full or free-only model catalog sync, API key management, and local model field overrides. Exposes a set of `/openrouter` commands:
+
+- `/openrouter usage` — spend/usage overlay
+- `/openrouter account` — credits, key limits, account health, key toggle UI
+- `/openrouter session` — current OpenRouter session_id
+- `/openrouter api-key-create` — create an API key (management key required)
+- `/openrouter models-sync` / `--free` — sync user-scoped (or free-only) models into pi
+- `/openrouter models-status` / `--free` / `--skipped` — show model sync/cache status
+- `/openrouter model-override-set|list|clear` — local model field overrides
+
+Install: `pi install npm:@robhowley/pi-openrouter`
+
+### [`pi-subagents`](https://github.com/nicobailon/pi-subagents)
+
+Lets pi delegate work to focused child agents — for code review, scouting, implementation, parallel audits, saved workflows, and background jobs. Supports single-agent delegation, sequential chains, parallel fan-out, async/background runs, forked-context review, and a `/research`-style TUI clarification flow. Plain-language delegation works out of the box (no config or slash commands needed), with builtin agents like `reviewer`, `scout`, and `oracle` ready to go.
+
+Install: `pi install npm:pi-subagents`
+
 ## Design
 
 ### Impeccable
