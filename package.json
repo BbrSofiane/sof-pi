@@ -28,5 +28,10 @@
     "@earendil-works/pi-coding-agent": "*",
     "@earendil-works/pi-ai": "*",
     "@earendil-works/pi-tui": "*"
+  },
+  "pnpm": {
+    "overrides": {
+      "protobufjs": "7.6.5"
+    }
   }
 }
