@@ -1,0 +1,4 @@
+Instead of 
+> 3. **Create/update the local Weekly Plan and Retro note** in `$TOLARIA_VAULT_DIR/Getting Started`:
+
+Let's get the full path set in the environment variable
