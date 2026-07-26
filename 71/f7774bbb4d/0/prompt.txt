@@ -1,0 +1,6 @@
+Google Keep via CLI
+
+❯ gog keep list
+Keep is Workspace-only and requires a service account. Configure it with: gog auth service-account set <email> --key <service-account.json> (or legacy: gog auth keep <email> --key <service-account.json>)
+
+What do I need to do to setup google keep authentication?
