@@ -1,0 +1,4 @@
+Please address the following review feedback:
+
+1. scripts/sanitize-mise-config.py:3 (current)
+   We don’t need to be backward compatible with old python version
