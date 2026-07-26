@@ -1,0 +1,3 @@
+For now, I don't mind having my secrets in plain text because I don't commit the config file.
+
+Looks good, is there anything sensitive in the skill content?
