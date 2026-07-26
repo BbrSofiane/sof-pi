@@ -1,0 +1,4 @@
+1. Yes, use the current pi model
+2. Default to sonar-pro and make deep research a togglable
+3. Sounds good
+4. (a) sounds good
