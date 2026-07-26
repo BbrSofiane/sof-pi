@@ -1,0 +1,5 @@
+Perplexity Extension
+
+I want to add an extension to allow me to run web serches using perplexity API. I want to be able to do my research and then outside of the context window of my main pi thread, them build a recap I can add to my main pi thread context.
+
+How would you go about building that? What information do you need?
