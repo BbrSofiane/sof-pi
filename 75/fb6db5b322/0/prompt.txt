@@ -1,0 +1,3 @@
+I want to add a skill for the Github CLI `gh --help`. Main use cases are:
+- Cloning repositories from dependencies or project I want to inspect and learn from
+- Checking pipeline logs or statuses
