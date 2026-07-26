@@ -1,0 +1,3 @@
+I want to create a skill I can use to pull my Whoop data. I want to be able to get a view of my sleep, recovery and strain daily for the past.  
+
+How would you go about building that? What do you need from me?
