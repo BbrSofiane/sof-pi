@@ -1,0 +1,1 @@
+Check /Users/sofianebebert/workspace/agent-stuff/package.json to see if there is anything specific about the configuration
