@@ -1,0 +1,1 @@
+For the flyio skill is there anything we can learn from this implementation of the skill /Users/sofianebebert/workspace/dt-platform/.agents/skills/sp-flyio/SKILL.md?
