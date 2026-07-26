@@ -1,0 +1,10 @@
+Mise skill
+
+I want to add a skill for mise `https://mise.jdx.dev/dev-tools/`. I mainly use it to manage devtools and environment variables on my machine (see `~/.config/mise/config.toml`). I'd like you to be aware of this when managing tools and setting environment variables.
+
+Mise also allows:
+- tasks: similar to make commands
+- plugins: I don't use them
+- bootstrap: this is new I haven't used it yet
+
+Apart from tasks, I don't see the need to document the other functionality for now
