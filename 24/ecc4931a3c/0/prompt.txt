@@ -1,0 +1,3 @@
+The operating model looks good. Let's name the vm `sof-pi-workspace`
+
+What do you think about using mise tasks instead of bash scripts?
