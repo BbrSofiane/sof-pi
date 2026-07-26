@@ -1,0 +1,1 @@
+Ok I installed obscura using `mise` - test the skill to make sure it works
