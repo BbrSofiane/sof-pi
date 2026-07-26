@@ -1,0 +1,5 @@
+1. I'm on perplexifty pro plan so I want to leverage the pro models
+2. PERPLEXITY_API_KEY - I added it to my environment
+3. I want both
+
+For the research, I think there is also an aspect about having a UI that allows me to do the research (back and forth with perplexity API). For example, I can leverage perplexity research model but the key thing for me is to be able to shape the recap I want injected in my context
