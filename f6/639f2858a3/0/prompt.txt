@@ -1,0 +1,4 @@
+I want to add a skill for using exe.dev see https://exe.dev/llms.txt
+ documentation
+
+ My goal is to deploy small services using their platform
