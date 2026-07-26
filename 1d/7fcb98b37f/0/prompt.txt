@@ -1,0 +1,3 @@
+Ok let's initial my current folder to be a pi package. This is going to be my personal pi package where I will create workflows primarily for myself. 
+
+Initialise the repo to point to this remote: git@github.com:BbrSofiane/sof-pi.git with an Apache License 2.0
