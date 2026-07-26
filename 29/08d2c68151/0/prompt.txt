@@ -1,0 +1,19 @@
+## Topic
+Application development on the reMarkable tablet, including the official SDK workflow and a specific Rust-based custom app example (`riddle`).
+
+## Key Findings
+- The reMarkable official SDK provides a cross-compiler toolchain, shared libraries, and header files for building software on a host machine and deploying it to the tablet; the SDK is product-specific and Developer Mode may need to be enabled (which can erase device content on some models, so backup first). [1]
+- The official development path centers on building **Qt Quick / QML** applications using the SDK, with a workflow of: enable Developer Mode, install the matching SDK, source the SDK environment, build locally with the cross-compiler, then copy the executable to the device over SSH. [1]
+- The `riddle` project (a Tom Riddle diary app for the reMarkable Paper Pro) is built as a **Rust application** using CMake-based cross-compilation, integrated with reMarkable's Qt-based UI stack and system libraries via the vendor toolchain. [2]
+- `riddle` supports two build targets: a **host build** using standard Rust toolchain (`cargo run`) for local development/testing, and a **device build** using the reMarkable Paper Pro SDK (Yocto-based) with CMake orchestrating cross-compilation via a toolchain file that configures the correct compiler, sysroot, and linker settings. [2]
+- Community tools and launchers exist as an alternative to official app development, providing custom interfaces and extended functionality beyond the stock app model. [1]
+
+## Sources
+[1] SDK documentation — reMarkable Developer Portal — https://developer.remarkable.com/documentation/sdk
+[2] The diary of Tom Riddle for the reMarkable Paper Pro — GitHub — https://github.com/MaximeRivest/riddle
+
+## Open Questions / Next Steps
+- What are the exact install and build commands for setting up a minimal hello-world app with the reMarkable SDK on a specific host OS?
+- How does Rust integrate with the Qt-based UI stack on reMarkable specifically — what bindings or FFI shims are used?
+- What are the device APIs for reading pen input and rendering to the screen on the Paper Pro?
+- Which reMarkable model is being targeted, and does Developer Mode need to be enabled on it?
