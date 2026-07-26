@@ -1,0 +1,3 @@
+Stripe projects and Fly.io
+
+I want you to add stripe projects CLI to my dev tools and add the corresponding skills to my Pi package
