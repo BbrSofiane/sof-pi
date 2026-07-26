@@ -1,0 +1,25 @@
+## Topic
+Evaluating CLI interfaces for SQL database access suitable for embedding in a Pi package workflow, comparing Harlequin and usql.
+
+## Key Findings
+- Harlequin is a TUI/CLI application launched via the `harlequin` command, but has no documented non-interactive or "headless" query mode for scripting (`harlequin -c "SELECT ..."`); it is oriented toward interactive terminal use [4][7].
+- Harlequin uses Click for CLI parsing and dynamically builds options from installed adapters; it supports config profiles (`harlequin --config`, `harlequin -P "profile"`) and can be wrapped by application frameworks (e.g., `django-harlequin`) [1][4].
+- `usql` is a single-binary, cross-platform universal SQL CLI written in Go, modeled on `psql`, supporting Postgres, MySQL, SQLite, SQL Server, Oracle, and others via Go `database/sql` drivers [1][2][4].
+- `usql` is explicitly designed to be scriptable and non-interactive friendly: supports running queries from files (`-f`), reading from stdin for pipelines, variable interpolation, and result export—making it suitable for embedding in automated workflows [1][4].
+- `usqlgen` allows creating custom `usql`` builds with additional or alternative database drivers without forking, useful for niche backends [3].
+
+## Sources
+[1] GitHub - xo/usql: Universal command-line interface for SQL databases — https://github.com/xo/usql
+[2] Adapters and Config: Multi-database Support in Harlequin — https://harlequin.sh/blog/announcing-adapters-config
+[3] sclgo/usqlgen: Create custom builds of xo/usql - GitHub — https://github.com/sclgo/usqlgen
+[4] usql: the universal command-line client for SQL databases - Reddit — https://www.reddit.com/r/commandline/comments/n162oz/usql_the_universal_commandline_client_for_sql/
+[7] Harlequin: An innovative tool for managing databases from terminal — https://www.stackscale.com/blog/harlequin-databases-terminal/
+
+## Open Questions / Next Steps
+- Define how the Pi skill expects to pass queries and consume results (JSON vs plain text, one-off vs persistent sessions) to determine the right integration pattern with `usql`.
+- Prototype a `usql`-based skill that shells out with a connection string and query file, capturing stdout for parsing.
+- Investigate whether `usql` supports structured output formats (e.g., CSV, JSON) for easier programmatic result handling.
+- Consider whether Harlequin still has a role in the workflow for interactive/exploratory use alongside `usql` for automated pipelines.
+---
+
+Based on my research above shape up a `database-query` skill I can add to my Pi package
