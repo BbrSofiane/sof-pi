@@ -1,0 +1,3 @@
+I want to add a browser skill that my agent can use to check for things in the browser. I want to use obscura, the CLI and the CDP interface, and also need a short script to get a screenshot from the CDP server from obscura using playwright 
+
+https://github.com/h4ckf0r0day/obscura
