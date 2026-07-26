@@ -1,0 +1,1 @@
+I want the stripe-cli to focus mainly on the use of stripe projects see: https://docs.stripe.com/projects.md#available-providers
