@@ -1,0 +1,3 @@
+How can I install impeccable as part of my Pi setup? https://impeccable.style/docs/
+
+Is there a way to add it to my Pi package?
