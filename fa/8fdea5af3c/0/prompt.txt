@@ -1,0 +1,1 @@
+What slash commands are available to you? Output the command names only.

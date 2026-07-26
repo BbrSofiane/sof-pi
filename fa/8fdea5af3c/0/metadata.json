@@ -1,0 +1,22 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "fa8fdea5af3c",
+  "session_id": "019f141c-4343-78ba-a347-4b458641af99",
+  "strategy": "import",
+  "created_at": "2026-06-29T16:00:24.541Z",
+  "checkpoints_count": 1,
+  "files_touched": null,
+  "agent": "Pi",
+  "model": "z-ai/glm-5.2",
+  "checkpoint_transcript_start": 3,
+  "transcript_lines_at_start": 3,
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 829,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 5806,
+    "output_tokens": 339,
+    "api_call_count": 3
+  },
+  "kind": "imported"
+}
