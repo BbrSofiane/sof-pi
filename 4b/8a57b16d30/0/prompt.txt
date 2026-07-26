@@ -1,0 +1,1 @@
+Test the skill against this SQLite db /Users/sofianebebert/workspace/dt-platform/diceytech_portfolio.db
