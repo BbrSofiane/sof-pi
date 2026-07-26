@@ -1,0 +1,1 @@
+Oh add the extension in /Users/sofianebebert/workspace/sof-pi/extensions instead of ~/.pi/agent/extensions/
