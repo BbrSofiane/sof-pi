@@ -1,0 +1,55 @@
+Task: You are a delegated subagent running from a fork of the parent session. Treat the inherited conversation as reference-only context, not a live thread to continue. Do not continue or answer prior messages as if they are waiting for a reply. Your sole job is to execute the task below and return a focused result for that task using your tools.
+
+Task:
+Perform a read-only architecture review of the complete uncommitted exe.dev Pi workspace implementation in /Users/sofianebebert/workspace/sof-pi. Inspect mise.toml, scripts/exe-workspace.sh, scripts/exe-workspace-setup.sh, scripts/exe-workspace-bootstrap.sh, scripts/exe-workspace-job.sh, scripts/sanitize-mise-config.py, tests/, README.md, .gitignore, and the actual git diff/status. Evaluate the architecture against the intended operating model: persistent private VM `sof-pi-workspace`; laptop-side mise control plane; sanitized mise tool mirroring; tag-scoped GitHub integration; verified canonical checkout; interactive Pi via tmux; unattended Pi jobs isolated with git worktrees, durable logs/status, and strict credential/privacy boundaries. Focus on separation of concerns, source-of-truth boundaries, trust model, idempotency, state-machine design, failure recovery, concurrency, maintainability, unnecessary complexity, and whether mise tasks vs shell helpers are divided appropriately. Identify architectural blockers and fixes worth doing before commit separately from reasonable follow-ups. Do not modify files or infrastructure. Return an overall verdict, strengths, findings with file/line evidence, recommended changes, and residual risks. Ignore the already-resolved removal of `from __future__ import annotations` except where relevant.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
