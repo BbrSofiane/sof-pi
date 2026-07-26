@@ -1,0 +1,22 @@
+Fix research panel
+
+I tried @extensions/perplexity/research-panel.ts but I get the following error
+
+```
+pi exiting due to uncaughtException:
+174174 |             "This is likely caused by a custom TUI component not truncating its output.",
+174175 |             "Use visibleWidth() to measure and truncateToWidth() to truncate lines.",
+174176 |             "",
+174177 |             `Debug log written to: ${crashLogPath}`
+174178 |           ].join(`
+174179 |           throw new Error(errorMsg);
+                         ^
+error: Rendered line 74 exceeds terminal width (84 > 76).
+
+This is likely caused by a custom TUI component not truncating its output.
+Use visibleWidth() to measure and truncateToWidth() to truncate lines.
+
+Debug log written to: /Users/sofianebebert/.pi/agent/pi-crash.log
+      at doRender (/$bunfs/root/pi:174179:17)
+      at <anonymous> (/$bunfs/root/pi:173575:22)
+```
