@@ -1,0 +1,10 @@
+I added the Github integration to my exe.dev account
+```
+Added integration sof-pi
+
+Usage from a VM:
+  git clone https://sof-pi.int.exe.xyz/BbrSofiane/sof-pi.git
+  GH_HOST=sof-pi.int.exe.xyz gh repo view BbrSofiane/sof-pi
+```
+
+Ok I want you to breakdown the work and split it between different subagents configured to use gpt-5.6-luna or gpt-5.6-terra (based on the complexity of the task).
