@@ -1,0 +1,1 @@
+Let's go for (a) and set all the environment variables in my ~/.config/mise/config.toml
