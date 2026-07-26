@@ -1,0 +1,3 @@
+Add google workspace CLI skill
+
+Add a skill for google CLI. You can get an overview of the capability using `gog --help`
