@@ -1,0 +1,1 @@
+Ok let's squash the commits so there is not trace of my notion db IDs in the commit historu
