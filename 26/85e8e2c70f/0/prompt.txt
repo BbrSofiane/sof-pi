@@ -1,0 +1,1 @@
+I have admin access, can you do all of these steps from the CLI?
