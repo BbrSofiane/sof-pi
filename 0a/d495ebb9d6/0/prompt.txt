@@ -1,0 +1,17 @@
+I'm getting the following error from Pi
+
+[Skill conflicts]
+  ~/workspace/sof-pi/skills/stripe-projects/SKILL.md
+    Nested mappings are not allowed in compact mappings at line 3, column
+16:
+
+compatibility: Requires the `stripe` CLI installed (via mise: `stripe-cli`),
+th…
+               ^
+
+  ~/workspace/sof-pi/skills/fly-io/SKILL.md
+    Nested mappings are not allowed in compact mappings at line 3, column
+16:
+
+compatibility: Requires the `flyctl` CLI installed (via mise: `flyctl`) and
+on …
