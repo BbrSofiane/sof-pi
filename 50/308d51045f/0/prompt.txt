@@ -1,0 +1,1 @@
+I find the UX a bit fiddly, I used the arrow to navigate the thread but it makes it very slow, can we simplify it to make it look like @extensions/review.ts ?
