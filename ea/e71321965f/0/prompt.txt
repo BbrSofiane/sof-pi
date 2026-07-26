@@ -1,0 +1,3 @@
+Ok before we push let's make sure my package works. Archive the previous version of the skills, pi install my sof-pi package locally and verify that the skill are still picked up 
+
+Once they work, we can delete the old versions of the skill
