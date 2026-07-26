@@ -1,0 +1,5 @@
+Ok copy over the review extension here: /Users/sofianebebert/workspace/agent-stuff/extensions/review.ts
+
+Add a comment to reference the source for this extension
+Make sure the extension is picked up by pi
+Once that's confirmed, commit and push your changes
