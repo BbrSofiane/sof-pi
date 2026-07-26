@@ -1,0 +1,1 @@
+What do you think about adding an AGENTS.md with instructions to consider updating the README.md when making changes to the Pi Package?
