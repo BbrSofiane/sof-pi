@@ -1,0 +1,1 @@
+Ok you know what, let's use rodney CLI instead of obscura https://github.com/simonw/rodney
