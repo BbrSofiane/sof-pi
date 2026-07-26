@@ -1,0 +1,5 @@
+I want to setup a VM in exe-dev that where I can run Pi using my personal package. I want the setup to mirror what I have on my machine (e.g. dependencies managed using mise /Users/sofianebebert/.config/mise/config.toml).
+
+I have the exe.dev app on my laptop and I want to be able to use it kick off some async work.
+
+How would you go about setting it up?
