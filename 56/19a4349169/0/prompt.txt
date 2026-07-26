@@ -1,0 +1,4 @@
+The operating model looks good. 
+
+
+What do you think about using mise tasks instead of bash scripts?
