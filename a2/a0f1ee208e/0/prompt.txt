@@ -1,0 +1,1 @@
+What if I used a python script with uv and inline dependencies declaration?
