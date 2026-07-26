@@ -1,0 +1,1 @@
+Remove mentions of mise in the skill and also any mention of harlequin. This is purely a skill intended from my Pi workflows to use whenever there is a database query needed
