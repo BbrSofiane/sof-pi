@@ -1,0 +1,1 @@
+In the skill overview in @README.md, add a hyperlink to the obscura repo
