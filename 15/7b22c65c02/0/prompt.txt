@@ -1,0 +1,1 @@
+List the names of the skills available to you (from the available_skills list in your system prompt), one per line. Do not use any tools. Just output the names.

@@ -1,0 +1,2 @@
+{"v":1,"agent":"pi","cli_version":"0.8.42","type":"user","ts":"2026-06-29T15:56:45.520Z","content":[{"text":"List the names of the skills available to you (from the available_skills list in your system prompt), one per line. Do not use any tools. Just output the names."}]}
+{"v":1,"agent":"pi","cli_version":"0.8.42","type":"assistant","ts":"2026-06-29T15:56:48.514Z","id":"f37ce57d","input_tokens":262,"output_tokens":9,"content":[{"type":"text","text":"weekly-planning\nnotion-cli"}]}
