@@ -1,0 +1,10 @@
+I tried the research tool but it failed with
+
+```
+perplexity_search [sonar-pro] Whoop API authentication OAuth client ID
+client secret endpo…
+undefined is not an object (evaluating 'sources.length')
+```
+
+See 
+[Context] file:///Users/sofianebebert/workspace/sof-pi/pi-session-2026-07-01T15-28-54-130Z_019f1e4c-2372-7fe5-a981-aac49640d4be.html
