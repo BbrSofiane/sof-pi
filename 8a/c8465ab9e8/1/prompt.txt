@@ -3,3 +3,7 @@ I'm getting some failure with subagents because I don't have a `web_search` tool
 ---
 
 Yes
+
+---
+
+Ok commit our changes
