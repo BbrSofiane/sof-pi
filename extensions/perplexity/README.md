@@ -5,8 +5,13 @@ designed to keep raw search traffic **out of your main pi context window**.
 
 Two pieces:
 
-1. **`perplexity_search` tool** — single-shot LLM-callable web search. Returns the
-   answer plus numbered sources. Good for quick lookups the model can do inline.
+1. **Web tools (`web_search`, `fetch_content`, `get_search_content`)** —
+   Perplexity-backed stand-ins for the [`pi-web-access`](https://github.com/nicobailon/pi-web-access)
+   tools that pi-subagents' `researcher` and `context-builder` agents list in
+   their `tools:` frontmatter. Without them, subagent runs that reference
+   `web_search` fail with an "unavailable tool" error. They keep raw search
+   traffic out of your main context by synthesizing answers (with cited sources)
+   instead of returning raw result snippets.
 2. **`/research` command** — an interactive, full-screen research panel where you
    run a back-and-forth Perplexity session (queries + streamed answers + sources),
    then build a **recap** you can shape in an editor and inject into your main
@@ -24,19 +29,51 @@ export PERPLEXITY_API_KEY=pplx-...
 The extension is auto-discovered from `~/.pi/agent/extensions/perplexity/` (global).
 Reload after changes with `/reload`.
 
-## The `perplexity_search` tool
+## The web tools
 
-Called by the LLM like any other tool.
+Three Perplexity-backed tools that satisfy the `web_search` / `fetch_content` /
+`get_search_content` contract pi-subagents expect from `pi-web-access`. The
+parent agent can call them too. All use the `sonar-pro` model; output is
+truncated to 50 KB (built-in pi limit), with sources appended as a numbered
+list.
 
-| Parameter    | Type     | Notes                                            |
-|--------------|----------|--------------------------------------------------|
-| `query`      | string   | The web search query.                            |
-| `model`      | enum     | `sonar`, `sonar-pro` (default), `sonar-reasoning`, `sonar-reasoning-pro`. |
-| `max_tokens` | number?  | Optional cap on answer length.                   |
+### `web_search`
 
-Output is truncated to 50 KB (built-in pi limit). Sources are appended as a
-numbered list; collapsed view shows the first line + source count, expand
-(Ctrl+O) renders the full answer as markdown.
+Search the web and return answers with numbered sources. Accepts a single
+`query` or a `queries` array (preferred for covering multiple angles in one
+call — each query gets its own answer + sources).
+
+| Parameter        | Type       | Notes                                                          |
+|------------------|------------|----------------------------------------------------------------|
+| `query`          | string?    | A single search query. Prefer `queries` for multiple angles.   |
+| `queries`        | string[]?  | Batch of queries; each gets its own answer + sources.          |
+| `numResults`     | number?    | Result-count hint (Perplexity controls citation count).        |
+| `recencyFilter`  | enum?      | `day` \| `week` \| `month` \| `year` — bias toward recency.   |
+| `domainFilter`   | string[]?  | Domains to include (prefix with `-` to exclude). Best-effort. |
+| `includeContent` | boolean?   | `true` (default) returns synthesized answers; `false` returns only source lists. |
+
+### `fetch_content`
+
+Read a URL and return a synthesized summary of its content. Perplexity
+(`sonar-pro`) fetches the page and answers an optional `prompt` about it.
+
+| Parameter   | Type     | Notes                                                         |
+|-------------|----------|---------------------------------------------------------------|
+| `url`       | string   | URL to read (http/https/GitHub/PDF).                          |
+| `prompt`    | string?  | Instruction for what to extract or answer about the page.     |
+| `maxTokens` | number?  | Cap on returned content length.                               |
+
+### `get_search_content`
+
+Search the web and retrieve synthesized content in one step: runs the query,
+reads the top result pages, and synthesizes a thorough answer drawing on their
+content. Same param shape as `web_search`, plus an optional `prompt` and
+`maxTokens`.
+
+> These tools synthesize answers rather than returning raw result snippets.
+> `fetch_content` does not clone repos or parse PDFs/YouTube like
+> `pi-web-access` does — install that package alongside if you need full URL
+> fetching. For most research tasks the Perplexity-backed synthesis is enough.
 
 ## The `/research` panel
 
@@ -102,5 +139,5 @@ the model itself to drive follow-up searches autonomously, the same
   SSE parsing, citation/source merging).
 - `research-panel.ts` — `ResearchPanel` custom TUI component (scrollable
   transcript, embedded `Input`, model/deep-research toggles, recap trigger).
-- `index.ts` — registers the `perplexity_search` tool and the `/research`
-  command, plus the recap synthesis prompt.
+- `index.ts` — registers the `web_search` / `fetch_content` / `get_search_content`
+  tools and the `/research` command, plus the recap synthesis prompt.

@@ -96,7 +96,8 @@ interface ChatCompletionChunk {
 }
 
 /**
- * Non-streaming search. Used by the `perplexity_search` tool.
+ * Non-streaming search. Used by the `web_search` / `fetch_content` /
+ * `get_search_content` tools.
  */
 export async function searchPerplexity(
 	messages: PerplexityMessage[],

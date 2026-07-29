@@ -51,7 +51,7 @@ Supports shared custom review instructions (added/removed via the selector) and 
 
 Web search and interactive research via the [Perplexity API](https://docs.perplexity.ai/), designed to keep raw search traffic out of the main pi context window. Two pieces:
 
-1. **`perplexity_search` tool** — single-shot LLM-callable web search. Returns the answer plus numbered sources. Good for quick inline lookups.
+1. **Web tools (`web_search`, `fetch_content`, `get_search_content`)** — Perplexity-backed stand-ins for the `pi-web-access` tools that pi-subagents' `researcher` and `context-builder` agents list in their `tools:` frontmatter. Without them, subagent runs that reference `web_search` fail with an "unavailable tool" error. They synthesize answers with cited sources rather than returning raw result snippets.
 2. **`/research` command** — an interactive, full-screen research panel for back-and-forth Perplexity sessions (queries + streamed answers + sources). Build a recap you can shape in an editor and inject into your main thread; intermediate search content stays in the panel and is discarded unless you build a recap.
 
 See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for details.
