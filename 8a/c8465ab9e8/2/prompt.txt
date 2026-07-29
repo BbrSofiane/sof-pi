@@ -1,0 +1,604 @@
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Tests, maintainability, structural friction, documentation, and commit hygiene.
+
+Perform an adversarial read-only review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. Inspect AGENTS.md, git status, tracked diff, every relevant untracked file (including unexpected top-level additions), mise.toml, scripts/, tests/fixtures, README.md, and package conventions directly.
+
+Assess whether tests validate behavior at the right layer and mocks faithfully model stdin, SSH argument boundaries, lifecycle JSON, bootstrap rollback, helper provenance, Git worktrees, and tmux failures. Check the mise-task-to-shell split, duplication, naming, comments, maintainability, Linux/macOS assumptions, README accuracy and reader flow, and whether unrelated/generated files would accidentally enter the commit. Run focused local tests/static checks as useful; do not edit files or touch infrastructure. Return concise review feedback only, ordered by severity, with file:line evidence and smallest suggested fix. Separate fixes worth doing now from optional improvements; explicitly say PASS if no required changes.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-quality.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Security, privacy, provenance, and unsafe input/output handling.
+
+Perform an adversarial read-only security review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. Inspect AGENTS.md, git status/diff, all relevant untracked files, mise.toml, scripts/, tests/, README.md, and configuration/ignore changes directly. Infer the intended trust model from the implementation.
+
+Focus on credential and data boundaries, fail-closed VM privacy, tag-scoped GitHub integration assumptions, SSH host trust, shell/command injection and quoting, prompt/log/status confidentiality, mise config projection, local-versus-installed helper provenance, npm/Pi package trust, destructive confirmation, path traversal/symlink hazards, worktree cleanup scope, and whether any action can target the wrong VM/session/branch or expose data. Run only local/non-destructive checks; do not mutate infrastructure or edit files. Return concise evidence-backed findings ordered by severity with file:line references, exploit/failure scenario, and smallest safe fix. Separate fixes worth doing now from optional hardening and explicitly say PASS if none are required.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-security.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Runtime correctness, regressions, and failure recovery.
+
+Perform an adversarial read-only review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. First inspect AGENTS.md, git status, tracked diff, every relevant untracked file, mise.toml, scripts/exe-workspace*.sh, scripts/sanitize-mise-config.py, tests/, and README.md. Infer the intended behavior from those files: a persistent private exe.dev Pi workspace with create/rebuild/bootstrap/update, sanitized mise mirroring, interactive tmux Pi, and isolated unattended jobs.
+
+Focus on runtime correctness: lifecycle and privacy state machines, idempotency, first provision and subsequent update/bootstrap, partial-failure recovery, canonical checkout validation, installed-helper versioning, worktree/branch/tmux lifecycle, job status and exit semantics, concurrency/locking, argument handling, and hidden failures across macOS controller vs Linux VM. Inspect the actual diff and run non-destructive local checks as useful; do not mutate the live VM. Return concise review feedback only: evidence-backed findings ordered by severity, each with file:line references, failure scenario, and smallest safe fix. Distinguish blockers/fixes worth doing now from optional improvements. Explicitly say PASS if no fixes worth doing now. Do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-runtime.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/context.md, /Users/sofianebebert/workspace/sof-pi/plan.md]
+
+You are the sole writer for /Users/sofianebebert/workspace/sof-pi. Apply ONLY the fixes worth doing now from the adversarial reviews. Read AGENTS.md, current git status/diff, all current workspace implementation files, and these review artifacts in full before editing:
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-runtime.md
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-security.md
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-quality.md
+
+Accepted required scope:
+1. Replace the nonportable gawk-only tmux version probe with POSIX-compatible logic and test the branch.
+2. Make workspace:status report explicit private verification accurately: public=false/unsafe, missing or malformed=unknown/unsafe, never private=true unless public_proxy is explicitly boolean false. Add fixture assertions.
+3. After VM creation, poll the exe.dev control plane until exact identity, tag, and explicit private state are verified before any direct SSH readiness connection. Use bounded retries; test transitions where privacy is missing/public and prove no direct-host SSH occurs.
+4. Fix job status races so a fast completed job cannot be overwritten by running and stop cannot regress terminal state. Use a clear monotonic/authoritative lifecycle design and add an immediate-completion fake-tmux test that parses final JSON.
+5. Make production VM name/host literal constants sof-pi-workspace / sof-pi-workspace.exe.xyz and destruction require literal REDACTED. Remove ambient production overrides. If tests need alternate state, test through fixtures/mocks rather than production target overrides. Update tests that currently expect override behavior.
+6. Enforce the expected GitHub integration attachment before bootstrap/update/checkouts, not only status. Keep exact origin and git ls-remote. Rename user-facing status semantics from verified to attached where appropriate. Add malformed/missing integration tests proving no direct/bootstrap action.
+7. Tighten mise [tools] projection while preserving dynamic mirroring: allow only scalar string tool specs with narrowly validated tool names and version syntax needed by the current ~/.config/mise/config.toml; reject tables, lists, URLs, paths, whitespace-bearing specs, credentials/options/hooks, and unsupported values. Do not read or print [env]. Add synthetic rejection tests. Do not replace mirroring with a checked-in manifest.
+8. Pin VM Pi package installs to currently reviewed exact versions: npm:@robhowley/pi-openrouter@0.13.0 and npm:pi-subagents@0.35.1. Update assertions/docs if needed. Do not alter the locally repaired user npm workspace.
+9. Strengthen focused tests for the changes: SSH argv and stdin separately (including exact prompt bytes), bootstrap config rollback on mise failure, activate wrong-tag coverage, and malformed tag/integration responses. Keep this bounded; do not broadly rewrite/split the suite.
+10. Correct README wording: prompts/logs/status are private at rest on the VM and logs/status stream only to the authenticated invoking SSH client on explicit request.
+
+Explicitly NOT in scope: changing StrictHostKeyChecking=accept-new without an exe.dev CA/fingerprint mechanism; replacing mise mirror with a checked-in manifest; signed commits; control-plane leases; broad README restructuring; splitting tests; .entire telemetry/state decisions; optional stop polish beyond what is necessary to fix terminal-state races; pinning/verifying the mise installer itself.
+
+Hard constraints: do not mutate/rebuild/destroy/connect to the live VM, do not commit/push/stage, do not copy/read/print local secrets or mise [env], do not edit .entire, and do not widen scope. Preserve one writer. Run bash/Python syntax checks, sanitizer self-test, full workspace tests, mise task validation, and git diff --check. Report exact changed files, validation results, and residual risks. Ask the supervisor only for a genuinely blocking unapproved decision.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read the implementation report at Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md (6.1 KB, 73 lines). Read this file if needed., original adversarial review artifacts under .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/, AGENTS.md, and inspect the actual final diff/files directly. Perform a fresh read-only validation of tests, maintainability, and docs for only the accepted fixes. Verify mocks truly separate SSH argv/stdin and exact prompt bytes, cover post-create privacy gating, bootstrap rollback, fast-job completion JSON, wrong/malformed tag/integration inputs, scalar tool rejection, package pins, and accurate README/task wording. Run the full local validation suite. Do not edit files or infrastructure and do not revive optional/deferred suggestions. Return PASS or concise evidence-backed required findings with file:line.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/tests-docs-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read the implementation report at Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md (6.1 KB, 73 lines). Read this file if needed., the three original adversarial review artifacts under .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/, AGENTS.md, and inspect the actual final diff/files directly. Perform a fresh read-only adversarial validation of only the accepted fixes: portable awk, accurate privacy reporting and post-create verification before SSH, monotonic job terminal status, immutable VM target/destruction, enforced integration attachment, scalar fail-closed tool specs, pinned Pi packages, and trust/privacy boundaries. Run focused local tests. Do not edit files, access infrastructure, or propose rejected/deferred hardening as blockers. Return PASS or evidence-backed remaining fixes worth doing now with file:line and smallest fix.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/runtime-security-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/context.md, /Users/sofianebebert/workspace/sof-pi/plan.md]
+
+You are the sole writer in /Users/sofianebebert/workspace/sof-pi. Read AGENTS.md, current diff/files, and the validation finding at .pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/tests-docs-validation.md. Apply ONLY these two bounded test coverage fixes: (1) add/use a structurally valid tag-group fixture with the wrong label or membership, and assert sync/bootstrap is rejected without direct-host SSH while retaining separate malformed-tag coverage; correct or remove the misleading exe-ls-wrong-tag fixture naming/content as appropriate. (2) add a narrow deterministic automated assertion that scripts/exe-workspace-bootstrap.sh installs exactly npm:@robhowley/pi-openrouter@0.13.0 and npm:pi-subagents@0.35.1. Prefer a focused static assertion if executing full install_packages would add brittle complexity. Do not change production behavior, docs, live VM, .entire, staging, commits, or unrelated tests. Run full local validation and report changes/results.
+
+---
+Create and maintain progress at: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/progress/8471ddf4-2f36-4177-8213-f07b74576583/progress.md
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-fixes.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+- criterion-2: Return evidence sufficient for an independent acceptance review
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Review gate: required by reviewer.
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    },
+    {
+      "id": "criterion-2",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-fixes.md (1.7 KB, 28 lines). Read this file if needed., AGENTS.md, the prior validation finding, and inspect the actual final diff. Read-only validate that a valid wrong-tag membership response and malformed tag response are separately tested with no direct SSH, and exact Pi package pins have deterministic automated regression coverage. Run the full local workspace validation. Do not edit files or infrastructure; ignore optional/deferred issues. Return PASS or remaining concrete accepted-scope findings.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Quick tooling smoke test (keep it short, 1 brief): Use web_search to find the current latest stable Node.js LTS version (as of today) and which Node version pi 0.82.1 requires if documented. Return a 4-6 line brief with one or two cited sources. Do not over-research — one search pass is enough.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/aadf5e3b/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
