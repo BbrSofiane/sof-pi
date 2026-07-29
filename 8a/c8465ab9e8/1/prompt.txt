@@ -1,0 +1,5 @@
+I'm getting some failure with subagents because I don't have a `web_search` tool configured. I want to setup my perplexity extension as the web_search tool
+
+---
+
+Yes
