@@ -227,3 +227,7 @@ If the invocation provides a URL, issue link, file path, plan path, or freeform 
 ---
 
 1
+
+---
+
+Yes, commit and push
