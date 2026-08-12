@@ -1,0 +1,1 @@
+Use bg_start to run 'sleep 1; echo settled-after-turn' with title 'delayed'. Report the bg_start result, then finish your turn. Do NOT call bg_status.
