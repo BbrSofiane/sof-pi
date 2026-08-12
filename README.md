@@ -29,6 +29,7 @@ sof-pi/
 | **[browser](./skills/browser)** | Drive a real headless browser from the terminal with [`rodney`](https://github.com/simonw/rodney) (Go CLI over a persistent headless Chrome via CDP/rod) to check what's on a web page after JS renders — inspect title/text/HTML/attributes, run JS, assert conditions (`exists`/`visible`/`assert`), audit accessibility, and capture screenshots/PDFs. Triggers on "check what's on this page", "screenshot this URL", "open this in a browser and look at it", "is this element on the page", "does the page show X", or "audit accessibility on this page". |
 | **[whatsapp](./skills/whatsapp)** | Send a WhatsApp message (text or media) or inspect a [ruwa](https://github.com/oqva-digital/ruwa) WhatsApp instance from the terminal — list chats, list messages, show the pairing QR, pair via phone code, or list sessions. A `uv` inline-script CLI (`httpx`) wraps the ruwa HTTP API so the agent doesn't hand-roll `curl` + bearer headers + session IDs. Config from env (`RUWA_API_ENDPOINT`, `RUWA_API_TOKEN`, optional `RUWA_SESSION`) or CLI flags. Triggers on "send a whatsapp message", "whatsapp", "message someone on whatsapp", "send a photo on whatsapp", "show my whatsapp chats", or "pair a whatsapp number". |
 | **[tldraw-offline](./skills/tldraw-offline)** | Operate the user's tldraw offline canvas app, including open `.tldraw` or `.tldr` files. Use whenever a task involves inspecting, editing, arranging, connecting, linting, or scripting a tldraw Desktop canvas. |
+| **[background-terminals](./skills/background-terminals)** | Run and manage long-lived shell commands in background terminals. Use for dev servers, watchers, streaming builds, and other commands that should keep running while the agent continues working. |
 
 ## Extensions
 
@@ -56,6 +57,10 @@ Web search and interactive research via the [Perplexity API](https://docs.perple
 
 See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for details.
 
+### Background Terminals (`extensions/background-terminals/`)
+
+Four LLM tools (`bg_start`, `bg_status`, `bg_list`, `bg_kill`) for long-running background shell processes — dev servers, watchers, streaming builds. Processes are fire-and-forget with stdin ignored (immediate EOF); the model gets exactly one completion notification when a process exits. A `/ps` overlay command opens a two-stage full-screen inspector (dashboard → read-only detail with stdout/stderr toggle) to inspect live output and kill terminals interactively. While ≥1 terminal runs, a one-line widget appears above the editor. Output is captured to bounded in-memory buffers plus on-disk spill files; tool and completion output shows a concise tail. Terminals are session-scoped and stopped during shutdown or reload. Bundled in this package — no separate install needed.
+
 ## Installed Packages
 
 Beyond the extensions bundled in this package, I rely on a couple of npm-installed pi packages that add their own extensions/skills.
@@ -79,6 +84,44 @@ Install: `pi install npm:@robhowley/pi-openrouter`
 Lets pi delegate work to focused child agents — for code review, scouting, implementation, parallel audits, saved workflows, and background jobs. Supports single-agent delegation, sequential chains, parallel fan-out, async/background runs, forked-context review, and a `/research`-style TUI clarification flow. Plain-language delegation works out of the box (no config or slash commands needed), with builtin agents like `reviewer`, `scout`, and `oracle` ready to go.
 
 Install: `pi install npm:pi-subagents`
+
+## exe.dev workspace
+
+This package includes a version-controlled `mise` control plane for one private, persistent exe.dev VM: `sof-pi-workspace` (`sof-pi-workspace.exe.xyz`), tagged `sof-pi`. It clones only `https://sof-pi.int.exe.xyz/BbrSofiane/sof-pi.git`; the pre-attached tag-scoped `sof-pi` GitHub integration must provide that access.
+
+**Prerequisites:** local `mise`, `ssh` with an identity registered at exe.dev, Python 3, `jq`, `git`, and the pre-attached GitHub integration. First inspect, then explicitly provision:
+
+```bash
+mise run workspace:status
+mise run workspace:provision
+```
+
+`provision` creates the fixed name only when it is absent, polls the control plane until the exact host/tag and explicit private state are verified, then waits for direct SSH and bootstraps. Repeating `create`, `bootstrap`, or `sync` is intended to converge; an unexpected VM tag/host, dirty checkout, or wrong Git origin stops rather than repairing or deleting data. No task exposes a port, makes the VM public, or attaches/detaches integrations.
+
+Only reviewed scalar-string tool versions from the local mise global config's `[tools]` and the explicitly allowlisted `[settings].experimental` boolean are projected to the VM (`workspace:sync`). The mirror is exact on each successful sync: locally removed tools/settings disappear remotely. Tables, lists, URLs, paths, whitespace-bearing specs, credentials/options/hooks, unknown tools, and non-boolean settings are rejected rather than copied. `[env]` is never read into output or copied. SSH keys/config, Pi auth/settings, GitHub/cloud credentials, and API keys are never copied. Every mutable or direct operation verifies an explicit `sharing.public_proxy = false` state and stops on public, missing, or malformed privacy state; `workspace:status` may report such an unsafe VM without connecting to it.
+
+```bash
+mise run workspace:sync
+mise run workspace:update
+mise run workspace:ssh                         # interactive direct SSH
+mise run workspace:ssh -- uptime
+mise run workspace:pi                          # tmux session: sof-pi-interactive
+mise run workspace:job:start -- --id docs-01 --prompt-file ./prompt.md
+mise run workspace:job:status -- --id docs-01
+mise run workspace:job:logs -- --id docs-01
+mise run workspace:job:attach -- --id docs-01
+mise run workspace:job:stop -- --id docs-01
+```
+
+Jobs have an isolated `pi/<id>` branch and VM-local worktree; they never edit `main` concurrently. Each job branches from the verified canonical checkout's current `HEAD`; run `mise run workspace:update` first when a job needs the latest remote `main`. Bootstrap installs the checked-in VM job helper from that verified checkout, and every job action invokes that installed copy as the sole runtime implementation—the laptop sends only the prompt over stdin. Prompts, logs, and status are private at rest on the VM with restrictive permissions; logs and status stream only to the authenticated invoking SSH client when explicitly requested. Package installation is automated and pins `npm:@robhowley/pi-openrouter@0.13.0` and `npm:pi-subagents@0.35.1`, but Pi provider access needs a separately approved VM-native authentication/integration route; neither interactive nor unattended jobs receive copied credentials.
+
+Deletion is intentionally opt-in and permanently removes the VM disk and all VM-local state. It is never part of another task:
+
+```bash
+CONFIRM_DESTROY=sof-pi-workspace mise run workspace:destroy
+```
+
+Run offline controller/sanitizer tests with `mise run workspace:test`. The first live bootstrap requires this workflow to be committed and available on the integration clone's `main` branch, because the checked-in job helper is installed only from that verified checkout; after publishing it, rerun `mise run workspace:bootstrap` (or `workspace:update`).
 
 ## Design
 

@@ -12,7 +12,8 @@
   "pi": {
     "extensions": [
       "./extensions/*.ts",
-      "./extensions/perplexity/index.ts"
+      "./extensions/perplexity/index.ts",
+      "./extensions/background-terminals/index.ts"
     ],
     "skills": [
       "./skills"
