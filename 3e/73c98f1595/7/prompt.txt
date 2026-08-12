@@ -1,0 +1,1 @@
+Use bg_start to run the command 'echo completion-delivered' with title 'verify-settled'. Then immediately run bg_list and report what it returns. Do not wait or poll.
