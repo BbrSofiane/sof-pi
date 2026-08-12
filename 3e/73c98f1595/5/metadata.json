@@ -1,0 +1,89 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "3e73c98f1595",
+  "session_id": "019ff75d-7b1b-7bd4-aa50-3af93d670cb1",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-12T20:27:06.89568Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "README.md",
+    "package.json"
+  ],
+  "agent": "Pi",
+  "model": "z-ai/glm-5.2",
+  "turn_id": "1fe4bc4b2c78",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 609,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 3,
+    "api_call_count": 1
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-12T20:27:06.885171Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 3,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 3,
+    "total_lines_changed": 4,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 3468,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".gitignore": 3,
+        "README.md": 43,
+        "extensions/background-terminals/index.ts": 431,
+        "extensions/background-terminals/src/domain.ts": 90,
+        "extensions/background-terminals/src/manager.ts": 978,
+        "extensions/background-terminals/src/output.ts": 84,
+        "extensions/background-terminals/src/prompt.ts": 142,
+        "extensions/background-terminals/src/result-delivery.ts": 27,
+        "extensions/background-terminals/src/ui/output-view.ts": 79,
+        "extensions/background-terminals/src/ui/ps.ts": 621,
+        "mise.toml": 59,
+        "package.json": 2,
+        "scripts/exe-workspace-bootstrap.sh": 107,
+        "scripts/exe-workspace-job.sh": 141,
+        "scripts/exe-workspace-setup.sh": 7,
+        "scripts/exe-workspace.sh": 234,
+        "scripts/sanitize-mise-config.py": 155,
+        "skills/background-terminals/SKILL.md": 29,
+        "tests/exe-workspace.test.sh": 202,
+        "tests/fixtures/exe-integrations-malformed.json": 1,
+        "tests/fixtures/exe-integrations-missing.json": 1,
+        "tests/fixtures/exe-integrations-valid.json": 1,
+        "tests/fixtures/exe-ls-absent.json": 1,
+        "tests/fixtures/exe-ls-existing.json": 1,
+        "tests/fixtures/exe-ls-malformed.json": 1,
+        "tests/fixtures/exe-ls-multiple.json": 1,
+        "tests/fixtures/exe-ls-privacy-malformed.json": 1,
+        "tests/fixtures/exe-ls-privacy-missing.json": 1,
+        "tests/fixtures/exe-ls-public.json": 1,
+        "tests/fixtures/exe-ls-unknown-status.json": 1,
+        "tests/fixtures/exe-ls-wrong-host.json": 1,
+        "tests/fixtures/exe-tags-malformed.json": 1,
+        "tests/fixtures/exe-tags-valid.json": 1,
+        "tests/fixtures/exe-tags-wrong-label.json": 9,
+        "tests/fixtures/mise-source.toml": 11
+      },
+      "user_removed_per_file": {
+        "package.json": 1
+      }
+    }
+  ]
+}
