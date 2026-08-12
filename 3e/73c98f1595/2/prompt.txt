@@ -1,0 +1,1 @@
+Use the bg_start tool to run the command 'echo hello-world' with the title 'smoke'. Then use the bg_list tool and report exactly what it returns. Keep your reply short.
