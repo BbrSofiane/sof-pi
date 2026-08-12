@@ -1,0 +1,1 @@
+Use the bg_start tool to run 'echo final-smoke' with title 'verify'. Then use bg_list and report what it returns.
