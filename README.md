@@ -7,6 +7,7 @@ Personal pi package — workflows, extensions, skills, prompt templates, and the
 ```
 sof-pi/
 ├── extensions/   # .ts / .js extensions
+├── agents/       # pi-subagents agent overrides
 ├── skills/       # SKILL.md folders / top-level .md skills
 ├── prompts/      # .md prompt templates
 ├── themes/       # .json themes
@@ -33,21 +34,6 @@ sof-pi/
 
 ## Extensions
 
-### Code Review (`extensions/review.ts`)
-
-Adds a `/review` command that prompts the agent to review code changes. Supports several modes:
-
-- `/review` — interactive selector
-- `/review pr 123` — review GitHub PR #123 (checks it out locally)
-- `/review pr https://github.com/owner/repo/pull/123` — review a PR from URL
-- `/review uncommitted` — review uncommitted changes directly
-- `/review branch main` — review against a base branch (PR-style diff)
-- `/review commit abc123` — review a specific commit
-- `/review folder src docs` — snapshot review of specific folders/files (not a diff)
-- `/review --extra "focus on performance regressions"` — add extra review instructions (works with any mode)
-
-Supports shared custom review instructions (added/removed via the selector) and project-specific guidelines from a `REVIEW_GUIDELINES.md` next to `.pi`. PR review requires a clean working tree.
-
 ### Perplexity (`extensions/perplexity/`)
 
 Web search and interactive research via the [Perplexity API](https://docs.perplexity.ai/), designed to keep raw search traffic out of the main pi context window. Two pieces:
@@ -60,6 +46,12 @@ See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for d
 ### Background Terminals (`extensions/background-terminals/`)
 
 Four LLM tools (`bg_start`, `bg_status`, `bg_list`, `bg_kill`) for long-running background shell processes — dev servers, watchers, streaming builds. Processes are fire-and-forget with stdin ignored (immediate EOF); the model gets exactly one completion notification when a process exits. A `/ps` overlay command opens a two-stage full-screen inspector (dashboard → read-only detail with stdout/stderr toggle) to inspect live output and kill terminals interactively. While ≥1 terminal runs, a one-line widget appears above the editor. Output is captured to bounded in-memory buffers plus on-disk spill files; tool and completion output shows a concise tail. Terminals are session-scoped and stopped during shutdown or reload. Bundled in this package — no separate install needed.
+
+## Agents
+
+### `reviewer` override (`agents/reviewer.md`)
+
+Shadows the builtin pi-subagents `reviewer` for every project where sof-pi is installed (package agents load above builtins). It keeps the builtin review structure and appends the sof-pi **Review Rubric**: flagging discipline, untrusted-input checks, fail-fast error handling, `[P0]–[P3]` priority tags, and the required non-blocking **Human Reviewer Callouts** section. Every `subagent({ agent: "reviewer" })`, `/parallel-review`, and `/review-loop` run therefore applies the same rubric automatically. A project can still override locally by dropping its own `reviewer.md` into the project agents directory.
 
 ## Installed Packages
 

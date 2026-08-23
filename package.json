@@ -23,7 +23,12 @@
     ],
     "themes": [
       "./themes"
-    ]
+    ],
+    "subagents": {
+      "agents": [
+        "./agents"
+      ]
+    }
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",

@@ -7,7 +7,7 @@
  * component's memory; nothing enters the session until you build a recap.
  *
  * The layout mirrors the bordered, composable style used by pi's own
- * selectors (see extensions/review.ts): an accent top border carrying the
+ * selectors: an accent top border carrying the
  * title/model/status, a scrollable transcript body, a bottom border with a
  * scroll indicator, an input line, and a dim help line.
  *

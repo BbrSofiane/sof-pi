@@ -10,6 +10,9 @@ section of `README.md` to reflect it:
   skill's frontmatter `description`.
 - **Extensions** — update the Extensions section. Describe the commands/tools
   the extension exposes and link to any per-extension README.
+- **Agents** — update the Agents section. Describe what each packaged agent
+  override changes relative to its builtin (rubric additions, tool/model
+  differences) and note the precedence it relies on.
 
 Do this as part of the same change set rather than as a follow-up, and commit
 the README update together with the skill/extension change.
