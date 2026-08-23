@@ -1,0 +1,22 @@
+What functionality does gog cli has for youtube?
+
+---
+
+Ok list the videos uploaded in the channel of my personal account
+
+---
+
+Done
+
+---
+
+Ok I want to delete duplicate videos that are not in the playlist https://www.youtube.com/playlist?list=PLZAtjZ1tJYFw
+
+---
+
+1. Keep
+2. Done, go ahead
+
+---
+
+Give me a list of the latests uploads to my google photos
