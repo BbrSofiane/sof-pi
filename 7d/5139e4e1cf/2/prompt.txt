@@ -1,0 +1,69 @@
+Task: You are a delegated subagent running from a fork of the parent session. Treat the inherited conversation as reference-only context, not a live thread to continue. Do not continue or answer prior messages as if they are waiting for a reply. Your sole job is to execute the task below and return a focused result for that task using your tools.
+
+Task:
+Implement the proposed weekly-planning skill refactor in /Users/sofianebebert/workspace/sof-pi. You are the sole writer in the shared cwd; do not edit unrelated skills.
+
+Goal: refactor skills/weekly-planning/SKILL.md from a monolithic ~417-line file into a concise entry point with progressive disclosure, preserving behavior and institutional memory.
+
+Required structure:
+- Keep SKILL.md as the compact always-loaded entry point, retaining frontmatter, Monday-vs-Friday trigger guidance, core objective/database boundaries, screenshot confirmation gate, approval gates, capacity/objective rules, key safety rules, and a concise workflow outline.
+- Add reference files under skills/weekly-planning/references/ (use sensible names, e.g. monday-planning.md, friday-retro.md, notion-schema.md, calendar-and-daily-work.md). Move detailed but still necessary workflow mechanics into these files. The main skill must explicitly instruct the agent to read the relevant reference(s) for the detected workflow; references should link back or be discoverable from SKILL.md.
+- Preserve the important failure-derived rules: all calendar colours in scope by default; confirm screenshot parsing before proceeding; screenshot required because calendar is unavailable; objectives may have multiple execution/scope-plan Tasks; keep Projects/Tasks/Daily Work distinct; account for bank holidays and actual focus capacity; no duplicate carryover rows; Monday snapshots enable Friday diffs; retro includes all in-progress projects; Wheel of Life.
+- Preserve the detailed Notion schema, environment variables, local weekly note template/rules, situation report/draft/write formats, time-icon/importance/urgency/area heuristics, Monday and Friday phase behavior, approval and removal passes, and carryover policy in the reference files. Avoid silently changing behavior.
+- Make the living-documentation loop explicit in SKILL.md or a reference: explain when a new observed failure or changed preference should update the relevant reference and version metadata.
+- Avoid unnecessary command-level Notion CLI detail; defer CLI mechanics to the existing notion-cli skill where appropriate.
+- Update README.md if the skill description needs to reflect the refactor. Keep its existing trigger description accurate; no need to mention internal files unless useful.
+
+After editing, inspect all changed files and run validation: git diff --check; confirm SKILL.md is substantially shorter; ensure all reference links/files exist; grep for required rules/terms and check no important sections were accidentally omitted. Do not commit. Report changed files, line counts, and validation results.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files, validation-output, diff-summary
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```

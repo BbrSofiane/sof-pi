@@ -3,14 +3,17 @@
   "checkpoint_id": "7d5139e4e1cf",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 7,
+  "checkpoints_count": 8,
   "files_touched": [
     "README.md",
     "skills/exe-dev/SKILL.md",
     "skills/fly-io/SKILL.md",
     "skills/stripe-projects/SKILL.md",
     "skills/weekly-planning/SKILL.md",
-    "skills/weekly-planning/references/friday-retro.md"
+    "skills/weekly-planning/references/calendar-and-daily-work.md",
+    "skills/weekly-planning/references/friday-retro.md",
+    "skills/weekly-planning/references/monday-planning.md",
+    "skills/weekly-planning/references/notion-schema.md"
   ],
   "sessions": [
     {
@@ -26,13 +29,20 @@
       "compact_transcript": "/7d/5139e4e1cf/1/transcript.jsonl",
       "content_hash": "/7d/5139e4e1cf/1/content_hash.txt",
       "prompt": "/7d/5139e4e1cf/1/prompt.txt"
+    },
+    {
+      "metadata": "/7d/5139e4e1cf/2/metadata.json",
+      "transcript": "/7d/5139e4e1cf/2/full.jsonl",
+      "compact_transcript": "/7d/5139e4e1cf/2/transcript.jsonl",
+      "content_hash": "/7d/5139e4e1cf/2/content_hash.txt",
+      "prompt": "/7d/5139e4e1cf/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 1372317,
-    "cache_creation_tokens": 49968,
-    "cache_read_tokens": 4656744,
-    "output_tokens": 82122,
-    "api_call_count": 59
+    "input_tokens": 2024466,
+    "cache_creation_tokens": 72961,
+    "cache_read_tokens": 6627039,
+    "output_tokens": 124822,
+    "api_call_count": 87
   }
 }
