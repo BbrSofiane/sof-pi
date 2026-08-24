@@ -13,7 +13,8 @@
     "extensions": [
       "./extensions/*.ts",
       "./extensions/perplexity/index.ts",
-      "./extensions/background-terminals/index.ts"
+      "./extensions/background-terminals/index.ts",
+      "./extensions/learning/index.ts"
     ],
     "skills": [
       "./skills"

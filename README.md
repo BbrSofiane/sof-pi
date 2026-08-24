@@ -47,6 +47,10 @@ See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for d
 
 Four LLM tools (`bg_start`, `bg_status`, `bg_list`, `bg_kill`) for long-running background shell processes — dev servers, watchers, streaming builds. Processes are fire-and-forget with stdin ignored (immediate EOF); the model gets exactly one completion notification when a process exits. A `/ps` overlay command opens a two-stage full-screen inspector (dashboard → read-only detail with stdout/stderr toggle) to inspect live output and kill terminals interactively. While ≥1 terminal runs, a one-line widget appears above the editor. Output is captured to bounded in-memory buffers plus on-disk spill files; tool and completion output shows a concise tail. Terminals are session-scoped and stopped during shutdown or reload. Bundled in this package — no separate install needed.
 
+### Learning (`extensions/learning/`)
+
+Project-based learning mode built around ramps to knowledge rather than syllabi. `/learn <concept>` asks for the learner's starting point and timebox, proposes a few tiny projects where the concept becomes necessary, and coaches through short need → attempt → friction → minimum lesson → application → proof cycles. `/learn-status` shows the active ramp and `/learn-stop` exits it. State is persisted on the current pi session branch, and an active ramp appears in the footer. See [`extensions/learning/README.md`](./extensions/learning/README.md) for behavior and examples.
+
 ## Agents
 
 ### `reviewer` override (`agents/reviewer.md`)
