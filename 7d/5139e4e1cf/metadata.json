@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "7d5139e4e1cf",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "README.md",
+    "skills/exe-dev/SKILL.md",
+    "skills/fly-io/SKILL.md",
+    "skills/stripe-projects/SKILL.md",
+    "skills/weekly-planning/SKILL.md",
+    "skills/weekly-planning/references/friday-retro.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7d/5139e4e1cf/0/metadata.json",
+      "transcript": "/7d/5139e4e1cf/0/full.jsonl",
+      "compact_transcript": "/7d/5139e4e1cf/0/transcript.jsonl",
+      "content_hash": "/7d/5139e4e1cf/0/content_hash.txt",
+      "prompt": "/7d/5139e4e1cf/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 971392,
+    "cache_creation_tokens": 33103,
+    "cache_read_tokens": 3150244,
+    "output_tokens": 32633,
+    "api_call_count": 33
+  }
+}

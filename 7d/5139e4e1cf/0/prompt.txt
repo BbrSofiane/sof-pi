@@ -1,0 +1,28 @@
+/Review skills
+
+---
+
+Summarise the key takeaways from this article: https://newsletter.posthog.com/p/what-nobody-tells-you-about-writing?isFreemail=true&post_id=209648145&publication_id=1318225&r=2g0gkp&triedRedirect=true
+
+---
+
+Use scouts to review skills in this pi extension against the above points. Mark each skill against the 6 rubrics
+
+---
+
+Use a worker to implement improvements for these 3
+1. exe-dev: apply the feedback, we can remove the lifecycle commands
+2. fly-io: remove the command level detail
+3. stripe-projects: remove the classic stripe CLI material
+
+---
+
+4. weekly-planning - what do you have in mind here?
+
+---
+
+Use workers to implement those changes
+
+---
+
+Continue
