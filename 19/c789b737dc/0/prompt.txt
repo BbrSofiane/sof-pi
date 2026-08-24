@@ -1,0 +1,5 @@
+Ok commit those changes
+
+---
+
+Now I want to capture the key principles that make for good skills in a README inside the skills folder. Use a worker to write it up and a reviewer to verify the content
