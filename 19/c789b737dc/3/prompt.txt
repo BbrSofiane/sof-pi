@@ -1,0 +1,3092 @@
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Tests, maintainability, structural friction, documentation, and commit hygiene.
+
+Perform an adversarial read-only review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. Inspect AGENTS.md, git status, tracked diff, every relevant untracked file (including unexpected top-level additions), mise.toml, scripts/, tests/fixtures, README.md, and package conventions directly.
+
+Assess whether tests validate behavior at the right layer and mocks faithfully model stdin, SSH argument boundaries, lifecycle JSON, bootstrap rollback, helper provenance, Git worktrees, and tmux failures. Check the mise-task-to-shell split, duplication, naming, comments, maintainability, Linux/macOS assumptions, README accuracy and reader flow, and whether unrelated/generated files would accidentally enter the commit. Run focused local tests/static checks as useful; do not edit files or touch infrastructure. Return concise review feedback only, ordered by severity, with file:line evidence and smallest suggested fix. Separate fixes worth doing now from optional improvements; explicitly say PASS if no required changes.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-quality.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Security, privacy, provenance, and unsafe input/output handling.
+
+Perform an adversarial read-only security review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. Inspect AGENTS.md, git status/diff, all relevant untracked files, mise.toml, scripts/, tests/, README.md, and configuration/ignore changes directly. Infer the intended trust model from the implementation.
+
+Focus on credential and data boundaries, fail-closed VM privacy, tag-scoped GitHub integration assumptions, SSH host trust, shell/command injection and quoting, prompt/log/status confidentiality, mise config projection, local-versus-installed helper provenance, npm/Pi package trust, destructive confirmation, path traversal/symlink hazards, worktree cleanup scope, and whether any action can target the wrong VM/session/branch or expose data. Run only local/non-destructive checks; do not mutate infrastructure or edit files. Return concise evidence-backed findings ordered by severity with file:line references, exploit/failure scenario, and smallest safe fix. Separate fixes worth doing now from optional hardening and explicitly say PASS if none are required.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-security.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ANGLE: Runtime correctness, regressions, and failure recovery.
+
+Perform an adversarial read-only review of the complete current uncommitted work in /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. First inspect AGENTS.md, git status, tracked diff, every relevant untracked file, mise.toml, scripts/exe-workspace*.sh, scripts/sanitize-mise-config.py, tests/, and README.md. Infer the intended behavior from those files: a persistent private exe.dev Pi workspace with create/rebuild/bootstrap/update, sanitized mise mirroring, interactive tmux Pi, and isolated unattended jobs.
+
+Focus on runtime correctness: lifecycle and privacy state machines, idempotency, first provision and subsequent update/bootstrap, partial-failure recovery, canonical checkout validation, installed-helper versioning, worktree/branch/tmux lifecycle, job status and exit semantics, concurrency/locking, argument handling, and hidden failures across macOS controller vs Linux VM. Inspect the actual diff and run non-destructive local checks as useful; do not mutate the live VM. Return concise review feedback only: evidence-backed findings ordered by severity, each with file:line references, failure scenario, and smallest safe fix. Distinguish blockers/fixes worth doing now from optional improvements. Explicitly say PASS if no fixes worth doing now. Do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-runtime.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/context.md, /Users/sofianebebert/workspace/sof-pi/plan.md]
+
+You are the sole writer for /Users/sofianebebert/workspace/sof-pi. Apply ONLY the fixes worth doing now from the adversarial reviews. Read AGENTS.md, current git status/diff, all current workspace implementation files, and these review artifacts in full before editing:
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-runtime.md
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-security.md
+- .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/adversarial-quality.md
+
+Accepted required scope:
+1. Replace the nonportable gawk-only tmux version probe with POSIX-compatible logic and test the branch.
+2. Make workspace:status report explicit private verification accurately: public=false/unsafe, missing or malformed=unknown/unsafe, never private=true unless public_proxy is explicitly boolean false. Add fixture assertions.
+3. After VM creation, poll the exe.dev control plane until exact identity, tag, and explicit private state are verified before any direct SSH readiness connection. Use bounded retries; test transitions where privacy is missing/public and prove no direct-host SSH occurs.
+4. Fix job status races so a fast completed job cannot be overwritten by running and stop cannot regress terminal state. Use a clear monotonic/authoritative lifecycle design and add an immediate-completion fake-tmux test that parses final JSON.
+5. Make production VM name/host literal constants sof-pi-workspace / sof-pi-workspace.exe.xyz and destruction require literal REDACTED. Remove ambient production overrides. If tests need alternate state, test through fixtures/mocks rather than production target overrides. Update tests that currently expect override behavior.
+6. Enforce the expected GitHub integration attachment before bootstrap/update/checkouts, not only status. Keep exact origin and git ls-remote. Rename user-facing status semantics from verified to attached where appropriate. Add malformed/missing integration tests proving no direct/bootstrap action.
+7. Tighten mise [tools] projection while preserving dynamic mirroring: allow only scalar string tool specs with narrowly validated tool names and version syntax needed by the current ~/.config/mise/config.toml; reject tables, lists, URLs, paths, whitespace-bearing specs, credentials/options/hooks, and unsupported values. Do not read or print [env]. Add synthetic rejection tests. Do not replace mirroring with a checked-in manifest.
+8. Pin VM Pi package installs to currently reviewed exact versions: npm:@robhowley/pi-openrouter@0.13.0 and npm:pi-subagents@0.35.1. Update assertions/docs if needed. Do not alter the locally repaired user npm workspace.
+9. Strengthen focused tests for the changes: SSH argv and stdin separately (including exact prompt bytes), bootstrap config rollback on mise failure, activate wrong-tag coverage, and malformed tag/integration responses. Keep this bounded; do not broadly rewrite/split the suite.
+10. Correct README wording: prompts/logs/status are private at rest on the VM and logs/status stream only to the authenticated invoking SSH client on explicit request.
+
+Explicitly NOT in scope: changing StrictHostKeyChecking=accept-new without an exe.dev CA/fingerprint mechanism; replacing mise mirror with a checked-in manifest; signed commits; control-plane leases; broad README restructuring; splitting tests; .entire telemetry/state decisions; optional stop polish beyond what is necessary to fix terminal-state races; pinning/verifying the mise installer itself.
+
+Hard constraints: do not mutate/rebuild/destroy/connect to the live VM, do not commit/push/stage, do not copy/read/print local secrets or mise [env], do not edit .entire, and do not widen scope. Preserve one writer. Run bash/Python syntax checks, sanitizer self-test, full workspace tests, mise task validation, and git diff --check. Report exact changed files, validation results, and residual risks. Ask the supervisor only for a genuinely blocking unapproved decision.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read the implementation report at Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md (6.1 KB, 73 lines). Read this file if needed., original adversarial review artifacts under .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/, AGENTS.md, and inspect the actual final diff/files directly. Perform a fresh read-only validation of tests, maintainability, and docs for only the accepted fixes. Verify mocks truly separate SSH argv/stdin and exact prompt bytes, cover post-create privacy gating, bootstrap rollback, fast-job completion JSON, wrong/malformed tag/integration inputs, scalar tool rejection, package pins, and accurate README/task wording. Run the full local validation suite. Do not edit files or infrastructure and do not revive optional/deferred suggestions. Return PASS or concise evidence-backed required findings with file:line.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/tests-docs-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read the implementation report at Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/implementation.md (6.1 KB, 73 lines). Read this file if needed., the three original adversarial review artifacts under .pi-subagents/artifacts/outputs/04152025-ce40-4e5c-bfb5-ca55100a4412/, AGENTS.md, and inspect the actual final diff/files directly. Perform a fresh read-only adversarial validation of only the accepted fixes: portable awk, accurate privacy reporting and post-create verification before SSH, monotonic job terminal status, immutable VM target/destruction, enforced integration attachment, scalar fail-closed tool specs, pinned Pi packages, and trust/privacy boundaries. Run focused local tests. Do not edit files, access infrastructure, or propose rejected/deferred hardening as blockers. Return PASS or evidence-backed remaining fixes worth doing now with file:line and smallest fix.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/runtime-security-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/context.md, /Users/sofianebebert/workspace/sof-pi/plan.md]
+
+You are the sole writer in /Users/sofianebebert/workspace/sof-pi. Read AGENTS.md, current diff/files, and the validation finding at .pi-subagents/artifacts/outputs/942678e5-300c-4db4-8c82-72ee7cbb18dd/adversarial-fixes/tests-docs-validation.md. Apply ONLY these two bounded test coverage fixes: (1) add/use a structurally valid tag-group fixture with the wrong label or membership, and assert sync/bootstrap is rejected without direct-host SSH while retaining separate malformed-tag coverage; correct or remove the misleading exe-ls-wrong-tag fixture naming/content as appropriate. (2) add a narrow deterministic automated assertion that scripts/exe-workspace-bootstrap.sh installs exactly npm:@robhowley/pi-openrouter@0.13.0 and npm:pi-subagents@0.35.1. Prefer a focused static assertion if executing full install_packages would add brittle complexity. Do not change production behavior, docs, live VM, .entire, staging, commits, or unrelated tests. Run full local validation and report changes/results.
+
+---
+Create and maintain progress at: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/progress/8471ddf4-2f36-4177-8213-f07b74576583/progress.md
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-fixes.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+- criterion-2: Return evidence sufficient for an independent acceptance review
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Review gate: required by reviewer.
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    },
+    {
+      "id": "criterion-2",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+Read Output saved to: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-fixes.md (1.7 KB, 28 lines). Read this file if needed., AGENTS.md, the prior validation finding, and inspect the actual final diff. Read-only validate that a valid wrong-tag membership response and malformed tag response are separately tested with no direct SSH, and exact Pi package pins have deterministic automated regression coverage. Run the full local workspace validation. Do not edit files or infrastructure; ignore optional/deferred issues. Return PASS or remaining concrete accepted-scope findings.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/8471ddf4-2f36-4177-8213-f07b74576583/adversarial-fixes/final-coverage-validation.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Quick tooling smoke test (keep it short, 1 brief): Use web_search to find the current latest stable Node.js LTS version (as of today) and which Node version pi 0.82.1 requires if documented. Return a 4-6 line brief with one or two cited sources. Do not over-research — one search pass is enough.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi-subagents/artifacts/outputs/aadf5e3b/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ADVERSARIAL REVIEW — Angle: Simplicity, maintainability & docs accuracy
+
+Review target: commit b251cb1 (`git show b251cb1`), spanning `extensions/perplexity/index.ts`, `extensions/perplexity/README.md`, and `README.md`.
+
+Inspect the diff and full files yourself. Read `extensions/perplexity/index.ts` end-to-end and the two READMEs.
+
+Answer specifically:
+1. Duplication: the three new tools share `normalizeWebQueries`, `buildWebSearchMessages`, `formatWebSearchResults`, `truncateToolOutput`. Is there remaining copy-paste between `web_search` and `get_search_content` (their execute bodies are very similar) that should be factored out? Is the duplication acceptable or a maintenance hazard?
+2. Single-use / brittle wrappers: `buildWebSearchMessages` folds `recencyFilter`/`domainFilter` into free-text system prompts. Is that a meaningful abstraction or a brittle hint that misleads callers into thinking filters actually work? Same question for `numResults` — it's accepted but never sent to the API. Is accepting params you ignore a footgun?
+3. Naming & clarity: `WebSearchHint`, `WebSearchEntry`, `WEB_RECENCY_VALUES` — clear? Is `includeContent` (false => only source lists) behavior obvious from the name and description?
+4. Docs accuracy: do `extensions/perplexity/README.md` and root `README.md` accurately describe what the code does? Specifically — the README says `fetch_content` "Perplexity fetches the page". Does Perplexity's sonar actually fetch arbitrary URLs reliably, or is that an overclaim? Are the param tables correct vs. the typebox schemas?
+5. Verbose/dead code: any leftover comments referencing the removed `perplexity_search`? Any promptSnippet/guidelines that no longer match the tool? Comment block under `// ---- 1b.` — accurate and useful?
+
+Return concise, evidence-backed findings with file/line references and concrete suggested fixes. Do NOT edit files. Review feedback only.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ADVERSARIAL REVIEW — Angle: TypeScript type safety & schema correctness
+
+Review target: commit b251cb1 (`git show b251cb1`), primarily `extensions/perplexity/index.ts`. The change registers three tools (`web_search`, `fetch_content`, `get_search_content`) using typebox schemas and an existing `searchPerplexity` client.
+
+Inspect the diff and full file yourself. Also read `extensions/perplexity/perplexity.ts` for the `searchPerplexity` / `PerplexityMessage` / `PerplexitySource` signatures, and check `~/.pi/agent/npm/node_modules/pi-subagents/agents/researcher.md` + `context-builder.md` for the param shape the children expect from `pi-web-access` (query/queries, numResults, recencyFilter, domainFilter, includeContent).
+
+Answer specifically:
+1. Schema correctness: are the typebox parameter schemas for the three tools internally consistent and compatible with how `pi-web-access` callers invoke them? Any field the agent prompt tells the model to pass that the schema rejects (e.g. `numResults` vs `num_results`, `maxTokens` vs `max_tokens`)? Note the old tool used `max_tokens` (snake_case) while new tools use `maxTokens` (camelCase) — is that inconsistent and does it matter?
+2. Type inference smells: the early-return `details` objects were aligned to the success-return shape to fix a `never[]` inference. Is that alignment sound, or is it papering over a real type mismatch? Are the `details` types actually correct or just `any`-ish?
+3. Casts & `as`: count the `as` casts (e.g. `args.query as string | undefined`, `[] as WebSearchEntry[]`, `result.details?.sources as PerplexitySource[]`). Any unsafe ones? Could `WebSearchEntry` be inferred from `searchPerplexity`'s return instead of hand-declared?
+4. Error-boundary discipline: `searchPerplexity` throws on non-OK HTTP. Inside `Promise.all`, one throw rejects the whole batch. Is the error surfaced to the model usefully, or does it become an opaque tool failure? Should per-query errors be caught and reported inline?
+5. Is `PerplexityMessage` now imported correctly and used, or is there dead/unused typing?
+
+Return concise, evidence-backed findings with file/line references and concrete suggested fixes. Do NOT edit files. Review feedback only.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: [Read from: /Users/sofianebebert/workspace/sof-pi/plan.md, /Users/sofianebebert/workspace/sof-pi/progress.md]
+
+ADVERSARIAL REVIEW — Angle: Correctness & regressions
+
+Review target: commit b251cb1 in this repo (`git show b251cb1`), which modifies `extensions/perplexity/index.ts`, `extensions/perplexity/perplexity.ts`, `extensions/perplexity/README.md`, and `README.md`.
+
+Goal of the change: pi-subagents' `researcher` and `context-builder` builtin agents list `web_search` (and `researcher` also lists `fetch_content`, `get_search_content`) in their `tools:` frontmatter. Without `pi-web-access` installed, pi-subagents validates every listed tool name against the live tool registry and FAILS the run. This change registers three Perplexity-backed tools with those exact names to fix the subagent runs.
+
+Do NOT trust the commit message. Inspect the actual diff and the surrounding code yourself:
+- `git show b251cb1 -- extensions/perplexity/index.ts`
+- Read `extensions/perplexity/index.ts`, `extensions/perplexity/perplexity.ts` fully.
+- Read the `researcher` and `context-builder` agent frontmatter under `~/.pi/agent/npm/node_modules/pi-subagents/agents/` to confirm what tool names/params the children actually expect.
+- Check pi-subagents README around tool/extension validation (grep `~/.pi/agent/npm/node_modules/pi-subagents/README.md` for "unavailable", "tools:", "validates", "missing provider").
+
+Answer specifically:
+1. Do the registered tool NAMES (`web_search`, `fetch_content`, `get_search_content`) exactly match what the agent frontmatter references? Any casing/spacing mismatch that would still fail validation?
+2. Behavioral regressions: the old `perplexity_search` tool was removed. Is anything else in the repo (other extensions, prompts, skills, settings, docs) still referencing `perplexity_search` that would now break? grep the whole repo.
+3. Edge cases & hidden runtime failures: empty `queries` AND empty `query`; `queries` with blank/whitespace-only entries; `Promise.all` rejecting on one query (does it nuke the whole tool call?); `recencyFilter`/`domainFilter` hints silently ignored vs. honored; `maxTokens` passed as 0 or negative; `includeContent=false` path; abort/signal handling; the `fetch_content` path where Perplexity cannot actually fetch the URL.
+4. Does removing `perplexity_search` leave `StringEnum` or any other import unused in `index.ts`? Does the `/research` panel still work (it shares `synthesizeRecap` etc.)?
+5. Are the synthesized `details` objects consistent enough that pi's tool-result handling won't choke?
+
+Return concise, evidence-backed findings with file/line references and concrete suggested fixes. Do NOT edit files. This is review feedback only.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Research pi (the coding agent by earendil-works) extension capabilities relevant to building a background-terminal extension that spawns real shell processes and streams their output to the user.
+
+Focus on these questions using the pi docs at /Users/sofianebebert/.local/share/mise/installs/pi/0.84.1/pi/docs and examples at /Users/sofianebebert/.local/share/mise/installs/pi/0.84.1/pi/examples (read the actual files):
+
+1. Custom TUI components via ctx.ui.custom(): the full API — how to register a custom component, receive keyboard input, render output, and how the LLM/tool can open/focus/refresh it. Look in docs/tui.md and examples/extensions for any 'component', 'custom', 'panel', or 'term' examples (e.g. snake.ts, research-panel-style code).
+2. ctx.ui.setWidget / setStatus / setEditorText / notify — what each does and where it renders (footer vs above editor vs inline).
+3. registerTool parameter schema with typebox (Type.Object, StringEnum) and what execute() must return (content array, details).
+4. Lifecycle events best suited for owning long-lived child processes: session_start to spawn, session_shutdown to kill, tool_call/tool_result for streaming. Confirm the doc's warning about NOT spawning background resources in the factory (only in session_start).
+5. Whether pi's bundled deps include or recommend node-pty for pseudo-terminals, or whether child_process spawn is the pragmatic choice. Check examples for any pty/spawn usage.
+6. Any 'background process' or 'long-running command' example extension in examples/extensions.
+
+Cite doc file paths and example file paths with the specific API signatures. Return: the recommended mechanism to spawn+stream a shell, how to surface it in the TUI, lifecycle ownership pattern, and confidence + gaps. Do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/e2a89a62/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Scout the local pi package at /Users/sofianebebert/workspace/sof-pi to understand extension conventions so I can add a new 'background-terminals' extension that fits existing patterns.
+
+Report:
+1. The existing extension(s) under ./extensions/. For extensions/perplexity/index.ts (and perplexity.ts, research-panel.ts): the factory structure, which pi APIs are used, how it organizes tools/commands, how it uses ctx.ui (notify/status/setWidget/custom), how it registers tools and commands, code style (imports, typebox usage, naming). Include file paths and line ranges.
+2. How extensions are wired into the package: package.json 'pi.extensions' glob, .pi/extensions/ directory, and how a new extension directory ./extensions/background-terminals/index.ts would be discovered. Confirm whether ./extensions/*.ts globs index.ts files in subdirectories.
+3. The README.md Extensions section structure so the new extension can be documented in sync (per AGENTS.md).
+4. Any existing process/terminal/shell spawning patterns in the repo (grep for node-pty, child_process, spawn, pty, node-pty in node_modules availability, package.json deps).
+5. node_modules availability of @earendil-works/pi-tui, typebox, and any pty library. Check pnpm-lock.yaml for node-pty.
+6. Conventions: license, code style, ts strictness inferred from existing files.
+
+Return file paths + line ranges, the package.json extension glob behavior, README structure, and confidence. Do not edit anything.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/2e7b58a2/context.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Fetch and analyze this GitHub extension in full: https://github.com/davis7dotsh/my-pi-setup/tree/main/extensions/background-terminals
+I need to replicate its 'background terminal' functionality in my own pi package. Return a precise inventory:
+
+1. File structure: list every file in extensions/background-terminals/ and its purpose.
+2. For the main entry/index file: the exact default-export factory signature, which pi APIs it calls (pi.on, pi.registerTool, pi.registerCommand, pi.registerShortcut, pi.registerFlag, ctx.ui.*), and which lifecycle events it subscribes to.
+3. Every custom tool it registers: name, description, parameters schema (typebox shapes), and what execute() returns.
+4. Every custom command: name, description, args, handler behavior.
+5. How it actually runs a 'terminal' in the background: does it spawn node-pty / child_process / a shell? How does it capture stdout/stderr? How does it let the LLM send input or read output? How are terminal sessions identified/stored (id map)? How is output buffered/sized?
+6. How output is surfaced to the user in the TUI: custom component (ctx.ui.custom), widget, status bar, command panel? Any screenshots described in README.
+7. Dependencies in package.json (e.g. node-pty) and any setup notes.
+8. The exact README content and any commands/keyboard shortcuts users invoke.
+
+Read the raw file contents from GitHub (use the raw.githubusercontent.com URLs for davis7dotsh/my-pi-setup/main/extensions/background-terminals/<file>, and the GitHub API for the directory listing). Quote the actual code for the key parts (factory, tool registration, terminal spawning). Cite source URLs.
+Return: file tree, full tool/command inventory, terminal backend mechanism, TUI surfacing mechanism, dependencies, and confidence level.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/f25e630c/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Fetch and analyze this GitHub extension in full: https://github.com/davis7dotsh/my-pi-setup/tree/main/extensions/background-terminals
+I need to replicate its 'background terminal' functionality in my own pi package. Return a precise inventory:
+
+1. File structure: list every file in extensions/background-terminals/ and its purpose.
+2. For the main entry/index file: the exact default-export factory signature, which pi APIs it calls (pi.on, pi.registerTool, pi.registerCommand, pi.registerShortcut, pi.registerFlag, ctx.ui.*), and which lifecycle events it subscribes to.
+3. Every custom tool it registers: name, description, parameters schema (typebox shapes), and what execute() returns.
+4. Every custom command: name, description, args, handler behavior.
+5. How it actually runs a 'terminal' in the background: does it spawn node-pty / child_process / a shell? How does it capture stdout/stderr? How does it let the LLM send input or read output? How are terminal sessions identified/stored (id map)? How is output buffered/sized?
+6. How output is surfaced to the user in the TUI: custom component (ctx.ui.custom), widget, status bar, command panel? Any screenshots described in README.
+7. Dependencies in package.json (e.g. node-pty) and any setup notes.
+8. The exact README content and any commands/keyboard shortcuts users invoke.
+
+Read the raw file contents from GitHub. Use the GitHub API: https://api.github.com/repos/davis7dotsh/my-pi-setup/contents/extensions/background-terminals to list the directory, then fetch each file from https://raw.githubusercontent.com/davis7dotsh/my-pi-setup/main/extensions/background-terminals/<filename>. Quote the actual code for the key parts (factory, tool registration, terminal spawning). Cite source URLs.
+Return: file tree, full tool/command inventory, terminal backend mechanism, TUI surfacing mechanism, dependencies, and confidence level.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/c9218737/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Research the current state of Effect v4 (the TypeScript effect system library by Effect-TS). It is in beta as of 2025/2026 (the reference uses `effect@^4.0.0-beta.99` and `@effect/tsgo@^0.24.2`). I need grounded trade-offs for adopting Effect v4 in a small pi coding-agent extension that manages background shell processes.
+
+Find authoritative, current (2025/2026) sources — the official Effect docs (effect.website / effect.website/docs), the Effect blog, the effect package on npm, the Effect-TS/effect GitHub repo, and any recent migration/beta-stability reports or issue threads.
+
+Answer concretely:
+1. What is Effect v4? How does it differ from v3 (the stable line)? What are the actual breaking API changes a v3 user would hit (renamed APIs, removed modules)? The reference guide warns 'Effect v3 API names don't exist — Effect.fork, Effect.async, Either, Layer.scoped, Context.Tag. Check every API against effect-v4-notes.md'. Confirm which of these actually changed.
+2. Beta status and stability: is v4 beta considered production-ready by the maintainers? What is the release cadence / how often do beta versions break? Any known stability issues, ecosystem split (which @effect/* packages are v4-ready vs not), or migration tooling?
+3. @effect/tsgo and @effect/language-service: what are they, why are they needed (the reference pins @effect/tsgo@^0.24.2 in devDependencies with a `prepare: effect-tsgo patch` script, and enables the @effect/language-service TS plugin)? What do they patch/provide and what happens without them?
+4. TypeScript version coupling: the reference requires typescript@^7.0.2. Why would Effect v4 need TS7 specifically? Is that a hard requirement or a recommendation? What TS features does it rely on?
+5. Bundle/dependency weight: how large is the `effect` package, how many transitive deps, and is there a runtime cost (the effect runtime, fibers, scheduling) for a small extension that mostly does child_process spawn + a Map of state?
+6. Learning curve and idiom mismatch: Effect is a full effect system (Layer/Service/Effect.gen/Deferred/Fiber/Scope/FiberSet). For an extension whose async core is a Map of child processes + AbortController + setTimeout + a Set of listeners, how much of Effect's machinery actually earns its keep vs. being ceremony? Quote any maintainer guidance on when Effect is overkill.
+7. Any official Effect guidance or blog post specifically about v4, the beta roadmap, and expected stable release timing.
+
+Cite source URLs with the specific claims. Return: what v4 is, beta stability assessment, the toolchain coupling (tsgo/language-service/TS7), dependency weight, and an honest assessment of whether it earns its keep for THIS use case (background process manager). Include confidence level and gaps. Do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/31fe3345/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Scout the pi package at /Users/sofianebebert/workspace/sof-pi to quantify the cost of adopting Effect v4 (effect@^4.0.0-beta.99, @effect/tsgo, typescript@^7) as a dependency for a new extensions/background-terminals/ extension.
+
+Report with file paths + line ranges:
+1. Current TypeScript setup: is there a root tsconfig.json? What TS version is in use (check package.json, pnpm-lock.yaml, node_modules/typescript/package.json, any mise.toml or .tool-versions)? Would bumping to typescript@^7 affect anything else in the repo? Are there other .ts files compiled or just run via jiti (pi loads extensions via jiti without compilation)?
+2. Current dependency philosophy: read package.json fully. List all current deps (peer + the override in pnpm). Is there ANY existing Effect usage anywhere in the repo (grep node_modules/@effect, grep 'effect' in extensions/ skills/ scripts/)? What does the perplexity extension depend on at runtime (only @earendil-works/* + typebox + node builtins)?
+3. Package manager: pnpm. How would adding `effect` + `@effect/tsgo` as deps of a sub-extension work — is there a per-extension package.json pattern (the reference has extensions/background-terminals/package.json with its own deps + a `prepare: effect-tsgo patch` script)? Does this repo's existing extension (perplexity) use a per-extension package.json, or rely on the root? Check extensions/perplexity/ for a package.json.
+4. Build/test tooling: does the repo have any `npm run check`/tsc script at root? Any test runner? The reference extension uses `node --test --experimental-strip-types`. Is that pattern compatible with this repo's existing tests/ directory and scripts/?
+5. How extensions are loaded: confirm pi loads extensions via jiti (transpiles TS on the fly, no build step). If so, does the @effect/language-service TS plugin and @effect/tsgo patch actually matter at runtime, or only for editor/type-checking? i.e. could you ship the extension with Effect and skip tsgo/language-service entirely and still run?
+6. Risk surface: what else in the repo would a `typescript@^7` bump or an `effect` install touch? Any lockfile constraints, CI, formatting (prettier), or other .ts consumers that assume a specific TS major version?
+
+Return: current TS version + tooling, whether Effect is used anywhere, the per-extension-package.json viability, whether tsgo/language-service are runtime-required or just editor niceties under jiti, and the blast radius of a typescript@^7 bump. Include confidence and gaps. Do not edit anything.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/4354ef24/context.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Research the current state of Effect v4 (the TypeScript effect-system library by Effect-TS). It is in beta as of 2025/2026 (a reference pi extension pins `effect@^4.0.0-beta.99`, `@effect/tsgo@^0.24.2`, `typescript@^7.0.2`). I need grounded trade-offs for adopting Effect v4 in a small pi coding-agent extension that manages background shell processes (spawn + a Map of process state + AbortController + setTimeout).
+
+Use current (2025/2026) authoritative sources: the official Effect docs (effect.website/docs), the Effect blog, the `effect` package on npm, the Effect-TS/effect GitHub repo, and recent issue/release threads.
+
+Answer concretely with citations:
+1. What is Effect v4 and how does it differ from the stable v3 line? Confirm which APIs actually changed — the reference warns that v3 names like `Effect.fork`, `Effect.async`, `Either`, `Layer.scoped`, `Context.Tag` no longer exist in v4. Verify each against current v4 docs.
+2. Beta stability: do the maintainers treat v4 beta as production-ready? Release cadence, how often betas break, any ecosystem split (which @effect/* packages are v4-ready vs lagging), and migration tooling.
+3. @effect/tsgo and @effect/language-service: what are they, why needed (the reference has `prepare: effect-tsgo patch` and enables the @effect/language-service TS plugin). What do they patch/provide and what breaks without them?
+4. TypeScript@^7 coupling: why would Effect v4 require TS7 specifically? Is it a hard requirement or a recommendation, and what TS7 features does it rely on?
+5. Dependency weight: size of the `effect` package, transitive dep count, and runtime overhead (effect runtime, fibers, scheduling) for a small extension.
+6. Idiom fit: Effect is a full effect system (Layer/Service/Effect.gen/Deferred/Fiber/Scope/FiberSet). For an async core that is a Map of child processes + AbortController + setTimeout + a Set of listeners, how much of Effect earns its keep vs. ceremony? Quote any maintainer guidance on when Effect is overkill.
+7. Any official Effect blog/roadmap post on v4 and expected stable-release timing.
+
+Return: what v4 is, beta stability, toolchain coupling (tsgo/language-service/TS7), dependency weight, and an honest assessment of whether Effect earns its keep for THIS use case (background process manager). Confidence + gaps. Do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/workspace/sof-pi/.pi/subagents/artifacts/outputs/5d22fd79/research.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+<file name="/var/folders/zy/b9js81z5673b7rfdsyc3pkrh0000gn/T/pi-subagent-qwEBQa/task.md">
+Task: Implement a new pi extension `background-terminals` in the local pi package at /Users/sofianebebert/workspace/sof-pi, porting the reference extension at /tmp/bgterm-ref (already fetched) from Effect v4 to PLAIN TypeScript with ZERO new dependencies (no `effect`, no `@effect/tsgo`, no node-pty, no typescript bump). Match the style of the existing extension at /Users/sofianebebert/workspace/sof-pi/extensions/perplexity/ (tabs, typebox `Type.Object`, `@earendil-works/pi-ai` `StringEnum`, `@earendil-works/pi-tui` components).
+
+## Reference files (read these first)
+The reference is fully fetched at /tmp/bgterm-ref/:
+  index.ts  src/domain.ts  src/manager.ts  src/output.ts  src/prompt.ts  src/result-delivery.ts  src/runtime.ts  src/ui/ps.ts  src/ui/output-view.ts
+Read ALL of them before writing. The local repo conventions are in /Users/sofianebebert/workspace/sof-pi/extensions/perplexity/ (index.ts, research-panel.ts, perplexity.ts).
+
+## Architecture: what changes vs the reference
+The reference is built on Effect v4 (`ManagedRuntime`, `Context.Service`, `Layer`, `Deferred`, `FiberSet`, `Scope`, `Effect.gen`, `Effect.timeout`, `Effect.uninterruptible`, `Effect.addFinalizer`). You will reproduce the SAME SEMANTICS in plain TS. The async core is small; the reference's own guide concedes the Node stream plumbing is already plain callbacks and Effect only wraps coordination.
+
+### Files that are VERBATIM (copy from /tmp/bgterm-ref, do not change logic):
+- `extensions/background-terminals/src/output.ts` — OutputBuffer (plain TS already). Imports `OutputView` from `./domain.ts`. Copy as-is.
+- `extensions/background-terminals/src/result-delivery.ts` — deferred delivery map (plain TS already). Copy as-is.
+- `extensions/background-terminals/src/ui/output-view.ts` — sanitizeText / buildOutputLines / createOutputLineCache (plain TS, imports `wrapTextWithAnsi` from `@earendil-works/pi-tui`). Copy as-is.
+- `extensions/background-terminals/src/ui/ps.ts` — the /ps two-stage overlay (dashboard + detail view). Plain TS; depends only on `TerminalReadModel` (interface from manager.ts), `domain.ts`, `output-view.ts`, and pi types. Copy as-is EXCEPT it imports `KeybindingsManager, Theme` from `@earendil-works/pi-coding-agent` and `Component, TUI` + `truncateToWidth, visibleWidth` from `@earendil-works/pi-tui` — keep those imports.
+
+### Files to PORT (Effect -> plain TS):
+
+#### `src/domain.ts`
+- Keep `TerminalStatus`, `OutputView`, `TerminalSnapshot`, `formatElapsed`, `formatExit` verbatim.
+- DROP `import { Data } from "effect"`. Replace the three `Data.TaggedError` classes with plain subclasses of `Error` whose `.name` is set: `class SpawnError extends Error { constructor(readonly message: string) { super(message); this.name = "SpawnError"; } }` and likewise `ConcurrencyLimitError`, `UnknownTerminalError`. Keep the same exported names so prompt.ts/manager.ts imports work.
+
+#### `src/runtime.ts` — DO NOT CREATE. Delete the concept entirely.
+The reference's runtime.ts only bridges Effect (`ManagedRuntime.make`, `runTool`). In plain TS the manager is constructed directly; tool handlers call async manager methods directly. No runtime file.
+
+#### `src/manager.ts` — the core port. Reproduce these invariants (from the reference guide pitfalls, MUST be preserved):
+1. Concurrency cap MAX_RUNNING=8; MAX_TRACKED=32 settled retained, prune oldest-settled-first, NEVER prune running. Synchronous reservation: check `runningCount() + reserved >= MAX_RUNNING` and `reserved++` BEFORE any await; decrement in a `finally`. Reject disposed with SpawnError.
+2. spawn(shell, args, { cwd, env: process.env, stdio: ["ignore","pipe","pipe"], detached: process.platform !== "win32" }). POSIX: `/bin/sh -c`; Windows: `cmd.exe /d /s /c`. stdin IGNORED (no input surface). `child.stdout.setEncoding("utf8")` (StringDecoder is multibyte-safe).
+3. killTree(child, signal): POSIX `process.kill(-pid, signal)` (process group), fall back to `child.kill(signal)`; Windows `taskkill /pid /T [/F]`.
+4. terminateChild(child, closed, onSignal): `onSignal()` + killTree(SIGTERM); `await waitForClose(child, closed, 2000)` (FORCE_KILL_AFTER_MS); if not closed killTree(SIGKILL); `await waitForClose(child, closed, 500)`. `waitForClose` = if `closed()` resolve immediately, else `new Promise(res => { child.once("close", () => res()); })` raced with a timeout that resolves undefined.
+5. settle(entry) is IDEMPOTENT: `if (snapshot.status !== "running") return;`. Set `settledAt=Date.now()`. status = killSignaled ? "killed" : processErrored ? "failed" : exitCode===0 ? "done" : "failed". Record into `settledHistory` (small tombstone map capped MAX_SETTLED_HISTORY=128 for truthful kill reports after pruning). Compute `consumed = (killInterest.get(id) ?? 0) > 0` BEFORE resolving the settle promise (so kill waiters see the interest that existed). Resolve `entry.settledResolve()` (the Deferred replacement). `notify(id)`. If `!disposed` call `onSettled?.(snap, consumed)` in try/catch. Then pruneSettled().
+6. settleAfterFlush(entry): if `entry.settling || status!=="running"` return; set `entry.settling=true`; fire-and-forget: `runCleanup(async () => { await flushSpillStreams(entry); settle(entry); })`.
+7. scheduleExitCleanup(entry): if `entry.exitCleanupStarted` return; set it; `runCleanup(async () => { await sleep(SETTLE_GRACE_MS=1000); if (entry.snapshot.status==="running" && !entry.stdioClosed) await withTimeoutVoid(closeEntryScope(entry), STOP_TIMEOUT_MS=5000); })`.
+8. flushSpillStreams(entry): end each spill WriteStream (`stream.end(done)` in a Promise), race all with SPILL_FLUSH_TIMEOUT_MS=1500; on timeout set both buf.spillPath=undefined and `snapshot.errorText ??= "Full-log spill flush timed out; full output may be incomplete"`.
+9. closeEntryScope(entry): the ONE teardown path (idempotent via `entry.closing` flag). If already closing, return the in-flight promise. Body: `await terminateChild(child, () => entry.stdioClosed, () => { entry.killSignaled ||= !entry.exited && entry.snapshot.status === "running"; }); if (status==="running") await withTimeoutVoid(entry.settledPromise, SETTLE_GRACE_MS=1000); if (status==="running" && !entry.settling) { if (!entry.stdioClosed) snapshot.errorText ??= "stdio did not close after termination; output may be incomplete"; entry.settling=true; await flushSpillStreams(entry); settle(entry); }`.
+10. kill(ids): validate all known first (UnknownTerminalError listing known ids). unique = [...new Set(ids)]. running = those with status running. addKillInterest(runningIds) BEFORE signaling. For each running entry, fire-and-forget `runCleanup(withTimeoutVoid(closeEntryScope(entry), 5000))` (this is killEntry). `await Promise.all(running.map(e => e.settledPromise))`. Build KillResult per id: status from snapshot or settledHistory tombstone; wasRunning = runningIds.includes(id); killed = wasRunning && status==="killed"; exit = formatExit(snapshot) or history.exit. `finally` { releaseKillInterest(runningIds); pruneSettled(); }.
+11. disposeAll(): set `disposed=true`; snapshot all entries; `entries.clear()`; `await Promise.all(all.map(e => withTimeoutVoid(closeEntryScope(e), 5000)))`; `await withTimeoutVoid(awaitCleanup(), 5000)` (wait in-flight fire-and-forget cleanup); `fs.rmSync(spillDir, {recursive:true, force:true})`; notify(). This is the safety net called from session_shutdown.
+12. requestKill(id) (UI `x`): fire-and-forget `runCleanup(withTimeoutVoid(closeEntryScope(entry), 5000))` — NOT marked consumed (result still flows back to model as follow-up).
+13. Effect.addFinalizer safety net is replaced by: disposeAll() called explicitly from session_shutdown in index.ts (and as a guard). Keep a `disposed` flag checked in start().
+14. runCleanup(p): `const tracked = p.then(() => {}, () => {}); cleanupTasks.add(tracked); tracked.finally(() => cleanupTasks.delete(tracked));` — fire-and-forget, self-removing. awaitCleanup() = `Promise.all([...cleanupTasks])`.
+15. spill: resolveSpillDir() = `path.join(os.tmpdir(), "pi-background-terminals")` mkdir 0o700 + mkdtemp `session-` 0o700. Per stream `fs.createWriteStream(spillPath, {flags:"a", mode:0o600})`, cap MAX_SPILL_BYTES_PER_STREAM=256MB; on error/cap clear buf.spillPath and set bounded errorText. Spill callback receives chunk in order before eviction. `entry.spillStreams = [stdoutFile, stderrFile].filter(Boolean)`.
+16. Listeners: `listeners:Set`, `idListeners:Map<string,Set>`, notify wraps each in try/catch. `view.subscribe/subscribeTo` return unsubscribe fns.
+17. Entry shape (plain TS): replace `settled: Deferred` with `settledPromise: Promise<void>` + `settledResolve: () => void` created via `let r; const p = new Promise<void>(res => r = res); entry.settledResolve = r; entry.settledPromise = p;`. Replace `scope: Scope.Closeable` with the `closing` flag + `closingPromise` for idempotent closeEntryScope.
+18. The start() body (spawn + setEncoding + on('data'/'error'/'exit'/'close') + entries.set) must be SYNCHRONOUS up to `entries.set(id, entry)` (no await between the reservation check and entries.set) so an abort/teardown can't leave a live child no entry knows about. The stream handlers mutate buffers and call notify. The 'exit' handler records code/signal and calls scheduleExitCleanup; the 'close' handler sets stdioClosed and calls settleAfterFlush; the 'error' handler sets processErrored+errorText and settleAfterFlush.
+
+Export: `class TerminalManager` with async methods `start(options): Promise<TerminalSnapshot>`, `status(id): Promise<TerminalSnapshot>`, `kill(ids): Promise<ReadonlyArray<KillResult>>`, `list(): TerminalSnapshot[]`, `disposeAll(): Promise<void>`, and `view: TerminalReadModel`. Export `MAX_RUNNING`, `MAX_TRACKED`, `RETAINED_PER_STREAM`, `KillResult`, `TerminalReadModel`, `StartOptions`. (No `TerminalManagerShape` interface needed if you make the class the type; but keep an exported `TerminalReadModel` interface for ps.ts.)
+
+#### `src/prompt.ts`
+Copy verbatim from /tmp/bgterm-ref. It imports `formatElapsed, formatExit, TerminalSnapshot` from `./domain.ts`, `MAX_RUNNING, KillResult` from `./manager.ts`, and `DEFAULT_MAX_BYTES, DEFAULT_MAX_LINES, formatSize, truncateTail` from `@earendil-works/pi-coding-agent` (ALL confirmed exported in 0.84.1). Keep as-is.
+
+#### `index.ts`
+Port from /tmp/bgterm-ref/src/index.ts but remove Effect:
+- NO `TerminalManagerLive`, NO `createTerminalRuntime`, NO `runTool`, NO `getManager()` runtime indirection.
+- Factory `export default function (pi: ExtensionAPI)`: construct `const manager = new TerminalManager()` LAZILY in `session_start` (NOT in the factory — pi docs warn: do not spawn/start background resources in the factory; defer to session_start). Store `manager`, `sessionContext`, `ui` captured from `session_start` ctx.
+- `manager.view.setOnSettled(onSettled)`. `manager.view.subscribe(() => updateWidget(manager))`. Call `updateWidget(manager)` once.
+- onSettled(snap, consumed): if consumed, `resultDelivery.consume([snap.id]); return;` else `resultDelivery.defer({...snap, stdout:{...snap.stdout}, stderr:{...snap.stderr}})` (copy, not live); `if (sessionContext?.isIdle()) flushResults();`
+- `pi.on("agent_settled", flushResults)`.
+- `pi.on("session_start", (e, ctx) => { sessionContext=ctx; if (ctx.hasUI) ui=ctx.ui; manager resolves... })` — actually construct manager here: `manager ??= new TerminalManager(); manager.view.setOnSettled(onSettled); unsubStatus?.(); unsubStatus = manager.view.subscribe(()=>updateWidget(manager)); updateWidget(manager);`
+- `pi.on("session_shutdown", async () => { sessionContext=undefined; resultDelivery.clear(); unsubStatus?.(); unsubStatus=undefined; try{ui?.setWidget(WIDGET_KEY, undefined);}catch{} widgetRunning=0; ui=undefined; const m=manager; manager=undefined; await m?.disposeAll(); })`.
+- The 4 tools `bg_start/bg_status/bg_list/bg_kill` — keep parameters (typebox Type.Object), descriptions, promptSnippet/promptGuidelines, and execute() bodies from the reference BUT call `await manager.start(...)` / `await manager.status(...)` / `manager.list()` / `await manager.kill(...)` directly (no runTool). Throw plain `Error` for failures (SpawnError/ConcurrencyLimitError/UnknownTerminalError are Errors, fine to throw). bg_kill: after `await manager.kill(ids)` call `resultDelivery.consume(ids)`. Use `signal` from execute's `ctx.signal` where helpful but start/kill are short.
+- cwd resolution in bg_start: `path.resolve(ctx.cwd, params.working_dir ?? ".")`; validate `fs.existsSync(cwd) && fs.statSync(cwd).isDirectory()` else throw Error. title `params.title.trim().slice(0,80) || "terminal"`.
+- `registerMessageRenderer("background-terminal-result", ...)` for a collapsed preview (icon by status, header line, short tail). Mirror the reference's renderer shape; if unsure, a simple Text-based renderer is acceptable but include the status icon + id + title + first line. (Keep `getMarkdownTheme`/`Markdown`/`Text` imports as the reference does.)
+- `/ps` command: `registerCommand("ps", { description: "List and inspect background terminals", handler: async (args, ctx) => { if not TUI notify; else await openTerminalPicker(ctx, manager.view); })`. Non-TUI: `ctx.ui.notify` a plain listing via `describeTerminal` over `manager.view.list()`, or just the empty-state notify.
+- WIDGET_KEY="background-terminals"; updateWidget only touches setWidget when running count changes (keep the `widgetRunning` memoization).
+
+## Wiring + docs (do all in this same changeset)
+1. `/Users/sofianebebert/workspace/sof-pi/package.json`: add `"./extensions/background-terminals/index.ts"` to the `pi.extensions` array (after the perplexity entry). The existing `"./extensions/*.ts"` glob does NOT descend into subdirectories, so this explicit entry is REQUIRED.
+2. Create `/Users/sofianebebert/workspace/sof-pi/skills/background-terminals/SKILL.md` copied from the reference at https://raw.githubusercontent.com/davis7dotsh/my-pi-setup/main/skills/background-terminals/SKILL.md — fetch it (curl) and place it. It has frontmatter name+description already.
+3. Update `/Users/sofianebebert/workspace/sof-pi/README.md` (house rule from AGENTS.md: keep README in sync in the SAME changeset):
+   - Add a row to the Skills table (after the tldraw-offline row, line ~31) for `background-terminals` with the trigger description pulled from the SKILL.md frontmatter `description`.
+   - Add an `### Background Terminals (\`extensions/background-terminals/\`)` subsection under `## Extensions` (after the Perplexity subsection, before `## Installed Packages`). Describe: 4 LLM tools (bg_start/bg_status/bg_list/bg_kill) for long-running background shell processes (dev servers, watchers, builds), stdin-ignored fire-and-forget with completion notification, `/ps` overlay to inspect/kill, a widget above the editor while terminals run. Link to nothing external (it's bundled).
+
+## Constraints / style
+- Tabs for indentation (match perplexity). No `as any`. No Effect imports anywhere. No node-pty. No per-extension package.json (zero new deps, like perplexity).
+- Imports: `@earendil-works/pi-coding-agent` (ExtensionAPI, ExtensionContext, ExtensionUIContext, getMarkdownTheme, formatSize, truncateTail, truncateHead, DEFAULT_MAX_BYTES, DEFAULT_MAX_LINES, KeybindingsManager, Theme), `@earendil-works/pi-ai` (StringEnum if needed), `@earendil-works/pi-tui` (Component, Focusable, TUI, Input, Markdown, Text, matchesKey, truncateToWidth, visibleWidth, wrapTextWithAnsi), `node:child_process`, `node:fs`, `node:os`, `node:path`. All confirmed available in this repo's node_modules.
+- Keep the reference's doc comments (they encode the race invariants).
+
+## Verification (do what's possible without a TS compiler)
+There is NO tsc in this repo (extensions load via jiti at runtime). So:
+1. Confirm every imported symbol exists: cross-check against node_modules/@earendil-works/pi-coding-agent/dist/core/extensions/types.d.ts (sendMessage :867, registerMessageRenderer :865, setWidget :96-97, registerTool/registerCommand/on), dist/core/tools/index.d.ts (formatSize/truncateTail/truncateHead/DEFAULT_MAX_BYTES/DEFAULT_MAX_LINES), dist/modes/interactive/theme/theme.d.ts (getMarkdownTheme), and @earendil-works/pi-tui/dist/index.d.ts (matchesKey, wrapTextWithAnsi, truncateToWidth, visibleWidth).
+2. Confirm `KeybindingsManager` has `.matches(data, binding)` and `.getKeys(binding)` and `TUI` has `.terminal.rows` + `.requestRender()` (used by ps.ts). Check dist type defs.
+3. Confirm `ctx.ui.custom(component, {overlay, overlayOptions})` signature and `ExtensionCommandContext` have what ps.ts needs.
+4. Light syntax sanity: for each new .ts file run `node --experimental-strip-types --check <file>` if node supports it (node v24 is installed; `node --check` won't parse TS, but `node --experimental-strip-types` may). If unavailable, skip.
+5. List the final file tree with `find extensions/background-terminals skills/background-terminals -type f` and `git status`/`git diff --stat`.
+
+Return: the full file tree created, the package.json diff, the README diff, any API-existence confirmations you did, any deviations from this spec with reasons, residual risks, and confidence. Do not commit (leave changes unstaged for review).
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files, validation-output
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+</file>
+
+---
+
+Task: Review a newly-implemented pi extension at /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/ for correctness. It is a plain-TypeScript port (zero new deps, no Effect, no node-pty) of a reference extension originally built on Effect v4. The reference is at /tmp/bgterm-ref/ for comparison.
+
+Focus on CORRECTNESS of the plain-TS port of the Effect semantics. Read these files in full:
+- extensions/background-terminals/index.ts (factory, 4 tools, /ps, lifecycle, sendMessage completion)
+- extensions/background-terminals/src/manager.ts (THE core port — 871 lines)
+- extensions/background-terminals/src/domain.ts, output.ts, prompt.ts, result-delivery.ts, ui/ps.ts, ui/output-view.ts
+Compare against /tmp/bgterm-ref/src/manager.ts (the original Effect implementation) and /tmp/bgterm-ref/index.ts.
+
+Verify these race-safety invariants are faithfully ported (these are the load-bearing ones; flag any that are wrong or missing):
+1. Concurrency cap: synchronous reservation BEFORE any await — `reserved++` between the check and spawn must not have an await gap. Parallel tool calls must not race past MAX_RUNNING=8.
+2. Idempotent settle: `if (status !== "running") return;` — kill vs exit vs error races resolved by whoever lands first. Exactly one settle per entry.
+3. `consumed` flag: computed from killInterest BEFORE resolving the settle promise, so kill waiters see the interest that existed when settlement won. (Reference computes `consumed` then `Deferred.doneUnsafe`.)
+4. killSignaled: set in the same synchronous step that sends SIGTERM, ONLY when the process is still running and hasn't exited. A natural exit that won the race keeps done/failed, not killed.
+5. kill(ids): validates ALL ids known first (UnknownTerminalError listing known ids); addKillInterest BEFORE signaling; awaits every running entry's settled promise; builds KillResult using snapshot OR settledHistory tombstone (so a pruned entry still reports truthfully); releases interest + prunes in finally.
+6. closeEntryScope idempotent (closing flag / closingPromise) — the ONE teardown path for kill, requestKill, pruning, disposeAll. terminateChild: SIGTERM → wait close (2s) → SIGKILL → wait close (500ms).
+7. settleAfterFlush: flushes spill streams (bounded 1.5s) BEFORE settle, so the completion message's spill path is valid. `settling` flag prevents double settle.
+8. scheduleExitCleanup: after shell 'exit', if stdio hasn't closed within 1s grace, close the scope to reap descendants holding the pipes.
+9. disposeAll: disposed=true; snapshot+clear entries; bounded teardown (5s each); wait in-flight cleanup (5s); rm spill dir; notify. Safety net for session_shutdown.
+10. 'data' handlers use setEncoding('utf8'); push returns false → pause stream (backpressure). 'error' handler sets processErrored + settleAfterFlush. 'exit' records code/signal + scheduleExitCleanup. 'close' sets stdioClosed + settleAfterFlush.
+11. The start() body is synchronous from spawn() through entries.set() (no await gap) so an abort/teardown can't orphan a live child with no entry.
+12. index.ts: manager constructed in session_start (NOT factory); disposed in session_shutdown. onSettled defers a COPY (not live snapshot). flushResults drains (clears map) — idempotent. deliverAs:"followUp" + triggerTurn:true.
+
+Also check:
+- Any leftover Effect API usage (Deferred, Scope, Effect.gen, FiberSet, Layer, ManagedRuntime) that wasn't ported.
+- Type errors you can spot by eye (missing imports, wrong arity, `this` issues in callbacks, unhandled promise rejections, listeners never removed).
+- The /ps overlay (ui/ps.ts) was copied verbatim — confirm its imports resolve against the plain-TS manager (it imports TerminalReadModel type from manager.ts; confirm that interface is still exported with the same shape).
+- prompt.ts imports MAX_RUNNING and KillResult from manager.ts — confirm those are exported.
+- The setWidget factory signature: should be (tui, theme) => component, not (theme). The worker said it fixed this — verify.
+- bg_start cwd validation: path.resolve + existsSync + isDirectory, else throw.
+- bg_kill calls resultDelivery.consume(ids) after manager.kill returns.
+
+The installed pi is 0.84.1. Confirm against /Users/sofianebebert/workspace/sof-pi/node_modules/@earendil-works/pi-coding-agent/dist/core/extensions/types.d.ts that every pi API used exists. Note: this pi version has NO agent_settled event (only agent_start/agent_end) — the worker used agent_end instead. Assess whether that's acceptable given flushResults is idempotent + the isIdle fast-path exists.
+
+Return findings as: (a) blocking correctness issues with file:line and the fix, (b) non-blocking issues, (c) confirmation of the invariants that ARE correct, (d) verdict. Do NOT edit files — this is review only. Be specific with file paths and line numbers.
+
+---
+
+Task: ADVERSARIAL correctness review of a plain-TypeScript port of an Effect-v4-based pi extension. The extension is at /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. The ORIGINAL Effect implementation (the source of truth for semantics) is NOT in the repo — read it from /tmp first by fetching, OR rely on the in-code comments which encode the invariants. Actually: the reference was at /tmp/bgterm-ref but may be deleted. Instead, judge the port against the RACE INVARIANTS documented in the code comments and against general concurrency-correctness principles.
+
+Read in full: extensions/background-terminals/src/manager.ts (871 lines, THE core), src/domain.ts, src/result-delivery.ts, index.ts. Skim src/output.ts.
+
+Your job is to find SUBTLE BUGS a previous reviewer missed. The previous reviewer found NO blocking issues and confirmed 12 invariants. Be skeptical and adversarial — assume the previous reviewer was too trusting. Specifically hunt for:
+
+1. ORDERING bugs in settle(): is `consumed` really computed before `settledResolve()` resolves the promise? Trace the exact lines. Does `notify()` happen before or after `onSettled`? Could a kill waiter's `finally` (which calls releaseKillInterest) run between `consumed` being computed and `onSettled` seeing it, due to Promise microtask scheduling?
+2. The `start()` synchronous guarantee: it's declared `async` but must not `await` between the concurrency check and `entries.set`. Confirm there is genuinely NO `await` (not even an implicit one via `for await`, `Promise.all`, etc.) in that span. If there's an await anywhere in start() before entries.set, that breaks the invariant.
+3. `closeEntryScope` idempotency: the `closing`/`closingPromise` pattern. Could two concurrent callers both pass the `if (entry.closing) return entry.closingPromise` check before either sets `entry.closing = true`? (JS is single-threaded so probably not, but verify there's no await between the check and set.) Is `closingPromise` assigned synchronously?
+4. `kill()` race: addKillInterest is called before the signaling loop. But the signaling is fire-and-forget via runCleanup. Is there any window where the process could exit naturally, settle (consumed=false because interest not yet added?), and THEN addKillInterest takes effect? Trace the exact ordering of addKillInterest vs the first SIGTERM.
+5. `disposeAll` interaction with in-flight `start()`: the reference had an `Effect.uninterruptible` guarantee. The port claims start() is synchronous so an abort can't orphan a child. But what if disposeAll() runs (sets disposed=true, clears entries) WHILE a start() is mid-flight between spawn() and entries.set? The child is spawned, entries.set never happens (entries cleared), and the child is orphaned. Does the port's post-spawn `if (this.disposed) { closeEntryScope; return SpawnError }` check actually run synchronously after spawn and before entries.set? Verify the exact sequence.
+6. `scheduleExitCleanup` + `settleAfterFlush` + `closeEntryScope` can all be in flight for one entry. Are there any paths where settle() is called twice (breaking idempotency) or where the entry never settles (leak)?
+7. `runCleanup` self-removal: `tracked.finally(() => this.cleanupTasks.delete(tracked))`. If the same promise is added twice, would the second `.finally` double-delete? (It's a Set so delete is idempotent, but verify.) Could `awaitCleanup()` race with a task adding itself?
+8. The `agent_end` vs `agent_settled` substitution in index.ts: agent_end fires per low-level run, and pi may auto-retry/auto-compact after it. Could a deferred result be delivered DURING a retry window, causing the model to see it twice or at the wrong time? Is the `isIdle()` guard sufficient?
+9. Backpressure: `child.stdout.on('data', chunk => { if (!buf.push(chunk)) child.stdout.pause() })`. Is anything ever RESUMING the stream? If push returns false (spill can't keep up), the stream pauses forever and output is silently truncated. Check for any `.resume()` call.
+10. Memory: do `child.once(...)` listeners get removed? Does the `settledPromise` retain the entry forever? Are completed entries pruned correctly (oldest-settled-first, never running)?
+
+Return CONCISE findings: for each issue, file:line, why it's a bug, severity (blocking/non-blocking), and the fix. If an invariant is actually correct, do NOT list it — only list problems or genuine near-misses. End with a verdict: ship / fix-then-ship / needs-rework. Do NOT edit files.
+
+---
+
+Task: TYPE-SAFETY and RUNTIME-ROBUSTNESS review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. This extension is loaded by pi via jiti (esbuild-based TS transpiler) at runtime with NO compile step. A PREVIOUS review pass missed a real bug: domain.ts used TypeScript parameter properties (`constructor(readonly message: string)`) which node's `--experimental-strip-types` CANNOT transform (only strips, doesn't transpile) — it only surfaced at import time, and `node --check` gave a false pass. The bug was fixed (plain constructors now).
+
+Your job: find OTHER TypeScript constructs in these files that are either (a) not strip-safe under jiti/esbuild at runtime, (b) type-unsafe in ways that could crash at runtime, or (c) subtly wrong vs the installed pi 0.84.1 API surface.
+
+Read ALL files: extensions/background-terminals/index.ts, src/{manager,domain,output,prompt,result-delivery}.ts, src/ui/{ps,output-view}.ts.
+
+Verify against the installed pi type definitions at /Users/sofianebebert/workspace/sof-pi/node_modules/@earendil-works/pi-coding-agent/dist/core/extensions/types.d.ts and node_modules/@earendil-works/pi-tui/dist/. Confirm every imported symbol exists and is used with the right arity/shape.
+
+Adversarial checks:
+1. ANY remaining TS-only syntax beyond type annotations that jiti/esbuild might handle differently than expected: parameter properties (the known one — verify no others), `enum` (const enums are problematic), `namespace`, decorator metadata, `declare global`, `abstract`, `private`/`protected` (soft at runtime), `satisfies` (fine), `as const` (fine), optional chaining on possibly-null. List any risky construct with file:line.
+2. The `Component` interface in ui/ps.ts: TerminalDashboard and TerminalDetailView implement it. Does the installed pi-tui `Component` require `render(width): string[]` and `invalidate()` and optional `handleInput`/`dispose`? Do the classes match exactly? Does `Focusable` matter here (the classes don't implement it — is that a problem for a read-only view)?
+3. `ctx.ui.custom(component, {overlay, overlayOptions})` — verify the exact signature in types.d.ts. Does `overlayOptions` accept `{anchor, width, maxHeight}`? Are those the right field names? A wrong field name silently no-ops.
+4. `setWidget(key, factory)` — the factory is `(tui, theme) => Component`. Verify the returned object `{render, invalidate}` satisfies the Component type. The earlier reviewer confirmed this — re-verify adversarially (e.g., does it need `handleInput` or `dispose`?).
+5. `sendMessage(message, {deliverAs, triggerTurn})` — verify `deliverAs: "followUp" | "steer" | "nextTurn"` and `triggerTurn?: boolean` exactly. Confirm the message shape `{customType, content, display, details}`.
+6. `registerMessageRenderer(customType, renderer)` — verify the MessageRenderer shape. Does the renderer in index.ts match? What fields/methods must it have?
+7. `Type.Object` / `Type.String` / `Type.Optional` / `Type.Array` from typebox — used correctly? `Type.Array(Type.String())` for bg_kill ids — correct?
+8. Definite assignment assertions (`!`) like `settledResolve!: () => void` — are they always assigned before use? Could any be read before assignment (runtime `undefined`)?
+9. `this` binding in callbacks: stream handlers, view object methods, setInterval callbacks. Any unbound `this` that would be `undefined` at runtime? The `view` object uses `const self = this` — verify all internal references use `self` not `this` where needed.
+10. Unhandled rejections: any `async` function whose rejection isn't caught? `runCleanup` wraps — but are there other async paths (e.g., a `.then` without `.catch`, an `await` in a fire-and-forget context)?
+11. Does `--experimental-strip-types --check` actually validate strip-transform, or only parse? (The prior bug: --check passed but import failed.) Recommend the RIGHT validation command.
+
+Return CONCISE findings with file:line, severity, fix. End with a verdict and the single best validation command to catch the bug class that slipped through. Do NOT edit files.
+
+---
+
+Task: MAINTAINABILITY, MODULE-BOUNDARY, and DOCS-SYNC review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/ plus its wiring. This is a plain-TS port of a reference extension; the port is done and the focus now is whether it's clean, maintainable, correctly wired, and accurately documented.
+
+Read: the full file tree under extensions/background-terminals/ (8 files, ~2400 lines), skills/background-terminals/SKILL.md, /Users/sofianebebert/workspace/sof-pi/package.json, /Users/sofianebebert/workspace/sof-pi/README.md (the Skills table lines 16-32 and Extensions section 33-60), and /Users/sofianebebert/workspace/sof-pi/AGENTS.md for the house rule.
+
+Compare against the sibling extension /Users/sofianebebert/workspace/sof-pi/extensions/perplexity/ for style consistency (imports, formatting, file organization).
+
+Adversarial checks:
+1. WIRING: is `./extensions/background-terminals/index.ts` correctly added to package.json's `pi.extensions` array? (The `./extensions/*.ts` glob does NOT descend into subdirs, so the explicit entry is required.) Verify it's present and well-formed.
+2. README SYNC (AGENTS.md house rule): is there a Skills table row AND an Extensions subsection? Is the skill trigger description pulled accurately from the SKILL.md frontmatter `description`? Is the Extensions subsection accurate (4 tools, /ps, widget, stdin-ignored, session-scoped)? Any copy that's robotic, inconsistent with the sibling Perplexity entry's tone, or inaccurate?
+3. DEAD CODE / DEFENSE-IN-DEPTH: the prior reviewer flagged N5 (second `this.disposed` check in start() — can never be true) and N6 (settledHistory fallback in kill() — unreachable). Are these worth removing for clarity, or are they intentional belt-and-suspenders matching the reference? Judge maintainability impact.
+4. MODULE BOUNDARIES: manager.ts is 871 lines. Is it cohesive, or should it split (e.g., spill.ts, kill.ts)? Does the plain-TS port introduce confusing abstractions vs a simpler direct implementation? Is `TerminalReadModel` the right seam between manager and UI? Are there circular imports?
+5. DUPLICATION: any logic duplicated between manager.ts and index.ts? Between prompt.ts and elsewhere? Is the message-renderer in index.ts redundant with prompt.ts builders?
+6. NAMING: `runCleanup`, `awaitCleanup`, `closeEntryScope`, `settleAfterFlush`, `scheduleExitCleanup`, `killInterest`, `widgetRunning` — clear? Any misleading names?
+7. COMMENTS: the code retains extensive reference comments (from the Effect version) that reference Effect concepts (Deferred, Scope, FiberSet, Effect.uninterruptible). Are these comments now MISLEADING since the code is plain TS? Should they be updated to describe the plain-TS equivalents, or removed? This is a real maintainability concern — comments referencing APIs that no longer exist in the code.
+8. DEPENDENCY DISCIPLINE: zero new deps (no effect, no node-pty) — confirm. Does it match perplexity's dep-light style? Is there any import that pulls something heavy unnecessarily?
+9. ERROR HANDLING CONSISTENCY: domain.ts has SpawnError/ConcurrencyLimitError/UnknownTerminalError as plain Error subclasses. Are they thrown and caught consistently? Is the `name` property set correctly (needed for the smoke-test assertions and for instanceof-equivalent checks)?
+10. SKILL.md: does it match the reference's content and frontmatter? Is the description accurate to what the tools actually do? Would the model understand when to use bg_start vs bash from reading it?
+
+Return CONCISE findings with file:line, severity (blocking/non-blocking/nit), and fix. Be honest about what's worth fixing now vs deferring. End with a verdict on overall maintainability. Do NOT edit files.
+
+---
+
+Task: SECURITY and RESOURCE-SAFETY review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/ — a pi extension that spawns arbitrary shell commands in the background, captures output to temp files, and kills process trees. This extension runs with the user's full permissions and executes model-provided commands, so it's security-sensitive.
+
+Read in full: extensions/background-terminals/src/manager.ts, src/output.ts, index.ts, src/domain.ts. Focus on the spawn/kill/spill paths.
+
+Adversarial security & resource audit:
+1. COMMAND INJECTION / shell semantics: `spawn(shell, ['-c', command])` runs an arbitrary model-provided string through sh -c. Is this clearly documented as the contract (the tool description)? Is there any place the command is logged or displayed unsanitized in a way that could mislead? This is by-design (the tool's purpose), but verify the description warns the model.
+2. SPILL FILE SECURITY: output is written to os.tmpdir()/pi-background-terminals/<session>/<id>.stdout.log. Verify: directory created with 0o700, files with 0o600, permissions CHMOD'd after mkdtemp (mkdtemp may not honor the mode arg on all platforms). Is the session dir cleaned up on disposeAll? Could a crash leave secret-bearing logs (env dumps, API keys in build output) on disk? Is the spill path predictable (path traversal / symlink race)? Could another local user read these files?
+3. PROCESS TREE KILL: `process.kill(-pid, signal)` signals the whole process group. What if the child has already exited and the pid was REUSED by an unrelated process — does `killTree` guard against killing an innocent process that reused the pid? Is `detached: true` always set on POSIX so the group is isolated? On Windows, taskkill /T — any injection via the pid arg?
+4. ORPHAN PREVENTION: if pi crashes (SIGKILL, power loss) mid-session, are background processes orphaned? The reference relies on session_shutdown; verify there's no `child.unref()` that would make pi forget the child (the guide explicitly says NOT to unref). Check the code does NOT call child.unref().
+5. ENVIRONMENT LEAKAGE: `env: process.env` is passed to the child. Is that appropriate? Could it leak secrets to untrusted commands? (It's the user's own env, so probably fine, but flag if the command is model-controlled and env contains secrets.)
+6. CWD VALIDATION: bg_start resolves `working_dir` against ctx.cwd and checks existsSync + isDirectory. Could a symlinked cwd escape expected boundaries? Is path.resolve sufficient, or should realpath be used? Could a race between the existsSync check and spawn allow a TOCTOU (dir deleted between check and spawn)?
+7. RESOURCE EXHAUSTION: MAX_RUNNING=8, MAX_TRACKED=32, RETAINED_PER_STREAM=2MiB, MAX_SPILL_BYTES_PER_STREAM=256MiB. Worst case memory = 8 procs × 2 streams × 2MiB = 32MiB in-memory + up to 8×2×256MiB = 4GiB spill on disk. Is the disk cap enforced per-stream BEFORE writing, or could a single huge write blow past it? Does a `yes` firehose fill the disk?
+8. SIGNAL ESCALATION: SIGTERM → 2s → SIGKILL. Is the SIGKILL guaranteed? Could a zombie process (parent gone, child inherited by init) evade the group kill? Verify `detached` + group kill covers grandchildren.
+9. TEMP FILE CLEANUP ON CRASH: if pi is SIGKILLed (no session_shutdown), are spill files left in /tmp forever? Is there any startup cleanup of stale dirs?
+
+Return CONCISE findings with file:line, severity, and fix. Prioritize: secret exposure via spill files, orphan processes, pid-reuse kill accidents, disk exhaustion. End with a verdict. Do NOT edit files.
+
+---
+
+Task: END-TO-END BEHAVIOR + DOCS-ACCURACY review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. The manager and fixes were tested; this review covers whether the whole extension behaves correctly from the MODEL's and USER's perspective, and whether the docs accurately describe that behavior.
+
+Read: extensions/background-terminals/index.ts (factory, all 4 tool handlers, /ps command, message renderer), extensions/background-terminals/src/prompt.ts (all model-facing strings), skills/background-terminals/SKILL.md, /Users/sofianebebert/workspace/sof-pi/README.md (Skills table line 32 + Extensions subsection 55-60), /Users/sofianebebert/workspace/sof-pi/package.json (pi.extensions wiring).
+
+Adversarial checks:
+1. TOOL SEMANTICS end-to-end: trace each tool handler in index.ts. bg_start: cwd resolution (path.resolve(ctx.cwd, working_dir ?? ".") + existsSync + isDirectory), title trim/slice(0,80), calls manager.start, returns buildStartResult. bg_status: uses manager.view.get(id) — what does it return for a SETTLED terminal (the spec says 'returns its final state')? Does it show the final output tail? bg_list: uses manager.view.list() — does it include BOTH running and settled? bg_kill: pre-validates ids, calls manager.kill, then resultDelivery.consume(ids). Verify each handler's error messages are helpful and the happy-path output matches what prompt.ts builds.
+2. EXACTLY-ONCE COMPLETION: trace the full path from process exit → settle → onSettled → resultDelivery.defer → (isIdle fast-path OR agent_end) → flushResults → deliverResult → pi.sendMessage({deliverAs:"followUp", triggerTurn:true}). Is there ANY double-delivery path? Is there ANY path where a result is DROPPED (deferred but never flushed)? What happens if the session shuts down between defer and flush (session_shutdown clears resultDelivery — verify).
+3. LIFECYCLE: manager is constructed in session_start (NOT factory — verify), disposed in session_shutdown. Does session_shutdown await disposeAll before returning? Could a /reload race leave two managers? Are the ui/sessionContext refs correctly nulled?
+4. WIDGET visibility: the widget shows only while ≥1 running. Trace updateWidget: it's called on every view.subscribe notification. Does it correctly clear (setWidget undefined) when the last process settles? Is the `widgetRunning` memoization correct (only touches setWidget when count changes)? Is it guarded for non-TUI mode (ctx.hasUI)?
+5. /ps command: non-TUI fallback — what does it do? Is the empty-state handled (view.size()===0 → notify)? Does it pass the right context to openTerminalPicker?
+6. PROMPT STRINGS accuracy: do BG_START_TOOL_DESCRIPTION, BG_STATUS_TOOL_DESCRIPTION, etc. accurately describe the limits (MAX_RUNNING, truncation sizes, stdin-ignored, session-scoped)? Are the promptGuidelines non-ambiguous (docs warn 'this tool' is ambiguous — do they name the tool)? Would the model understand when to use bg_start vs bash?
+7. SKILL.md accuracy: does it match the actual tool behavior? Does it tell the model to use bg_start for long-running and bash for quick? Does it mention /ps and the completion notification?
+8. README accuracy: the Extensions subsection claims 4 tools, /ps overlay, widget, stdin-ignored, session-scoped, spill files, tail-truncated output. Verify EVERY claim against the code. Is the Skills table row description character-for-character the SKILL.md frontmatter description (AGENTS.md house rule)?
+9. WIRING: is ./extensions/background-terminals/index.ts in package.json pi.extensions? (The *.ts glob doesn't descend subdirs.)
+10. MODEL-VISIBLE OUTPUT limits: are ALL model-visible outputs (bg_status result, bg_list, completion message) truncated via truncateTail with the documented byte/line caps? Could a huge stdout blow the model's context?
+
+Return CONCISE findings: for each issue, file:line, severity (blocking/non-blocking/nit), fix. End with a verdict: ship / fix-then-ship / needs-rework. Do NOT edit files.
+
+---
+
+Task: ADVERSARIAL review of the TUI layer of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/ — the parts NEVER exercised by the smoke test (which only tested the manager). These are: `src/ui/ps.ts` (the `/ps` two-stage overlay: TerminalDashboard list + TerminalDetailView inspector) and the widget + `/ps` command + message renderer in `index.ts`.
+
+Read in full: extensions/background-terminals/src/ui/ps.ts (~620 lines), extensions/background-terminals/src/ui/output-view.ts, and the relevant parts of index.ts (the setWidget call ~line 46, the /ps command handler, the registerMessageRenderer ~line 228).
+
+Verify against the installed pi 0.80.2 type definitions at /Users/sofianebebert/workspace/sof-pi/node_modules/@earendil-works/pi-tui/dist/ (tui.d.ts, keys.d.ts, utils.d.ts) and /Users/sofianebebert/workspace/sof-pi/node_modules/@earendil-works/pi-coding-agent/dist/core/extensions/types.d.ts. Confirm every TUI API used actually exists with the right shape.
+
+Hunt for TUI correctness bugs:
+1. `ctx.ui.custom(component, {overlay: true, overlayOptions: {anchor: "center", width: "100%", maxHeight: "100%"}})` — verify OverlayOptions field names and SizeValue format against tui.d.ts. A wrong field name silently no-ops (overlay covers wrong area or nothing).
+2. `Component` interface conformance: both TerminalDashboard and TerminalDetailView must implement `render(width): string[]` and `invalidate()`. Is `handleInput` optional (verify in tui.d.ts)? Is `dispose()` part of Component or the custom() return type? Do the classes match?
+3. Keybinding handling: `keybindings.matches(data, "tui.select.cancel")`, `"tui.select.confirm"`, `"tui.select.up"`, `"tui.select.down"`, `"tui.editor.cursorUp"`, etc. — verify these binding IDs exist in the keybindings declarations (grep node_modules/@earendil-works/pi-coding-agent/dist for these strings). A wrong binding ID means the key silently does nothing.
+4. `tui.terminal.rows` — is `terminal` a real property on TUI with a `rows` number? Verify. `tui.requestRender()` — exists?
+5. The widget factory `ui.setWidget(key, (tui, theme) => ({render: () => [line], invalidate: () => {}}))` — verify the factory arity is `(tui, theme)` not `(theme)`. Verify the returned object satisfies Component. Is `handleInput` needed for a non-interactive widget?
+6. `registerMessageRenderer(customType, renderer)` — verify the renderer signature `(message, options, theme) => Component | undefined`. Does the index.ts renderer match? What does it return for the collapsed vs expanded case?
+7. Interval/timer cleanup in the overlay components: TerminalDashboard and TerminalDetailView create `setInterval(tick, 1000)` and subscribe to view changes. Are these ALL cleaned up in `dispose()`/`cleanup()`? Is cleanup idempotent (closed flag)? Overlay components are disposed on close and MUST NOT be reused — verify no cached-and-reused instance.
+8. `createOutputLineCache` caching: keyed by (version, width). Does it invalidate correctly when the buffer changes? Could a stale cache show wrong output?
+9. `sanitizeText` / `wrapTextWithAnsi` / `truncateToWidth` / `visibleWidth` — all imported from pi-tui. Verify they exist with the right arity. Could raw ANSI from process output desync the renderer (the whole reason sanitizeText exists)?
+10. The reconcileDashboardSelection logic — does it keep selection stable across refreshes? Edge cases: empty list, single item, selection past end.
+11. Scroll math in TerminalDetailView: `scrollOffset` is from-bottom, 0 = pinned to live tail. Does `maxOffset` clamping work? Could scrollOffset go negative or NaN? Page up/down uses viewportHeight() — correct?
+
+Return CONCISE findings: for each issue, file:line, why it's a bug, severity (blocking/non-blocking), fix. If a TUI API is correctly used, don't list it — only problems. End with a verdict: TUI is sound / has-fixable-issues / has-blockers. Do NOT edit files.
+
+---
+
+Task: Apply two small, surgical fixes to /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/src/manager.ts. Both are in the spill/lifecycle code. Read the file first to get exact context (grep -n resolveSpillDir manager.ts and grep -n flushSpillStreams manager.ts), then edit precisely. Do NOT change anything else.
+
+## Fix S1: concurrent-session TOCTOU in resolveSpillDir
+Current resolveSpillDir reaps stale session-* dirs from os.tmpdir()/pi-background-terminals/ before creating a new session dir, but deletes ALL session-* dirs. This can delete a LIVE concurrent pi session's spill dir (two pi processes as the same user share the base dir; the live session's open FDs keep writing to unlinked inodes, silently losing spill data).
+
+Fix: encode the current process PID in the session dir name AND skip reaping dirs whose owning PID is still alive.
+
+Required changes to resolveSpillDir:
+- Keep the mkdirSync(base, {recursive, mode: 0o700}) + chmodSync(base, 0o700).
+- In the reaping loop over readdirSync(base): for each name starting with "session-", parse the PID. The NEW dir name format is `session-<pid>-<mkdtemp-suffix>` (e.g. session-12345-aB3x). Extract the pid as the substring between `session-` and the next `-`. If the PID is missing or unparseable (no third `-` segment, or NaN), treat the dir as stale and rmSync it (old format or corrupt). If the PID parses, probe liveness with `process.kill(Number(pid), 0)` inside a try/catch: if it throws (ESRCH = process dead, OR EPERM = not ours but treat as not-ours-alive and SKIP to be safe), then if ESRCH rmSync it (stale); if EPERM skip it. If process.kill(pid, 0) does NOT throw, the process is alive → SKIP rmSync (live concurrent session, or this very process). Wrap each rmSync in its own try/catch as before. Keep the outer try/catch around the whole readdir+reap block.
+- Change the mkdtempSync call: instead of `fs.mkdtempSync(path.join(base, "session-"))`, use `fs.mkdtempSync(path.join(base, \`session-${process.pid}-\`))` so the new dir name is `session-<pid>-<random>`. Keep the chmodSync(this.spillDir, 0o700) after.
+- Update the comment above the reaping loop: dirs are named `session-<pid>-<suffix>`; reaping skips dirs whose PID is still alive (probed via process.kill(pid, 0)), only dead-PID (or unparseable/old-format) dirs are reaped. This prevents deleting a live concurrent session's spill dir.
+- Keep the outer try/catch and the `this.spillDir = null` fallback on error. Keep returning `this.spillDir ?? undefined`.
+
+## Fix R4: flushSpillStreams happy-path timer leak
+Current flushSpillStreams has a Promise.race where the timeout timer (SPILL_FLUSH_TIMEOUT_MS = 1.5s) is never cleared when the flushes complete first. This pins the event loop for up to 1.5s per settling entry on the happy path (same class of leak R1 fixed for withTimeoutVoid).
+
+Fix: capture the timer and clear it on the happy path, keeping it ref'd (it's the bound guarantee the promise resolves when flushes hang — do NOT unref, that would let the loop empty first). The current code:
+  const timedOut = await Promise.race([
+    Promise.all(flushes).then(() => false),
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(true), SPILL_FLUSH_TIMEOUT_MS)),
+  ]);
+
+Rewrite to:
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const timedOut = await Promise.race([
+      Promise.all(flushes).then(() => false),
+      new Promise<boolean>((resolve) => { timer = setTimeout(() => resolve(true), SPILL_FLUSH_TIMEOUT_MS); }),
+    ]);
+    if (timedOut) { /* existing block body EXACTLY as-is: clear spillPath, set errorText, destroy streams */ }
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+
+Keep the existing `if (timedOut) { ... }` block body EXACTLY as-is (the R2 stream.destroy() loop stays). Only add the timer capture + finally clearTimeout.
+
+## Constraints
+- Tabs for indentation (match the file).
+- Do NOT touch any other code. Only these two methods.
+- Do NOT add dependencies.
+- Do NOT change the file's public API.
+
+## Verification (run all and report output)
+1. `node --experimental-strip-types --check extensions/background-terminals/src/manager.ts` — must pass with no output.
+2. `node --experimental-strip-types -e "import { TerminalManager } from './extensions/background-terminals/src/manager.ts'; const m = new TerminalManager(); m.disposeAll(); console.log('OK');"` — must print OK (exercises the strip transform on the edits, catches runtime issues that --check misses).
+3. Show the final resolveSpillDir and flushSpillStreams methods (sed -n on the line ranges) so I can verify.
+4. git diff --stat to confirm only manager.ts changed.
+
+Return: the two methods' final code, the verification output, and any deviations. Do not commit.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Adversarial review of TWO small fixes just applied to /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/src/manager.ts. A prior reviewer found two issues; a worker applied fixes. Verify each is CORRECT, COMPLETE, and free of regressions. Do not trust — re-derive.
+
+Read manager.ts in full. The two fixes:
+
+## S1: resolveSpillDir concurrent-session TOCTOU fix
+Previously resolveSpillDir reaped ALL session-* dirs, which could delete a LIVE concurrent pi session's spill dir. The fix:
+- Session dirs are now named `session-<pid>-<mkdtemp-suffix>` via `mkdtempSync(path.join(base, \`session-${process.pid}-\`))`.
+- The reaping loop parses the PID from each dir name (substring between `session-` and the next `-`). Unparseable/missing → stale, rmSync. Parses → probe `process.kill(pid, 0)`: if it does NOT throw, process is alive → SKIP (live concurrent session or self). If it throws ESRCH (dead) → rmSync. If EPERM (not ours, alive) → SKIP. Other errno → rmSync (defensive). Each rmSync in its own try/catch; outer try/catch around readdir.
+
+Verify adversarially:
+1. PID parsing: for `session-12345-aB3x`, rest = `12345-aB3x`, firstDash at index 5, pidStr = `12345`, pid = 12345. Correct? What about `session-12345` (no suffix, old format)? rest = `12345`, firstDash = -1, pidStr = ``, pid = NaN → treated as stale, rmSync. Is that the right call for an old-format dir? (Old format had no PID, so we can't probe liveness — reaping is the safe default. But could it delete a live OLD-format concurrent session? Only if someone downgrades pi mid-session, vanishingly unlikely. Acceptable.)
+2. process.kill(pid, 0) semantics: returns true (no throw) if process pid exists AND we can signal it. ESRCH if no such process. EPERM if process exists but we lack permission (different user). For same-user concurrent pi sessions, process.kill(own-pid, 0) succeeds → SKIP. Correct — a live same-user session is never reaped.
+3. The `EPERM → SKIP` choice: if another USER's pi ran with the same base dir (shouldn't happen, 0o700 on base prevents others creating dirs, but if base perms were loosened), EPERM means a live process we can't signal — SKIP is safe (don't reap a live session). Correct.
+4. Could `process.kill(pid, 0)` on THIS process's own pid (the new session reaping its own just-created dir) cause a problem? The new dir is created AFTER the reaping loop (mkdtempSync is after the loop), so the loop never sees the current session's dir. But what if a PREVIOUS run of this same pi process crashed and left a `session-<this-pid>-XXX` dir? process.kill(this-pid, 0) succeeds (we're alive) → SKIP. So a prior-crash dir from the SAME pid is NOT reaped while this process runs. Is that a leak? It'll be reaped on a future run with a different pid, or when this process exits and a new pi starts. Acceptable — it's a conservative no-crash choice.
+5. Race: could a dir be created by another session BETWEEN readdirSync and rmSync? rmSync with force+recursive is fine on a dir that gets concurrently written to on Unix (unlinks the dir entry; the other session's open FDs keep writing to the unlinked inode). But that's the TOCTOU we're trying to prevent! However, with the PID-liveness check, we only rmSync dirs whose PID is DEAD, so a concurrently-created live dir (alive PID) is never rmSync'd. The only residual race: a dir whose owning process dies BETWEEN our readdir and our process.kill probe (we'd see it as alive and SKIP, leaving it for the next session). That's safe — no live session is ever harmed.
+6. Number.isInteger check: `Number("")` is 0, `Number("12345")` is 12345. `Number.isInteger(0)` is true, but `pid <= 0` guard catches it (the `|| pid <= 0` check). Verify the `!Number.isInteger(pid) || pid <= 0` guard correctly rejects empty/0/negative. What about `Number("12.5")` = 12.5, isInteger = false → stale. Fine.
+
+## R4: flushSpillStreams happy-path timer clear
+Previously the Promise.race timeout timer was never cleared when flushes completed first (1.5s leak per settling entry). The fix wraps the race in try/finally, captures `timer`, clears it in finally.
+
+Verify:
+1. `let timer: ReturnType<typeof setTimeout> | undefined;` declared before try. Assigned inside the Promise executor (the timeout branch of Promise.race). On the happy path (Promise.all wins), is `timer` actually assigned by the time finally runs? The timeout Promise executor runs synchronously when the Promise is constructed (before await), so `timer` IS assigned before the race resolves. finally runs after await, so timer is set. clearTimeout(timer) on happy path clears the no-op timer. Correct.
+2. On the timeout path, the timer already fired (that's why timedOut is true), so clearTimeout in finally is a no-op (clearing a fired timer is safe). Correct.
+3. The timer is NOT unref'd — it's the bound guarantee the promise resolves if flushes hang. Correct (unref would let the loop empty first, breaking the bound — same lesson as the R1 fix that broke disposeAll).
+4. Is there any path where the timer fires AFTER disposeAll has torn down, causing a late resolve? The timer fires resolve(true) which is harmless (Promise.race already resolved with false on happy path, or the entry is already settled). No crash. Correct.
+5. Does the try/finally change the return semantics? flushSpillStreams returns Promise<void>; the try/finally has no return, just await. finally runs, function resolves. Correct.
+
+ALSO check for regressions: did the S1 mkdtempSync name change break anything that consumes spillDir? (makeSpill creates files inside spillDir — does any code parse the session dir name elsewhere, e.g., to extract a session id? grep for `session-` usage.) Did the R4 try/finally alter the timedOut block's stream.destroy() behavior (R2)?
+
+Return CONCISE findings: for each fix, CORRECT / INCORRECT / INCOMPLETE with file:line evidence. List any regression. End with a verdict: ship / fix-then-ship / needs-rework. Do NOT edit files.
+
+---
+
+Task: ADVERSARIAL pi-integration review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. The extension's internal correctness was reviewed; this round verifies it integrates correctly with pi's FULL session lifecycle and tool-execution model — behaviors that were NOT runtime-tested (smoke test only tested the manager in isolation + one happy-path bg_start).
+
+Read index.ts (factory, lifecycle handlers, tool registration) and src/manager.ts (disposeAll, settle). Also read the pi docs at /Users/sofianebebert/.local/share/mise/installs/pi/0.84.1/pi/docs/extensions.md (the Lifecycle Overview and Events sections) to verify the extension's assumptions about pi's behavior are correct.
+
+Hunt for integration bugs:
+1. RELOAD (/reload): pi emits session_shutdown (reason:reload) then session_start (reason:reload). The extension nulls manager in session_shutdown and awaits disposeAll, then session_start creates a new manager. But ctx.reload() docs say 'the currently running command handler still continues in the old call frame' and 'code after await ctx.reload() must not assume old in-memory extension state is still valid'. Does the extension have any command handler that could be mid-execution across a reload? (The /ps command opens a ctx.ui.custom overlay — what happens if /reload fires while /ps is open? Does the overlay get disposed? Could the old manager be disposed while ps.ts holds a view reference?)
+2. FORK/CLONE (/fork, /clone): emits session_shutdown then session_start (reason:fork). Same as reload for this extension (no cross-session persistence). Verify no state leaks. Could a fork's new session see the old session's background terminals via shared tmpdir spill dirs? (S1 reaping only runs on resolveSpillDir first call — a forked session calls resolveSpillDir fresh, could it reap the parent session's LIVE spill dir if the parent is still running? The parent and child fork share the same process pid... wait, fork is in-process, same pid. So a forked session's resolveSpillDir would see the parent's session-<pid>-* dir, probe process.kill(this.pid, 0) → alive → SKIP. Safe. But verify this reasoning.)
+3. CONCURRENT TOOL CALLS: pi supports parallel tool execution. Could two bg_start calls run concurrently? The manager's start() is synchronous through entries.set (verified), but the tool handler in index.ts does cwd validation (existsSync/statSync) then awaits manager.start. Could two concurrent bg_start calls both pass the concurrency check if the first hasn't yet set entries? (The spec says start() is synchronous — verify there's no await between the check and entries.set.) Could bg_kill and bg_status race on the same id?
+4. ABORT SIGNAL: tool execute() receives a signal (ctx.signal or the 3rd param). bg_start's spawn is fire-and-forget (returns immediately) — does it correctly NOT await anything abortable? bg_kill awaits manager.kill — does it respect the signal? (Prior review noted bg_kill ignores _signal; is that acceptable given kill() is bounded and termination is fire-and-forget?) Could an abort during bg_start leave a spawned-but-untracked child?
+5. agent_end vs agent_settled (pi 0.80.2 has no agent_settled): the extension flushes on agent_end + isIdle fast-path. What happens during pi's auto-retry (a tool fails, pi retries the turn)? agent_end fires, then a new agent_start. Could a deferred terminal result be delivered as a triggerTurn followUp DURING a retry, confusing the model? Is the timing acceptable?
+6. MESSAGE RENDERER: registerMessageRenderer('background-terminal-result', ...). Does the customType match what pi.sendMessage sends? Could a renderer throw and crash the TUI? Is it guarded?
+7. WIDGET in non-TUI modes: ctx.hasUI guard. In RPC/print mode, does updateWidget no-op correctly? Could setWidget throw in print mode?
+8. SESSION SHUTDOWN during a running process: the user runs /new while a bg process is running. session_shutdown awaits disposeAll (kills processes). Does it block /new until processes die (bounded 5s)? Could a wedged process hang /new?
+9. Does the extension correctly NOT spawn anything in the factory (only in session_start)? The docs warn explicitly about this.
+
+Return CONCISE findings: file:line, the integration bug, severity, fix. If a behavior is correct, say so. End with a verdict: ship / fix-then-ship / needs-rework. Do NOT edit files.
+
+---
+
+Task: ADVERSARIAL bug-hunt on the LESS-SCRUTINIZED files of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. Prior rounds deeply reviewed manager.ts and the TUI; this round targets the smaller files that got less attention: src/output.ts (OutputBuffer), src/result-delivery.ts, src/prompt.ts (all model-facing strings), src/ui/output-view.ts (sanitizeText/buildOutputLines).
+
+Read these 4 files in full. Hunt for logic bugs, not style.
+
+output.ts (OutputBuffer):
+1. The push() eviction logic: when a single chunk exceeds maxRetainedBytes, it evicts everything then tail-trims the chunk on a UTF-8 boundary. Verify the byte arithmetic (retainedBytes, truncatedBytes, totalBytes) is correct after this path. Could retainedBytes exceed maxRetainedBytes after any push?
+2. The while-eviction loop: `while (retainedBytes > maxRetainedBytes && chunks.length > 1)`. Why `> 1` not `> 0`? Could a single remaining chunk larger than the cap leave retainedBytes > maxRetainedBytes indefinitely? (The oversized-chunk path above handles single chunks > cap, but what about a chunk exactly at the cap followed by another?)
+3. view() caches join — is the cache invalidated on every push? Could a stale cachedText be returned?
+4. spill callback: receives chunk before eviction. Could the spill callback throw and crash the 'data' handler? (Is it wrapped?)
+
+result-delivery.ts:
+5. Map-keyed by id. defer overwrites (set). consume deletes. drain clears + returns. Is there any race where drain() returns a result that was just consumed by a concurrent bg_kill? (Note: JS is single-threaded, but verify no logical double-handling.)
+
+prompt.ts:
+6. outputSection: uses truncateTail with Math.min(maxBytes, DEFAULT_MAX_BYTES) and Math.min(maxLines, DEFAULT_MAX_LINES). Are these caps correct? Could a view with totalBytes=0 but non-empty text (after sanitization) mislabel as '(empty)'?
+7. describeTerminal: the details array includes pid, elapsed, exit, cwd, sizes. Could any field be undefined and render as 'undefined'? (e.g., pid for a failed spawn.)
+8. buildKillReport: the three branches (killed / wasRunning but exited naturally / already settled). Are the conditions mutually exclusive and exhaustive?
+
+output-view.ts:
+9. sanitizeText: OSC/CSI/ESCAPE patterns. Could a partial escape sequence at a chunk boundary (if sanitizeText were called per-chunk) leave stray bytes? (It's called per-line at render — verify that's safe.)
+10. buildOutputLines: splits on \n, then handles \r (carriage return progress lines) by taking the LAST segment. Is that correct for npm/cargo progress? Could a line with only \r and no \n be mishandled?
+11. createOutputLineCache: keyed by `${version}:${width}`. version comes from buffer.totalBytes (monotonic). Could the cache return stale lines if totalBytes wraps (it won't, Number is safe up to 2^53)?
+
+Return CONCISE findings: file:line, the bug, severity, fix. If a file is clean, say so. End with a verdict. Do NOT edit files.
+
+---
+
+Task: ADVERSARIAL cross-file contract + type-consistency review of /Users/sofianebebert/workspace/sof-pi/extensions/background-terminals/. Prior rounds focused on manager.ts race-safety; this round verifies the SEAMS between files: do the types in domain.ts match how manager.ts, index.ts, and prompt.ts actually use them? Are there shape mismatches, wrong arities, or fields that drift?
+
+Read ALL files: src/domain.ts, src/manager.ts, src/prompt.ts, src/output.ts, src/result-delivery.ts, src/ui/ps.ts, src/ui/output-view.ts, index.ts.
+
+Hunt for contract bugs:
+1. TerminalSnapshot / OutputView shape: domain.ts defines them with readonly fields. manager.ts's MutableSnapshot extends it with mutable fields + getters for stdout/stderr. Does the readonly view exposed via TerminalReadModel.list()/get() actually match TerminalSnapshot? Could a consumer mutate a snapshot they shouldn't (the view is supposed to be read-only)?
+2. Error classes: domain.ts exports SpawnError, ConcurrencyLimitError, UnknownTerminalError. Where are they thrown (manager.ts) and caught (index.ts)? Does index.ts catch them by name or instanceof? Are the error messages user-helpful? Does bg_start surface SpawnError/ConcurrencyLimitError correctly to the model?
+3. TerminalReadModel interface (in manager.ts) vs its consumers (ui/ps.ts, index.ts): does ps.ts use every method correctly (list, get, size, subscribe, subscribeTo, requestKill, setOnSettled)? Are there methods on the interface that nothing uses (dead surface area)?
+4. KillResult / StartOptions: defined in manager.ts, consumed in index.ts and prompt.ts. Field names match? (e.g., does prompt.ts's buildKillReport read entry.killed, entry.wasRunning, entry.exit, entry.status, entry.title, entry.id — all present on KillResult?)
+5. prompt.ts builders (buildStartResult, buildStatusResult, buildTerminalResultMessage, describeTerminal, buildKillReport) — do they receive the right type? Are the truncation constants (STATUS_STDOUT_MAX etc.) consistent with what the tool handlers pass?
+6. createDeferredResultDelivery<T>() — generic T is TerminalSnapshot. index.ts's onSettled defers a shallow copy. Does result-delivery.ts's consume/drain/defer API match how index.ts uses it?
+7. sanitizeText / buildOutputLines / createOutputLineCache (output-view.ts) — used by ps.ts. Does the cache key (version, width) match what ps.ts passes? Does buildOutputLines handle the text correctly?
+8. Are there any exported symbols that are dead (never imported)? Any missing exports that should exist?
+9. Type-only imports vs value imports: domain.ts error classes are values (extend Error). Are they imported as values where thrown? `import type` would break runtime.
+
+Return CONCISE findings: file:line, the contract mismatch, severity, fix. If the contracts are sound, say so for each area — don't invent issues. End with a verdict. Do NOT edit files.
+
+---
+
+Task: ROLE: local-codebase scout (fresh context).
+
+DECISION UNDER STUDY:
+Is Perplexity's newly released Search SDK / Search API valuable to adopt in the
+existing TypeScript web-search extension at /Users/sofianebebert/workspace/sof-pi/extensions/perplexity?
+
+The extension currently only calls the Sonar chat-completions endpoint
+(https://api.perplexity.ai/chat/completions). We want to know if the newer
+Search API and/or the official Search SDK add enough value to warrant adoption.
+
+YOUR LANE — LOCAL CODE CONTEXT:
+Inspect the extension at /Users/sofianebebert/workspace/sof-pi/extensions/perplexity
+and the surrounding repo to map the current implementation and likely integration points.
+Cover specifically (cite file paths + line ranges):
+1. What endpoint(s) the extension actually calls today (perplexity.ts) and how the Sonar
+   request is built (model, messages, system prompt, temperature, max_tokens).
+2. How web_search, fetch_content, get_search_content are implemented in index.ts — what params
+   each accepts (numResults, domainFilter, recencyFilter, includeContent) and what is actually
+   honored vs silently ignored (e.g. is numResults used? are filters prompt-injected or API-level?
+   does includeContent:false still run full Sonar generation?).
+3. Dependency footprint: runtime deps in package.json, whether any HTTP/SDK deps already exist,
+   TypeScript types, build setup.
+4. Where a new searchWeb()/Search API call would slot in — the seam, the request builder, the
+   response normalizer, and which existing tool would change or be replaced.
+5. Tests, if any, and how they mock the Perplexity call (so we know what a prototype must satisfy).
+
+Do not trust the conversation summary — open the files and report what you actually see.
+
+Return concise findings WITH evidence:
+- source links for external findings (official docs, release notes, issue threads, npm/PyPI pages)
+- confidence level (high/medium/low) and explicit gaps or unknowns
+- a one-line decision implication / recommended next step
+Do NOT edit any files. This is a research pass only.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/subagent-artifacts/outputs/0e58c9f0-e1fe-408e-8af4-b5322e3d7793/local.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: ROLE: practical-tradeoffs researcher (fresh context).
+
+DECISION UNDER STUDY:
+Is Perplexity's newly released Search SDK / Search API valuable to adopt in the
+existing TypeScript web-search extension at /Users/sofianebebert/workspace/sof-pi/extensions/perplexity?
+
+The extension currently only calls the Sonar chat-completions endpoint
+(https://api.perplexity.ai/chat/completions). We want to know if the newer
+Search API and/or the official Search SDK add enough value to warrant adoption.
+
+YOUR LANE — PRACTICAL TRADEOFFS:
+Compare options and surface risks. Do not just summarize; give a recommendation with reasoning.
+Cover specifically:
+1. Search API (native fetch) vs Sonar chat/completions for the web_search use case: result
+   quality, ranked structured results, real filter compliance, latency, cost, determinism.
+2. Official TypeScript Search SDK (@perplexity-ai/perplexity_ai) vs hand-rolled native fetch:
+   what the SDK buys (retries, types, streaming, auth) vs added dependency + bundle/size in a
+   pi extension. Is the SDK mature enough to depend on?
+3. Hybrid execution policy: which of web_search / fetch_content / get_search_content should
+   move to the Search API, which should stay on Sonar, and why. Consider that fetch_content and
+   get_search_content benefit from Sonar's synthesis, while web_search may want ranked URLs.
+4. Migration cost and risk: what breaks if we add a second endpoint? auth/key reuse, error
+   handling, rate limits, billing surface, and how to validate (a ~15-query comparison).
+5. Edge cases: includeContent:false still costing a Sonar call today, numResults ignored today,
+   filter non-compliance today — quantify how much the Search API actually fixes.
+
+You may fetch official docs and the npm/PyPI pages to ground cost/feature claims. Prefer 2026 sources.
+
+Return concise findings WITH evidence:
+- source links for external findings (official docs, release notes, issue threads, npm/PyPI pages)
+- confidence level (high/medium/low) and explicit gaps or unknowns
+- a one-line decision implication / recommended next step
+Do NOT edit any files. This is a research pass only.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/subagent-artifacts/outputs/0e58c9f0-e1fe-408e-8af4-b5322e3d7793/tradeoffs.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: ROLE: external-evidence researcher (fresh context).
+
+DECISION UNDER STUDY:
+Is Perplexity's newly released Search SDK / Search API valuable to adopt in the
+existing TypeScript web-search extension at /Users/sofianebebert/workspace/sof-pi/extensions/perplexity?
+
+The extension currently only calls the Sonar chat-completions endpoint
+(https://api.perplexity.ai/chat/completions). We want to know if the newer
+Search API and/or the official Search SDK add enough value to warrant adoption.
+
+YOUR LANE — EXTERNAL EVIDENCE (primary sources):
+Investigate the Perplexity Search API and Search SDK from primary/authoritative sources.
+Cover specifically:
+1. The Search API endpoint (POST https://api.perplexity.ai/search): request/response schema,
+   available filters (domain allow/deny, recency/date_range), numResults semantics,
+   whether results are ranked/structured, and how it differs from the Sonar chat/completions API.
+2. The official Search SDKs: the TypeScript/Node package (@perplexity-ai/perplexity_ai on npm)
+   AND the Python search SDK (pplx-srch-sdk on PyPI). What do they actually wrap, what helpers
+   do they add over raw HTTP, version maturity, changelog, and known issues.
+3. Pricing model for the Search API (per-request vs token) vs Sonar token pricing.
+4. Any documented SDK/docs mismatch or community reports (e.g. community.perplexity.ai threads).
+5. Release timing — when did the Search API / Search SDK launch? Prefer 2026 and 2025 sources.
+
+Prefer official docs (docs.perplexity.ai), the npm/PyPI package pages, GitHub repos, and
+Perplexity community threads. Verify by fetching pages rather than relying on memory.
+
+Return concise findings WITH evidence:
+- source links for external findings (official docs, release notes, issue threads, npm/PyPI pages)
+- confidence level (high/medium/low) and explicit gaps or unknowns
+- a one-line decision implication / recommended next step
+Do NOT edit any files. This is a research pass only.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/subagent-artifacts/outputs/0e58c9f0-e1fe-408e-8af4-b5322e3d7793/external.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: You are reviving a previous subagent conversation.
+
+Original run: 6eaedbe7
+Original agent: researcher
+Original session file: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/2026-08-15T08-36-14-445Z_01a00490-81ed-70e8-8746-d475da432b42/6eaedbe7/run-0/session.jsonl
+
+Use the stored session context as background. Answer the orchestrator's follow-up below. Do not assume the original child process is still alive.
+
+Follow-up:
+STOP doing tool calls. You already gathered all the evidence you need.
+Now WRITE THE FINDINGS BRIEF as your complete final answer, in this exact structure:
+
+## Findings
+- Bullet points, each with a concrete fact and its evidence (source link or file:line).
+## Confidence & Gaps
+## Decision Implication
+- One-line recommended next step.
+
+Be concise but complete. This is the deliverable — no more tool calls, just write.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: You are reviving a previous subagent conversation.
+
+Original run: b2a26773
+Original agent: scout
+Original session file: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/2026-08-15T08-36-14-445Z_01a00490-81ed-70e8-8746-d475da432b42/b2a26773/run-0/session.jsonl
+
+Use the stored session context as background. Answer the orchestrator's follow-up below. Do not assume the original child process is still alive.
+
+Follow-up:
+STOP doing tool calls. You already gathered all the evidence you need.
+Now WRITE THE FINDINGS BRIEF as your complete final answer, in this exact structure:
+
+## Findings
+- Bullet points, each with a concrete fact and its evidence (source link or file:line).
+## Confidence & Gaps
+## Decision Implication
+- One-line recommended next step.
+
+Be concise but complete. This is the deliverable — no more tool calls, just write.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: You are reviving a previous subagent conversation.
+
+Original run: eb5d3b7d
+Original agent: researcher
+Original session file: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/2026-08-15T08-36-14-445Z_01a00490-81ed-70e8-8746-d475da432b42/eb5d3b7d/run-0/session.jsonl
+
+Use the stored session context as background. Answer the orchestrator's follow-up below. Do not assume the original child process is still alive.
+
+Follow-up:
+STOP doing tool calls. You already gathered all the evidence you need.
+Now WRITE THE FINDINGS BRIEF as your complete final answer, in this exact structure:
+
+## Findings
+- Bullet points, each with a concrete fact and its evidence (source link or file:line).
+## Confidence & Gaps
+## Decision Implication
+- One-line recommended next step.
+
+Be concise but complete. This is the deliverable — no more tool calls, just write.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the change in /Users/sofianebebert/workspace/sof-pi for CORRECTNESS and PRECEDENCE of the pi-subagents reviewer override.
+
+Target: the uncommitted diff (git diff HEAD) plus the new untracked file agents/reviewer.md. Read these directly:
+- package.json (the new "pi.subagents.agents": ["./agents"] manifest field)
+- agents/reviewer.md (frontmatter name: reviewer, no package: field, systemPromptMode: replace)
+- the builtin it is meant to shadow: ~/.pi/agent/npm/node_modules/pi-subagents/agents/reviewer.md
+- docs on precedence: ~/.pi/agent/npm/node_modules/pi-subagents/docs/agents.md (the "Where agents live" table and discovery notes)
+
+Verify with evidence:
+1. Is "pi.subagents.agents" the correct manifest key, or is it "pi-subagents.agents"? Does docs/agents.md say either {"pi-subagents":{"agents":...}} or {"pi":{"subagents":{"agents":...}}} is accepted? Confirm which form package.json now uses.
+2. Will a file with frontmatter name: reviewer (no package: field) register under the runtime name "reviewer" and shadow the builtin reviewer? Or does omitting package: produce a different runtime name?
+3. Does package-agent precedence (builtin < package < user < project) actually let this override the builtin for every project where sof-pi is installed as a package?
+4. Are there any frontmatter fields that would prevent the override from taking effect (e.g. a missing field, a typo, systemPromptMode value)?
+5. Does the deleted extensions/review.ts leave any dangling reference (imports, manifest extensions glob "./extensions/*.ts" still valid without it)?
+
+Return concise evidence-backed findings with file/line references and the exact fix. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the change in /Users/sofianebebert/workspace/sof-pi for DOCUMENTATION ACCURACY and CLEANUP COMPLETENESS.
+
+Target: the uncommitted diff (git diff HEAD) on README.md and package.json, plus the new agents/reviewer.md. Also read AGENTS.md at the repo root (it has a "Keep the README in sync" rule).
+
+Verify with evidence:
+1. README "Structure" block now lists agents/ — accurate? Does it describe the directory consistently with how extensions/skills/prompts/themes are described?
+2. The new "Agents" section in README: is the precedence claim ("package agents load above builtins") accurate per docs/agents.md? Is the claim that every subagent({agent:"reviewer"}), /parallel-review, and /review-loop applies the rubric correct? Is the local-override escape hatch statement accurate?
+3. Is the deleted Code Review section fully removed with no dangling reference elsewhere in README or other docs (search README.md, AGENTS.md, prompts/, skills/ for "/review", "review.ts", "REVIEW_RUBRIC", "REVIEW_GUIDELINES.md")?
+4. AGENTS.md "Keep the README in sync" rule: was the README updated in the same changeset as the agent addition? Is the Extensions section still accurate now that review.ts is gone?
+5. Does the README still claim capabilities the package no longer provides (e.g. /review command, PR checkout, loop fixing) now that review.ts is deleted?
+6. Is there any .pi/settings.json or project config that still references the removed extension?
+
+Return concise evidence-backed findings with file/line references and the exact fix. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the change in /Users/sofianebebert/workspace/sof-pi for RUBRIC FIDELITY and DRIFT between the deleted extension and the new agent file.
+
+Target: compare the REVIEW_RUBRIC text that lived in the now-deleted extensions/review.ts against the rubric section appended to the new untracked agents/reviewer.md. Get the old text from git: `git show HEAD:extensions/review.ts` and extract the REVIEW_RUBRIC template literal (around line 390). Read agents/reviewer.md for the new copy (below the "---" after the builtin body).
+
+Verify with evidence:
+1. Is every section of REVIEW_RUBRIC present verbatim in agents/reviewer.md? Check: Determining what to flag, Untrusted User Input, Comment guidelines, Review priorities, Fail-fast error handling, Required human callouts, Priority levels, Output format. Flag any missing, truncated, or reworded section.
+2. Backtick / code-fence escaping: the original was a JS template literal with escaped ```suggestion blocks and escaped `try/catch`. Did the escaping transfer correctly into plain markdown, or are there stray backslashes, broken code fences, or doubled backticks?
+3. Conflict between the builtin "Review output format" section (## Review with Correct/Fixed/Blocker/Note) and the rubric's "Output format" section (priority-tagged findings + verdict + Human Reviewer Callouts). Since systemPromptMode is replace, both sections appear in the same prompt. Do they contradict each other? Is the reviewer left with ambiguous or conflicting output instructions?
+4. The loop-fixing parser in the deleted review.ts (hasBlockingReviewFindings, hasNeedsAttentionVerdict, isLikelyFindingLine) depended on exact "[P0]–[P3]" and "needs attention" wording. Is that exact wording preserved in the new rubric?
+
+Return concise evidence-backed findings with file/line references and the exact fix. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Apply exactly two edits across two files in /Users/sofianebebert/workspace/sof-pi. Do not touch any other file.
+
+EDIT 1 — extensions/perplexity/research-panel.ts, around line 10 in the JSDoc header:
+Old text:
+ * The layout mirrors the bordered, composable style used by pi's own
+ * selectors (see extensions/review.ts): an accent top border carrying the
+New text:
+ * The layout mirrors the bordered, composable style used by pi's own
+ * selectors: an accent top border carrying the
+Rationale: extensions/review.ts was deleted; the parenthetical reference is stale.
+
+EDIT 2 — AGENTS.md "Keep the README in sync" section. Add an Agents bullet so the sync rule covers the new Agents section. The current section lists Skills and Extensions bullets. Insert a new bullet after the Extensions bullet and before "Do this as part of the same change set":
+- **Agents** — update the Agents section. Describe what each packaged agent override changes relative to its builtin (rubric additions, tool/model differences) and note the precedence it relies on.
+
+Keep the existing Skills and Extensions bullets verbatim. Do not change the closing paragraph.
+
+After editing, read both files back and verify the edits landed exactly and no surrounding text shifted. Report what you changed with line references.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Apply exactly two edits to agents/reviewer.md in /Users/sofianebebert/workspace/sof-pi. Do not touch any other file.
+
+EDIT 1 (frontmatter description, line 2): change the constant name "REVIEW_RUBRIC" to the prose term "Review Rubric".
+Old text:
+description: Versatile review specialist for code diffs, plans, proposed solutions, codebase health, and PR/issue validation. Enforces the sof-pi REVIEW_RUBRIC (priority tags, fail-fast error handling, required Human Reviewer Callouts).
+New text:
+description: Versatile review specialist for code diffs, plans, proposed solutions, codebase health, and PR/issue validation. Enforces the sof-pi Review Rubric (priority tags, fail-fast error handling, required Human Reviewer Callouts).
+
+EDIT 2 (remove the builtin's conflicting output format block): delete this entire block (it sits between "## Supervisor coordination" and the "---" separator before the rubric). Keep the preceding paragraph and the "---" + "# sof-pi Review Rubric" heading that follow it:
+
+## Review output format
+Structure your findings clearly:
+
+\`\`\`
+## Review
+- Correct: what is already good (with evidence)
+- Fixed: issue, location, and resolution (if you applied a fix)
+- Blocker: critical issue that must be resolved before proceeding
+- Note: observation, risk, or follow-up item
+\`\`\`
+
+When reviewing code, cite file paths and line numbers. When reviewing plans, cite specific sections and assumptions.
+
+Rationale: systemPromptMode is replace, so the builtin "## Review output format" (Correct/Fixed/Blocker/Note) conflicts with the rubric's "## Output format" ([P0]–[P3] findings + verdict + Human Reviewer Callouts). The rubric's format is authoritative.
+
+After editing, read the file back and verify: (a) the description line no longer contains "REVIEW_RUBRIC", (b) there is no "## Review output format" heading, (c) the "## Output format" heading under the rubric is still present, (d) the "---" separator and "# sof-pi Review Rubric" heading are intact. Report what you changed with line references.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review agents/reviewer.md in /Users/sofianebebert/workspace/sof-pi for PROMPT COHERENCE after a block-removal fix.
+
+This file is a pi-subagents agent definition with systemPromptMode: replace, meaning its entire body (after frontmatter) IS the system prompt. A first review pass found that the builtin "## Review output format" block (Correct/Fixed/Blocker/Note) conflicted with the rubric's "## Output format" section, and a worker removed the builtin block. Verify the result is coherent.
+
+Read agents/reviewer.md in full. Check:
+1. Is the prompt structurally coherent after the removal? Specifically: does the "## Supervisor coordination" section flow directly into the "---" separator and "# sof-pi Review Rubric" heading without a dangling reference to the deleted "## Review output format" block?
+2. Are there any orphaned forward/back references to "Review output format", "Correct/Fixed/Blocker/Note", or "the above format" that now point nowhere?
+3. Does only ONE output-format spec now exist in the prompt (the rubric's "## Output format" with [P0]–[P3] tags + verdict + Human Reviewer Callouts)? Confirm no second competing spec remains.
+4. Is the rubric body internally consistent — every section referenced elsewhere in the prompt is present (e.g. "Required human callouts" referenced by the Output format's step 7, "Priority levels" referenced by the tag convention)?
+5. The frontmatter description says "Enforces the sof-pi Review Rubric" — does the body actually contain a section headed "# sof-pi Review Rubric"?
+6. Any duplicate headings, broken markdown fences, or stray backticks left from the removal?
+
+Return concise evidence-backed findings with line references and exact fixes. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the CURRENT UNCOMMITTED CHANGESET in /Users/sofianebebert/workspace/sof-pi for DOCS CONSISTENCY and CROSS-REFERENCE INTEGRITY across README.md, AGENTS.md, and agents/reviewer.md.
+
+Read README.md, AGENTS.md, and agents/reviewer.md directly. Also search the whole repo (excluding node_modules, .git, .pi-subagents, .delta) for any remaining mention of the removed /review command, review.ts, REVIEW_GUIDELINES.md, or the old review extension's features (PR checkout, loop fixing, custom review instructions, /end-review).
+
+Check with evidence:
+1. README "Structure" block lists agents/ and the description matches how other directories are described. Accurate?
+2. README "Agents" section: every claim about precedence (package > builtin), scope (every subagent({agent:"reviewer"}) / /parallel-review / /review-loop), and the local-override escape hatch — verifiable against ~/.pi/agent/npm/node_modules/pi-subagents/docs/agents.md?
+3. README no longer claims the /review command, PR checkout, loop fixing, custom review instructions, or REVIEW_GUIDELINES.md — confirm zero dangling capability claims.
+4. AGENTS.md "Keep the README in sync" rule now lists Skills, Extensions, AND Agents. Is the Agents bullet wording consistent with the existing two bullets (imperative, describes what to update and how)?
+5. agents/reviewer.md description (frontmatter) and README Agents-section description of the reviewer override — do they agree on what the override does, or is there drift (e.g. one says "rubric" and the other says something else)?
+6. Is the README "Extensions" section still accurate now that Code Review is gone (only Perplexity and Background Terminals remain)?
+7. Any other doc file (prompts/, skills/*) that references the deleted extension or the /review command?
+
+Return concise evidence-backed findings with file/line references and exact fixes. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the CURRENT UNCOMMITTED CHANGESET in /Users/sofianebebert/workspace/sof-pi for CORRECTNESS and REGRESSIONS. This is a re-review after a first pass applied fixes.
+
+Scope: the full uncommitted diff (git diff HEAD) plus the untracked agents/ directory. Read these directly:
+- agents/reviewer.md (new packaged pi-subagents reviewer override)
+- package.json (pi.subagents.agents manifest field)
+- extensions/review.ts (DELETED — do not expect it to exist)
+- extensions/perplexity/research-panel.ts (JSDoc stale-ref fix)
+- AGENTS.md (new Agents bullet in the README-sync rule)
+- README.md (removed Code Review section, added Agents section, agents/ in Structure block)
+
+Verify with evidence:
+1. agents/reviewer.md frontmatter is valid YAML: name=reviewer, no package: field (so runtime name is exactly "reviewer"), systemPromptMode: replace, tools: read, grep, find, ls. Confirm it will shadow the builtin reviewer.
+2. package.json is valid JSON and "pi.subagents.agents": ["./agents"] is correctly nested under "pi". Confirm against ~/.pi/agent/npm/node_modules/pi-subagents/docs/agents.md that this is an accepted manifest form.
+3. No file in the repo still imports or references the deleted extensions/review.ts (search *.ts, *.json, *.md for "review.ts", "REVIEW_RUBRIC", "/review command"). The research-panel.ts stale ref should now be gone.
+4. The "./extensions/*.ts" glob in package.json was intentionally KEPT (user declined that fix) — confirm it is still present and not a regression.
+5. AGENTS.md Agents bullet was added without disturbing the existing Skills/Extensions bullets or the closing paragraph.
+6. No syntax errors introduced in research-panel.ts (the edit removed a parenthetical from a JSDoc comment; confirm the comment block is still well-formed).
+
+Return concise evidence-backed findings with file/line references and exact fixes. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: In the current repository /Users/sofianebebert/workspace/sof-pi, independently review all packaged skills under skills/ against these six rubrics: (1) starts from observed failures, (2) goals/constraints rather than procedures, (3) short and durable, (4) progressive disclosure, (5) living documentation/iteration, (6) selective creation. Give per-skill ratings with evidence and note uncertainty. Read-only; do not edit.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/subagent-artifacts/outputs/2eac7daf-66ad-467f-b5af-c4977c992e9a/rubric.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: In the current repository /Users/sofianebebert/workspace/sof-pi, inventory every packaged skill under skills/ (and any relevant skill-like files). For each, report path, frontmatter description, size, and a concise structural summary. Read-only reconnaissance; do not edit files.
+
+---
+**Output:**
+Write your findings to exactly this path: /Users/sofianebebert/.pi/agent/sessions/--Users-sofianebebert-workspace-sof-pi--/subagent-artifacts/outputs/2eac7daf-66ad-467f-b5af-c4977c992e9a/inventory.md
+This path is authoritative for this run.
+Ignore any other output filename or output path mentioned elsewhere, including output destinations in the base agent prompt, system prompt, or task instructions.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Review the request to create skills/README.md in /Users/sofianebebert/workspace/sof-pi. Inspect the existing skill files and repository conventions, then report what content the README must include to accurately capture good-skill principles from the article and this repo. Do not edit files. Flag omissions, misleading advice, or contradictions to existing skills. Provide a concise review checklist for validating the eventual file.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
