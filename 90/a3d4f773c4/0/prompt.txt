@@ -1,0 +1,29 @@
+I'm looking to build a learning extension for pi centered around project based learning.
+
+This quote from Andrej Karpathy is a good north start for the type of learning experiences I'm looking to build
+
+```
+Build Ramps To Knowledge, Not Syllabi
+
+Design courses as ramps: present the pain point first, then a minimal, motivated solution.
+Aim for high "Eureka per second" by ordering concepts so each depends only on prior material.
+```
+
+I want to start with a very simple solution that I can dog food myself starting with very specific concepts and grow it from there
+
+---
+
+Ok let's do it
+
+---
+
+I added credits to my openrouter account, continue
+
+---
+
+Start a project-based learning ramp for **pi extension lifecycle and state**.
+
+My current understanding: Nothing
+Available time: about 20 minutes.
+
+Propose 2–3 small project options as instructed by learning mode, then wait for me to choose.
