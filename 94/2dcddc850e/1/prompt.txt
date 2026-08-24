@@ -1,0 +1,69 @@
+Task: You are a delegated subagent running from a fork of the parent session. Treat the inherited conversation as reference-only context, not a live thread to continue. Do not continue or answer prior messages as if they are waiting for a reply. Your sole job is to execute the task below and return a focused result for that task using your tools.
+
+Task:
+Implement the write-like-me refactor in /Users/sofianebebert/workspace/sof-pi. You are the sole writer in the shared cwd; do not modify unrelated skills.
+
+Goal: refactor skills/write-like-me/SKILL.md (currently ~303 lines) into a concise always-loaded core with progressive disclosure, preserving Sofiane's specific voice and behavior.
+
+Required:
+- Keep SKILL.md as a compact entry point, retaining when-to-use, durable core voice, default message shape, key rules (clarity, facts/commitments, natural contractions, no corporate/AI filler, constructive disagreement, recipient-appropriate formality), output behavior, and a concise final quality gate.
+- Add references under skills/write-like-me/references/, with sensible files such as message-patterns.md, editing-and-review.md, and language-guide.md. Move longer situational patterns/examples, editing workflow, greeting/sign-off rules, preferred/avoided language, and detailed review checklist into references. The main skill must explicitly direct the agent to read relevant references based on message type or rewrite task.
+- Preserve important personal preferences and examples: Hi/Hey defaults, no more than one acknowledgment sentence, sign-off choices, no em dashes/emoji, avoid over-polish/excess enthusiasm/repeated apologies/stacked hedges, clear but constructive disagreement, preserve political judgment, and return only the finished draft unless commentary is requested.
+- Preserve all situational patterns: request, scheduling, apology/delay, disagreement/pushback, decision, follow-up, technical explanation, executive/stakeholder, recruiter/opportunity, support resolution.
+- Make the iteration loop explicit: recurring edits/preferences should update the relevant reference and version metadata; do not turn one-off rewrites into general rules.
+- Keep frontmatter description accurate. Update README.md only if the public description needs changing; otherwise leave it.
+- Do not silently change behavioral guidance.
+
+After editing, inspect every changed file. Run git diff --check; verify every relative Markdown link in SKILL.md and references resolves; confirm the main SKILL.md is substantially shorter and all ten situational patterns plus key preferences remain present. Do not commit. Report changed files, line counts, and validation results.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files, validation-output, diff-summary
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
