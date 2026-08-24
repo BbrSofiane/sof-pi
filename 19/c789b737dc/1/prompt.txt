@@ -1,0 +1,56 @@
+Task: You are a delegated subagent running from a fork of the parent session. Treat the inherited conversation as reference-only context, not a live thread to continue. Do not continue or answer prior messages as if they are waiting for a reply. Your sole job is to execute the task below and return a focused result for that task using your tools.
+
+Task:
+Create skills/README.md in /Users/sofianebebert/workspace/sof-pi. It should capture the key principles for writing good pi skills, based on the article takeaways and the actual refactors in this repository. Write practical guidance for this package's maintainers, including: start from observed agent failures; encode goals, constraints, and non-obvious context rather than exhaustive procedures; keep the always-loaded SKILL.md short and durable; use progressive disclosure with references; make skills living documentation with an explicit update loop; create skills selectively; preserve safety/approval/verification gates where relevant; distinguish principles from volatile command-level detail; and explain a useful review checklist. Mention examples from this repo (weekly-planning, tldraw-offline, database-query, exe-dev/fly-io/stripe-projects, write-like-me) without inventing facts. Keep it concise, clear, and actionable. Do not modify other files and do not commit. Validate Markdown basics and report the file and line count.
+
+## Acceptance Contract
+Acceptance level: checked
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Implement the requested change without widening scope
+
+Required evidence: changed-files, tests-added, commands-run, residual-risks, no-staged-files
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
