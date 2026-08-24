@@ -1,14 +1,13 @@
 ---
 name: stripe-projects
-description: Use this skill when the user wants to use Stripe Projects via the `stripe projects` CLI plugin — initializing a project, browsing the provider/service catalog, provisioning third-party services (databases, auth, hosting, analytics, AI, storage, observability, etc.) into an app stack, managing environments/credentials and syncing them to .env, and inspecting project status. Triggers on tasks like "provision a database", "add supabase to my project", "list stripe projects", "pull a stripe project", "browse the stripe catalog", "sync stripe project env vars", or "what providers does stripe projects support". Also covers the classic `stripe` CLI (webhook listen/trigger, resources, logs) as a secondary reference.
-compatibility: "Requires the `stripe` CLI installed (via mise: `stripe-cli`), the `projects` plugin installed (`stripe plugin install projects`), and the Stripe CLI authenticated. Verify with `stripe whoami` and `stripe projects status`; run `stripe login` if not logged in, `stripe plugin install projects` if the subcommand is missing."
+description: Use this skill when the user wants to use Stripe Projects via the `stripe projects` CLI plugin — initializing a project, browsing the provider/service catalog, provisioning third-party services (databases, auth, hosting, analytics, AI, storage, observability, etc.) into an app stack, managing environments and credentials, syncing them to .env, or inspecting project status. Triggers on tasks like "provision a database", "add supabase to my project", "list stripe projects", "pull a stripe project", "browse the stripe catalog", "sync stripe project env vars", or "what providers does stripe projects support".
+compatibility: "Requires the Stripe CLI and its `projects` plugin (`stripe plugin install projects`) installed and authenticated. Verify with `stripe whoami` and `stripe projects status`; run `stripe login` if not logged in or install the plugin if the subcommand is missing."
 ---
 
 # Stripe Projects (`stripe projects`) Skill
 
 Stripe **Projects** is a CLI plugin that lets you build and manage an app's entire third-party stack — databases, auth, hosting, analytics, AI, storage, observability, queues, caching, etc. — from one command group. A *Stripe project* represents a single app/codebase and tracks the providers, services, resources, credentials, and environments behind it. Billing for provisioned services is centralized through Stripe.
 
-> **Primary focus of this skill:** the `stripe projects` plugin. The classic Stripe CLI (`listen`, `trigger`, resource CRUD, `logs`) is covered in a short reference section at the end.
 
 ## Concept model
 
@@ -26,14 +25,13 @@ State stored in the local repo:
 
 ## Setup
 
-The base CLI is installed machine-wide via mise as `stripe-cli`. Install the Projects plugin once, then authenticate.
+Install the Projects plugin once, then authenticate the Stripe CLI. Projects reuses that authenticated context.
 
 ```bash
-stripe --version                   # base CLI version
 stripe whoami                      # current Stripe auth state (account, mode)
 stripe login                       # browser login (or: stripe login --api-key sk_test_...)
 stripe plugin install projects     # adds the `stripe projects` command group
-stripe projects --version          # plugin version (e.g. v0.13.0)
+stripe projects --version          # plugin version
 stripe projects status             # show current project, providers, and services
 ```
 
@@ -215,48 +213,9 @@ Provisioned paid services are billed through Stripe; `--confirm-paid-service` is
 - **Secrets safety:** the vault and `.env` hold live credentials. Never print raw values into transcripts; reference env var names. `init` gitignores them — keep it that way.
 - **Discover help:** `stripe projects --help` (command groups), `stripe projects <cmd> --help` (flags + examples). Every subcommand shows realistic examples at the bottom of its help.
 
-## Classic Stripe CLI (secondary reference)
-
-When the user needs *payments* workflows (not third-party service provisioning), use the base `stripe` CLI. Installed as `stripe-cli`; authenticate with `stripe login` / verify with `stripe whoami`.
-
-### Webhooks — `listen` (forward to localhost) and `trigger` (fire test events)
-
-```bash
-stripe listen --forward-to localhost:4242/webhook          # forward events to a local handler (prints whsec_...)
-stripe listen --events charge.captured,charge.updated --forward-to localhost:3000/events
-stripe trigger payment_intent.succeeded                   # fire a test event for listen to forward
-stripe trigger checkout.session.completed
-```
-
-### Resource CRUD (maps 1:1 to the Stripe API)
-
-```bash
-stripe customers create --email="user@example.com" --name="Example User"
-stripe customers list --limit=10
-stripe products create --name="My Product" --description="Test product"
-stripe prices create --unit-amount=3000 --currency=usd --product=prod_abc123
-stripe payment_intents create --amount=2000 --currency=usd
-stripe resources help                                      # list every resource command
-```
-
-### Logs, raw API, fixtures
-
-```bash
-stripe logs tail                       # stream real-time API request logs
-stripe get /v1/customers/cus_abc123    # raw authenticated GET
-stripe post /v1/customers -d email=user@example.com
-stripe fixtures seed.yml               # run a YAML of sequenced API ops to seed test data
-```
-
-Global flags that also apply here: `--api-key`, `--stripe-account <acct_...>`, `--stripe-version`, `-p, --project-name`, `--config`.
-
 ## Reference
 
 - Stripe Projects docs: https://docs.stripe.com/projects
 - Available providers (live): `stripe projects catalog --json` (see also https://docs.stripe.com/projects.md#available-providers)
 - Browse catalog: https://docs.stripe.com/cli/projects/catalog
 - Projects site: https://projects.dev
-- Classic CLI reference: https://docs.stripe.com/cli
-- Webhooks + listen: https://docs.stripe.com/stripe-cli/webhooks
-- Event types: https://stripe.com/docs/api/events/types
-- Source: https://github.com/stripe/stripe-cli
