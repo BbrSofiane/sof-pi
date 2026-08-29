@@ -97,8 +97,8 @@ class Client:
     def get_json(self, path, params=None):
         return self.req("GET", path, params=params).json()
 
-    def post_json(self, path, body):
-        return self.req("POST", path, json_body=body).json()
+    def post_json(self, path, body=None, *, files=None, data=None):
+        return self.req("POST", path, json_body=body, files=files, data=data).json()
 
 
 # ── session resolution ────────────────────────────────────────────────────────
