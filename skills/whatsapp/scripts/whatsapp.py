@@ -19,6 +19,8 @@ Examples:
   whatsapp send-media <number> ./photo.jpg --caption "look"
   whatsapp chats
   whatsapp messages <number> --limit 20
+  whatsapp contacts                       # list contacts
+  whatsapp contacts search misty          # fuzzy-find a contact → jid
   whatsapp sessions
   whatsapp qr
   whatsapp pair-phone <number>
@@ -291,6 +293,129 @@ def cmd_chats(client: Client, args):
         )
 
 
+# ── contacts ──────────────────────────────────────────────────────────────────
+def fetch_contacts(client: Client, sid: str) -> list[dict]:
+    return client.get_json(f"/v1/sessions/{sid}/contacts") or []
+
+
+def score_contact(q: str, q_digits: str, c: dict) -> tuple[int, str]:
+    """Score one contact against a normalized query. Returns (score, reason)."""
+    jid = c.get("jid") or ""
+    digits = "".join(ch for ch in jid if ch.isdigit())
+    fields: list[tuple[str, str]] = []
+    for key in ("push_name", "full_name", "business_name"):
+        v = " ".join((c.get(key) or "").split()).lower()
+        if v:
+            fields.append((key, v))
+
+    best, reason = 0, ""
+    for key, v in fields:
+        s = 0
+        if q and v == q:
+            s = 100  # exact name match
+        elif q and v.startswith(q):
+            s = 80
+        elif q and q in v:
+            s = 60
+        else:
+            qt, nt = set(q.split()), set(v.split())
+            if qt and qt <= nt:
+                s = 55  # every query token appears in the name
+            elif qt and nt and (qt & nt):
+                s = max(s, 30 * len(qt & nt) // len(qt))  # partial token overlap
+        if s > best:
+            best, reason = s, f'{key}="{c.get(key)}"'
+
+    if q_digits and digits:
+        if q_digits == digits:
+            if 90 > best:
+                best, reason = 90, f"jid={jid}"
+        elif q_digits in digits:
+            if 70 > best:
+                best, reason = 70, f"jid={jid}"
+
+    # Prefer phone jids over @lid for otherwise-equal matches
+    if best:
+        if jid.endswith("@lid"):
+            best -= 5
+        elif jid.endswith("@s.whatsapp.net"):
+            best += 2
+    return best, reason
+
+
+def search_contacts(query: str, rows: list[dict]) -> list[tuple[int, str, dict]]:
+    q = " ".join(query.split()).lower()
+    q_digits = "".join(ch for ch in query if ch.isdigit())
+    if len(q_digits) < 4:
+        q_digits = ""  # ignore short digit runs — too many false hits inside jids
+    out = []
+    for c in rows:
+        score, reason = score_contact(q, q_digits, c)
+        if score >= 25:
+            out.append((score, reason, c))
+    out.sort(key=lambda t: -t[0])
+    return out
+
+
+def cmd_contacts(client: Client, args):
+    sid = resolve_session(client, args.session)
+    rows = fetch_contacts(client, sid)
+
+    if getattr(args, "contacts_cmd", None) == "search":
+        matches = search_contacts(args.query, rows)
+        if args.json:
+            print_json(
+                [
+                    {"score": s, "matched_on": r, **c}
+                    for s, r, c in matches
+                ]
+            )
+            return
+        if not matches:
+            die(
+                f"no contacts match '{args.query}' ({len(rows)} contacts scanned). "
+                "Note: names are push names set by the contact, not address-book names."
+            )
+        # Conservative ambiguity policy: only an exact-name match that is unique
+        # resolves to a single JID; everything else prints a candidate table.
+        exact = [m for m in matches if m[0] >= 100]
+        if len(exact) == 1:
+            c = exact[0][2]
+            name = c.get("push_name") or c.get("full_name") or c.get("business_name") or "-"
+            print(f"✓ unique exact match: {name}  {c.get('jid')}")
+            return
+        print(f"{len(matches)} candidate(s) for '{args.query}' — pick a JID:")
+        print(f"{'SCORE':5} {'NAME':28} {'JID':44} {'MATCHED ON'}")
+        for score, reason, c in matches[:15]:
+            name = (
+                c.get("push_name")
+                or c.get("full_name")
+                or c.get("business_name")
+                or "-"
+            )[:28]
+            print(f"{score:5} {name:28} {c.get('jid',''):44} {reason}")
+        if len(matches) > 15:
+            print(f"… and {len(matches) - 15} more (--json for all)")
+        return
+
+    if args.limit:
+        rows = rows[: args.limit]
+    if args.json:
+        print_json(rows)
+        return
+    if not rows:
+        print("(no contacts synced yet)")
+        return
+    print(f"{'NAME':28} {'JID':44} {'BUSINESS'}")
+    for c in rows:
+        name = (
+            c.get("push_name") or c.get("full_name") or c.get("business_name") or "-"
+        )[:28]
+        biz = (c.get("business_name") or "-")[:24]
+        print(f"{name:28} {c.get('jid',''):44} {biz}")
+    print(f"\n({len(rows)} shown; use 'contacts search <query>' to find one)")
+
+
 def cmd_messages(client: Client, args):
     sid = resolve_session(client, args.session)
     chat = to_jid(args.chat)
@@ -390,6 +515,18 @@ def build_parser() -> argparse.ArgumentParser:
     cc = sub.add_parser("chats", parents=[parent], help="list chats")
     cc.add_argument("--limit", type=int, default=50)
     cc.set_defaults(func=cmd_chats)
+
+    ct = sub.add_parser("contacts", parents=[parent], help="list or search contacts")
+    ct.add_argument("--limit", type=int, default=100, help="max rows for plain listing")
+    ctsub = ct.add_subparsers(dest="contacts_cmd")
+    cs = ctsub.add_parser(
+        "search",
+        parents=[parent],
+        help="fuzzy-search contacts by name, nickname, business, or number",
+    )
+    cs.add_argument("query", help="name/nickname/business name, or phone digits")
+    ct.set_defaults(func=cmd_contacts)
+    cs.set_defaults(func=cmd_contacts)
 
     mc = sub.add_parser("messages", parents=[parent], help="list messages in a chat")
     mc.add_argument("chat", help="phone number (digits) or full jid")

@@ -1,6 +1,6 @@
 ---
 name: whatsapp
-description: 'Send a WhatsApp message (text or media) or inspect a ruwa WhatsApp instance from the terminal — list chats, list messages, show the pairing QR, pair via phone code, or list sessions. Triggers on "send a whatsapp message", "whatsapp", "message someone on whatsapp", "send a photo on whatsapp", "show my whatsapp chats", or "pair a whatsapp number". Backed by a ruwa HTTP server.'
+description: 'Send a WhatsApp message (text or media) or inspect a ruwa WhatsApp instance from the terminal — look up contacts, list chats, list messages, show the pairing QR, pair via phone code, or list sessions. Triggers on "send a whatsapp message", "whatsapp", "message someone on whatsapp", "send a photo on whatsapp", "show my whatsapp chats", "find a whatsapp contact", or "pair a whatsapp number". Backed by a ruwa HTTP server.'
 compatibility: 'Requires `uv` (inline-script deps are auto-installed). Needs a reachable ruwa server and these env vars: `RUWA_API_ENDPOINT` (base URL, e.g. https://example.com — a scheme-less host gets https:// prepended) and `RUWA_API_TOKEN` (bearer). Optionally `RUWA_SESSION` (session id or label); if unset and only one session exists it is used automatically.'
 ---
 
@@ -57,11 +57,34 @@ On success the CLI prints `✓ sent to <n>  id=<id>  status=<queued|sent|…>`. 
 ./scripts/whatsapp.py sessions                 # list instances
 ./scripts/whatsapp.py chats                    # recent chats (default session)
 ./scripts/whatsapp.py chats --limit 20
+./scripts/whatsapp.py contacts                 # contact list (push names + jids)
+./scripts/whatsapp.py contacts search <query>  # resolve a name → jid
 ./scripts/whatsapp.py messages <number>    # conversation with a contact
 ./scripts/whatsapp.py messages <number> --limit 20
 ```
 
 All inspect commands accept `--json`.
+
+### Resolve a contact → JID
+
+`send` needs a number or JID, but you usually only know a name. Use `contacts search`:
+
+```sh
+./scripts/whatsapp.py contacts search misty
+# ✓ unique exact match: Misty  4474…@s.whatsapp.net
+
+./scripts/whatsapp.py contacts search georges   # ambiguous → candidate table
+./scripts/whatsapp.py contacts search 447470124659   # numbers work too
+./scripts/whatsapp.py contacts search bebert --json  # all matches + scores
+```
+
+Behavior is deliberately conservative:
+
+- **Unique exact name match** → prints the JID directly; send immediately.
+- **Anything else** (substring, partial token, multiple hits) → prints a scored candidate table; pick the JID from it. Never guess between candidates — messaging the wrong person is irreversible.
+- No match → exit 1 with an error.
+
+Caveat: contact names are **push names** (whatever the contact set themselves), not your address-book names — ruwa doesn't sync address-book contacts (`full_name` is usually null). Searching "Mistura Bebert" can miss a contact whose push name is "Misty". If a search fails, try a shorter/different fragment, or fall back to `chats` + `messages` to identify the JID from conversation history. Phone JIDs (`@s.whatsapp.net`) are preferred over `@lid` when scores tie.
 
 ## Pair a new number
 
@@ -80,6 +103,7 @@ Every command accepts `--session <id-or-label>`; otherwise the CLI uses `RUWA_SE
 |---|---|---|
 | `HTTP 401: unauthorized` | wrong/empty token | check `RUWA_API_TOKEN` |
 | `HTTP 404: not found: session` | bad session id/label | `./scripts/whatsapp.py sessions`; set `RUWA_SESSION` |
+| `no contacts match '…'` | push name ≠ the name you searched | try a shorter fragment; or `chats`/`messages` to find the JID via history |
 | `session 'x' not found` | label typo or session not created | list sessions; create one via the dashboard or `POST /v1/sessions` |
 | `request failed: ...` | wrong endpoint / network / proxy | `health` to confirm reachability |
 | send returns `queued` but never `delivered` | linked device offline / banned | check `health` for the session; re-pair if needed |
