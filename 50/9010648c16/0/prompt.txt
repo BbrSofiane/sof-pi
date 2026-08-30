@@ -1,0 +1,71 @@
+@skills/whatsapp/scripts/whatsapp.py 
+
+The CLI has no contacts capability at all. The only way to resolve "send
+ to Mistura" → a JID today is:
+
+ 1. chats — lists recent chats with their display names. No search param,
+    fixed limit, and truncated name columns.
+ 2. The agent greps that output and guesses the JID.
+
+ That's exactly how the Mistura send went: grep for "mistura" → nothing,
+ because her saved chat name is "Misty" (a self-set nickname, not your
+ address-book name). I recovered by eyeballing the list and inferring it
+ was her.
+
+ The ironic part: ruwa does expose a contacts endpoint — I just confirmed
+ it's live:
+
+ ```
+   GET /v1/sessions/:id/contacts
+   →
+ [{"jid":"...@s.whatsapp.net","full_name":null,"push_name":"Misty","busines
+ s_name":null}, ...]
+ ```
+
+ The CLI just never wraps it. So this is a gap in the skill, not a protocol
+ limitation.
+
+ The proposal
+
+ Add contacts search <query>: fetch the contacts list, fuzzy-match across
+ push_name / full_name / business_name / JID digits, then:
+ - unambiguous match → return the JID (the agent can send immediately)
+ - multiple hits → print a candidate table and let the agent/user pick
+
+ ~40 lines, endpoint already works.
+
+ Trade-offs
+
+ 1. Push names ≠ address-book names (the big one). WhatsApp Web's protocol
+ doesn't sync your address book — ruwa's own SPEC notes contact app-state
+ sync hasn't landed (full_name is null for everyone). So push_name is
+ whatever the contact set themselves: nicknames, emojis, "Samiratou Georges
+ Beber". Searching "Mistura Bebert" may still fail on the same contact that
+ caused this problem. Fuzzy matching (substrings, token overlap, number
+ match) narrows but doesn't eliminate the miss. Honest framing: this makes
+ lookups better, not infallible.
+
+ 2. Ambiguity vs. autonomy. "Send to Misty" with two Mistys in the list —
+ do we auto-pick or ask? Auto-pick risks messaging the wrong person, which
+ is irreversible and socially awkward. Asking every time negates the
+ convenience. My suggestion: exact unique match → send; multiple/fuzzy
+ matches → always surface candidates. Slightly more friction, much safer.
+
+ 3. JID types. The contacts list mixes @s.whatsapp.net (phone) and @lid
+ (WhatsApp's newer linked-device IDs, e.g. Joel above). Matching must
+ prefer phone JIDs or resolve LID↔phone, or a "found" contact could be one
+ the send path handles poorly.
+
+ 4. Scale. The endpoint returns the full contact list (hundreds of rows)
+ per query. Fine client-side, but it's an unauthenticated-to-your-contacts
+ dump every search — irrelevant locally, worth knowing if this ever moves
+ to a shared server.
+
+ 5. The simpler alternative. Instead of a new subcommand, add a --search
+ filter to the existing chats command. Covers ~90% of cases (you message
+ people you've messaged), zero new surface — but fails exactly where you'd
+ notice: contacts with old/no chat history, and it inherits the chat-list's
+ name data rather than the fuller contacts table.
+
+ My take: do contacts search as proposed (endpoint's free, ruwa supports
+ it), with conservative ambiguity behavior. Want me to build it?
