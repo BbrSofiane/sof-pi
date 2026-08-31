@@ -1,0 +1,382 @@
+Task: Evaluate practical solution shapes for reliable workflows built around Pi and possibly Herdr, using direct inspection of the three supplied resources plus current Pi/pi-subagents/Herdr primary docs or repositories: (A) conventions/templates only, (B) a Pi extension or package-native workflow runtime, (C) Nika as an external deterministic runner invoking Pi, and (D) a thin durable controller around pi-subagents missions/workflows with Herdr as the human control plane. Compare migration cost, failure recovery, idempotency, typed state, replay, observability, isolation, approvals, validation, maintenance burden, and ease of proving reliability. Call out disagreements or marketing claims not backed by implementation evidence. Return a compact decision matrix, confidence/gaps, and a phased recommendation with the cheapest falsifiable prototype. Do not edit files.
+
+---
+
+Task: Inspect the local repository at /Users/sofianebebert/workspace/sof-pi and the installed Pi 0.84.4 documentation/examples at /Users/sofianebebert/.local/share/mise/installs/pi/0.84.4/pi. Map what already exists for reliable workflows and what could be extended: packaged agents, pi-subagents workflows/missions/schedules/acceptance/gates/worktrees, skills, background terminals, remote VM jobs, and any Herdr integration references. Read load-bearing docs completely and follow relevant markdown cross-references. Identify exact local files, symbols, constraints, tests, and likely integration points; note what Herdr is authoritative for versus Pi. Return concise evidence with file paths and line ranges, confidence/gaps, and recommended next step. Do not edit files.
+
+---
+
+Task: Research how to build reliable agentic software workflows with Pi and optionally Herdr. Inspect these sources directly, not summaries from the parent conversation: https://github.com/disler/super-simple-software-factory, https://nika.sh/ (including relevant language/spec/docs pages), and https://scott-fryxell.github.io/blog/the-harness-is-the-thing/. Also inspect current authoritative Pi/pi-subagents/Herdr docs or repositories where useful. Focus on concrete mechanisms: deterministic orchestration, contracts/types, state/events, retries, gates, sandboxing, observability, human approvals, and provenance. Distinguish verified source claims from inference. Return concise findings with primary-source links, source dates/versions when available, confidence and gaps, and the decision implication for a Pi/Herdr solution. Do not edit files.
+
+---
+
+Task: Answer this narrow architecture question from fresh context: can current pi-subagents achieve what current Nika does without adding a new workflow engine? Inspect primary sources directly: the current Nika repository/spec/docs/releases and the current pi-subagents repository/docs/releases. Build a capability matrix using three verdicts: native-equivalent, composable-but-not-equivalent, and missing. Cover static DAG validation, typed workflow/data contracts, deterministic scheduling, parallelism, retries/backoff by failure class, human gates, durable pause/resume, replay/cache by input hashes, append-only or tamper-evident traces, authority/permits, secret/egress and cost analysis, idempotent effects, observability, sandboxing, portability, and provider/model abstraction. Separate implementation evidence from README marketing. Return concise findings with direct source links, versions/dates where available, confidence/gaps, and decision implications. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Evaluate the practical meaning of 'achieve what Nika does with pi-subagents as it is.' Inspect current Nika and pi-subagents primary docs/source directly. Distinguish: (1) matching the useful software-delivery outcomes with checked-in workflowScript and existing APIs, (2) matching Nika's declarative language, static proof/security model, trace/resume semantics, and general-purpose workflow product. Compare engineering and operational tradeoffs, failure modes, maintenance, and ease of validation. Propose the cheapest falsifiable parity spike using only existing pi-subagents capabilities, list exact pass/fail tests, and identify the threshold where adopting Nika or writing a controller becomes justified. Include direct links, confidence/gaps, and a clear yes/partial/no conclusion. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: Inspect the actual installed pi-subagents 0.59.0 source and tests under /Users/sofianebebert/.pi/agent/npm/node_modules/pi-subagents, the installed Pi 0.84.4 docs under /Users/sofianebebert/.local/share/mise/installs/pi/0.84.4/pi, and /Users/sofianebebert/workspace/sof-pi. Do not rely on conversation history. Determine exactly what can be assembled today using existing pi-subagents workflowScript/workflowScriptPath, validation, outputSchema, acceptance/gates, runs.host, missions/state, schedules, resume, worktrees, capability ceilings, lifecycle artifacts, RPC, and Herdr integration. Inspect source and tests where docs might overstate guarantees. Identify what is absent versus merely unconfigured, especially typed dataflow, retry policy, crash replay, transactional/idempotent effects, trace integrity, permits/secrets/cost analysis, and workflow-level human approvals. Return concise evidence with file paths and line ranges, confidence/gaps, and the smallest local integration seam. Do not edit files.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Finish with a fenced JSON block tagged `acceptance-report` in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+```acceptance-report
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+```
+
+---
+
+Task: ADVERSARIAL REVIEW — ANGLE 2: TESTS & VALIDATION QUALITY (fresh context, read-only).
+
+Target: new uncommitted work in /Users/sofianebebert/workspace/sof-pi: extensions/factory/{index.ts,src/*} plus its test suite tests/factory/{helpers,config,checks,state,rpc,workflow,validator}.test.ts.
+
+Run the tests yourself to see them pass (read-only on the repo):
+  cd /Users/sofianebebert/workspace/sof-pi && for f in tests/factory/*.test.ts; do node --experimental-strip-types --disable-warning=ExperimentalWarning --test "$f"; done
+
+Evaluate:
+1. Sandbox fidelity: tests/factory/helpers.ts evalWorkflowScript evaluates generated workflow scripts with stubbed runs/state via AsyncFunction. Does that faithfully model the real pi-subagents workflow sandbox semantics (top-level await, return, runs.run/runs.all result shape {runId, structuredOutput, output}, state.set), or could tests pass while the real sandbox diverges? Check against ~/.pi/agent/npm/node_modules/pi-subagents/src/workflows/scripted-workflow.ts.
+2. Validator test: tests/factory/validator.test.ts imports the REAL validateWorkflowScript by copying the installed src tree to a temp dir (piSubagentsCopy in helpers.ts). Is that approach sound and deterministic? Any hygiene problems (temp dir reuse, .pnpm skip, cleanup)?
+3. RPC smoke test: tests/factory/rpc.test.ts runs the real registerSubagentRpcBridge with a stub execute/context. Are the assertions meaningful (normalization to async:true, invalid_params rejection, correlation, timeout)? Anything important untested (e.g., status method, malformed envelopes, unsubscribe leaks)?
+4. Coverage gaps that matter: index.ts (the extension orchestration: git baseline checks, loadConfig, completion handlers, state transitions) has NO tests. Which untested behaviors are risky enough to demand tests now vs acceptable? Which existing tests assert the wrong thing or are tautological?
+5. The checks.test.ts real-exec tests use echo/exit/sleep — are they robust cross-platform (macOS/Linux)? Any flakiness?
+6. Test ergonomics: node --test + --experimental-strip-types is the runner (no package.json script). Is that acceptable, and is the suite fast/deterministic?
+
+Report ONLY concrete, current, evidence-backed findings with file:line references. P0 = blocks merge (test proves the wrong thing or a real defect escapes). P1 = should fix now. P2 = report-only. End with remainingRisks and a verdict: ok, fix, or blocked.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Include an `acceptanceReport` object in your final `structured_output` tool call in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+
+---
+
+Task: ADVERSARIAL REVIEW — ANGLE 1: CORRECTNESS & API CONFORMANCE (fresh context, read-only).
+
+Target: new uncommitted work in /Users/sofianebebert/workspace/sof-pi implementing a '/factory <task>' software-factory extension. Files: extensions/factory/index.ts, extensions/factory/src/{config,rpc,workflow,checks,state}.ts, agents (agents/ dir), package.json, README.md, tests/factory/*. The work is UNCOMMITTED and INCOMPLETE: README/package.json/agents/planner.md updates may be missing — do not report those as P0 correctness issues (another reviewer covers conventions), focus on runtime correctness.
+
+Inspect the repository directly: read the files, and read the INSTALLED pi-subagents source at ~/.pi/agent/npm/node_modules/pi-subagents (version 0.61.0) — especially src/extension/rpc.ts, src/extension/public-execution.ts, src/extension/schemas.ts, src/runs/foreground/subagent-executor.ts, src/workflows/scripted-workflow.ts, docs/workflows.md, docs/extension-api.md, docs/missions.md. Also check Pi extension docs at ~/.local/share/mise/installs/pi/0.84.4/pi/docs/extensions.md for pi.appendEntry / registerCommand / events semantics.
+
+Verify conformance claims against the real source, including:
+1. RPC request envelope fields (version, requestId, method, params, source) and reply correlation for methods ping/spawn/status used in extensions/factory/src/rpc.ts and index.ts.
+2. spawn params: workflowScript + mission {title} + timeoutMs + globalConcurrencyLimit — are these accepted by the real normalizePublicSubagentExecution/SubagentParams validation? Is async handling right?
+3. The completion event 'subagent:async-complete' payload shape: runId, success, state, stopped, timedOut, interrupted, results[].workflowKey/structuredOutput/status — verify in result-watcher.ts / notify.ts that workflow children results actually carry structuredOutput, and that payload.success reflects workflow failure.
+4. The generated workflow scripts in extensions/factory/src/workflow.ts: runs.run/runs.all literal keys, child params (context 'fresh', outputSchema, per-child acceptance {level:'checked',evidence:['commands-run','changed-files']}) — is per-child acceptance actually supported and what does 'checked' do on failure? Does branching on structuredOutput only, and the single fix pass, hold?
+5. The state machine in index.ts: races (two completion events, /factory during active run, config invalid mid-run), the use of a captured activeCtx across async continuation, mission title constraints, queryMissionId parsing 'Mission: <id>' from status text.
+6. The intentional deviation: deterministic validation commands run in the extension process (node child_process exec) instead of runs.host because inline workflowScript launched via the public RPC boundary cannot get runs.host authority (verify this claim in subagent-executor.ts around workflowHost). Is the deviation implemented safely (commands only from .pi/factory.json, bounded output, timeouts, cwd)?
+7. Error paths: what happens on RPC timeout, missing details.runId, malformed completion payloads, git failures.
+
+Report ONLY concrete, current, evidence-backed findings with exact file:line references from the actual source you read. P0 = blocks merge (real bug/conformance break). P1 = should fix now. P2 = report-only. End with remainingRisks and a verdict: ok, fix, or blocked.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Include an `acceptanceReport` object in your final `structured_output` tool call in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}
+
+---
+
+Task: ADVERSARIAL REVIEW — ANGLE 3: SIMPLICITY, MAINTAINABILITY & REPO CONVENTIONS (fresh context, read-only).
+
+Target: new uncommitted work in /Users/sofianebebert/workspace/sof-pi adding a '/factory <task>' extension: extensions/factory/index.ts, extensions/factory/src/{config,rpc,workflow,checks,state}.ts, extensions/factory/README.md (if present), tests/factory/*.
+
+Read AGENTS.md at the repo root first — it REQUIRES README.md (root) updates in the same change set when adding an extension or agent (skills table / Extensions section / Agents section), and note package.json pi.extensions manifest conventions. The work is in progress: check whether the required README section, package.json pi.extensions entry, and agents/planner.md (the generated build workflow launches agent 'planner' — verify whether that agent exists in agents/ or in the installed pi-subagents builtins at ~/.pi/agent/npm/node_modules/pi-subagents/agents/) are present, correct, and complete. Missing required docs/manifest/planner pieces that would BREAK the workflow at runtime are P0/P1; purely cosmetic doc gaps are P2.
+
+Also evaluate the code itself:
+1. Unnecessary complexity: single-use wrappers, duplicated logic (e.g., config loading appears twice in index.ts — loadConfig and loadConfigForPipeline), state.ts helper sprawl (boundedString/boundedStringList/boundedCheckRecords/boundedHandoff), needless indirection, dead code (e.g., SandboxStubChild import in rpc.test.ts), misleading names.
+2. Consistency with sibling extensions (extensions/learning/index.ts, extensions/perplexity/index.ts): command registration patterns, ctx.waitForIdle usage, ui.notify vs setStatus conventions, state restore via session entries.
+3. extensions/factory/README.md (if present): accuracy of the documented architecture including the stated deviation about runs.host; missing configuration examples; whether .pi/factory.json schema documentation matches src/config.ts exactly.
+4. Type safety discipline: unnecessary casts (as unknown as), any leakage, non-null assertions, and whether the generated workflow script strings are maintainable (escaping hazards, template readability).
+5. Anything in the generated task prompt text in workflow.ts that is contradictory, confusing to a child agent, or duplicative.
+
+Report ONLY concrete, current, evidence-backed findings with file:line references. Filter on evidence, not severity. P0 = blocks merge. P1 = should fix now. P2 = report-only. End with remainingRisks and a verdict: ok, fix, or blocked.
+
+## Acceptance Contract
+Acceptance level: attested
+Completion is not accepted from prose alone. End with a structured acceptance report.
+
+Criteria:
+- criterion-1: Return concrete findings with file paths and severity when applicable
+
+Required evidence: review-findings, residual-risks
+
+Include an `acceptanceReport` object in your final `structured_output` tool call in this shape:
+Use empty arrays when no items apply; array fields contain strings unless object entries are shown.
+Empty-string entries (`[""]`) are ignored; use `[]` when nothing applies.
+`criteriaSatisfied[].status` must be exactly one of: satisfied, not-satisfied, not-applicable.
+`commandsRun[].result` must be exactly one of: passed, failed, not-run.
+`manualNotes` and `notes` are optional strings; an empty string means no note and does not satisfy `manual-notes` evidence.
+{
+  "criteriaSatisfied": [
+    {
+      "id": "criterion-1",
+      "status": "satisfied",
+      "evidence": "specific proof"
+    }
+  ],
+  "changedFiles": [
+    "src/file.ts"
+  ],
+  "testsAddedOrUpdated": [
+    "test/file.test.ts"
+  ],
+  "commandsRun": [
+    {
+      "command": "command",
+      "result": "passed",
+      "summary": "short result"
+    }
+  ],
+  "validationOutput": [
+    "validation output or concise summary"
+  ],
+  "residualRisks": [
+    "none"
+  ],
+  "noStagedFiles": true,
+  "diffSummary": "short description of the diff",
+  "reviewFindings": [
+    "blocker: file.ts:12 - issue found, or no blockers"
+  ],
+  "manualNotes": "anything else the parent should know"
+}

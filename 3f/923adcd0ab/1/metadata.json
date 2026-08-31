@@ -1,0 +1,82 @@
+{
+  "cli_version": "0.10.3",
+  "checkpoint_id": "3f923adcd0ab",
+  "session_id": "session",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-31T03:22:46.230704Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "save_step_count": 2,
+  "files_touched": [
+    "extensions/factory/index.ts",
+    "extensions/factory/src/checks.ts",
+    "extensions/factory/src/config.ts",
+    "extensions/factory/src/rpc.ts",
+    "extensions/factory/src/state.ts",
+    "extensions/factory/src/workflow.ts",
+    "tests/factory/checks.test.ts",
+    "tests/factory/config.test.ts",
+    "tests/factory/helpers.ts",
+    "tests/factory/rpc.test.ts",
+    "tests/factory/state.test.ts",
+    "tests/factory/validator.test.ts",
+    "tests/factory/workflow.test.ts"
+  ],
+  "agent": "Pi",
+  "model": "z-ai/glm-5.3-flash",
+  "turn_id": "44fa12d725f8",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 76656,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1181760,
+    "output_tokens": 16106,
+    "api_call_count": 25
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-31T03:22:46.1865Z",
+    "agent_lines": 49,
+    "agent_removed": 0,
+    "human_added": 111,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 160,
+    "total_lines_changed": 161,
+    "agent_percentage": 30.434782608695656,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 2472,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "extensions/factory/index.ts": 536,
+        "extensions/factory/src/checks.ts": 84,
+        "extensions/factory/src/config.ts": 175,
+        "extensions/factory/src/rpc.ts": 127,
+        "extensions/factory/src/state.ts": 210,
+        "extensions/factory/src/workflow.ts": 434,
+        "tests/factory/checks.test.ts": 64,
+        "tests/factory/config.test.ts": 121,
+        "tests/factory/helpers.ts": 145,
+        "tests/factory/rpc.test.ts": 152,
+        "tests/factory/state.test.ts": 58,
+        "tests/factory/validator.test.ts": 50,
+        "tests/factory/workflow.test.ts": 316
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
