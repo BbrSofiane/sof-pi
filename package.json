@@ -9,12 +9,16 @@
   "license": "Apache-2.0",
   "readme": "README.md",
   "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/factory/*.test.ts"
+  },
   "pi": {
     "extensions": [
       "./extensions/*.ts",
       "./extensions/perplexity/index.ts",
       "./extensions/background-terminals/index.ts",
-      "./extensions/learning/index.ts"
+      "./extensions/learning/index.ts",
+      "./extensions/factory/index.ts"
     ],
     "skills": [
       "./skills"

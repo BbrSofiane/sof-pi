@@ -51,11 +51,19 @@ Four LLM tools (`bg_start`, `bg_status`, `bg_list`, `bg_kill`) for long-running 
 
 Project-based learning mode built around ramps to knowledge rather than syllabi. `/learn <concept>` asks for the learner's starting point and timebox, proposes a few tiny projects where the concept becomes necessary, and coaches through short need → attempt → friction → minimum lesson → application → proof cycles. `/learn-status` shows the active ramp and `/learn-stop` exits it. State is persisted on the current pi session branch, and an active ramp appears in the footer. See [`extensions/learning/README.md`](./extensions/learning/README.md) for behavior and examples.
 
+### Factory (`extensions/factory/`)
+
+A minimal, reliable software factory. `/factory <task>` validates the project (trust, clean git baseline, human-authored `.pi/factory.json` config), then launches a bounded asynchronous pipeline through pi-subagents' in-process RPC: **scout → plan → implement** (single writer, checked acceptance handoff), **deterministic validation** (commands come only from `.pi/factory.json` — never from model output), **three parallel fresh reviewers** (correctness, tests, simplicity) branching only on structured verdicts, **at most one fix pass**, and a final rerun of the trusted checks. Machine-consumed child results all use output schemas; malformed output and unresolved human decisions fail closed (`needs_attention` / `needs_approval`). `/factory-status` shows the latest run (phase, run/mission ids, checks, reviewer disposition, decisions). No commit, push, deploy, or release is ever performed. Deliberate deviation: pi-subagents 0.61 grants `runs.host` only to its named `run-ci` resource, so the trusted checks run in the extension process from human-authored config instead — same guarantee, no agent in the loop. See [`extensions/factory/README.md`](./extensions/factory/README.md) for the pipeline, config schema, and tests.
+
 ## Agents
 
 ### `reviewer` override (`agents/reviewer.md`)
 
 Shadows the builtin pi-subagents `reviewer` for every project where sof-pi is installed (package agents load above builtins). It keeps the builtin review structure and appends the sof-pi **Review Rubric**: flagging discipline, untrusted-input checks, fail-fast error handling, `[P0]–[P3]` priority tags, and the required non-blocking **Human Reviewer Callouts** section. Every `subagent({ agent: "reviewer" })`, `/parallel-review`, and `/review-loop` run therefore applies the same rubric automatically. A project can still override locally by dropping its own `reviewer.md` into the project agents directory.
+
+### `planner` (`agents/planner.md`)
+
+Read-only implementation planner used as the plan stage of the factory build workflow (`/factory`). It has no shell or write tools (`read, grep, find, ls`, high thinking) and returns a structured plan: concrete steps, files expected to change, explicit non-goals, a validation plan drawn only from commands that actually exist in the repository, and any product/architecture/security/scope decisions that require human approval — the factory stops on any unresolved decision instead of assuming.
 
 ## Installed Packages
 
