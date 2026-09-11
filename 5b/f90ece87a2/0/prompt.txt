@@ -1,0 +1,5 @@
+Remove tldraw offline skill
+
+---
+
+I can see it here /Users/sofianebebert/workspace/sof-pi/skills/tldraw-offline
