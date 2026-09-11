@@ -1,5 +1,1 @@
-Remove tldraw offline skill
-
----
-
-I can see it here /Users/sofianebebert/workspace/sof-pi/skills/tldraw-offline
+Ok commit and push this change and restore the skill in my .pi folder
