@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.10.3",
+  "checkpoint_id": "8c605234c1bf",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "docs/wacli-migration-review.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/8c/605234c1bf/0/metadata.json",
+      "transcript": "/8c/605234c1bf/0/full.jsonl",
+      "compact_transcript": "/8c/605234c1bf/0/transcript.jsonl",
+      "content_hash": "/8c/605234c1bf/0/content_hash.txt",
+      "prompt": "/8c/605234c1bf/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 681737,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1991680,
+    "output_tokens": 34816,
+    "api_call_count": 40
+  }
+}
