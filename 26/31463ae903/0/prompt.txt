@@ -1,1 +1,1 @@
-Add a skill for cloudflare CLI `cf` - keep it brief
+Commit and push the changes
