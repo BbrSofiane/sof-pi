@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.10.6",
+  "checkpoint_id": "8237805f241a",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 32,
+  "files_touched": [
+    "README.md",
+    "agents/evidence-auditor.md",
+    "agents/researcher.md",
+    "extensions/perplexity/README.md",
+    "extensions/perplexity/citations.ts",
+    "extensions/perplexity/contracts.ts",
+    "extensions/perplexity/evidence-store.ts",
+    "extensions/perplexity/index.ts",
+    "extensions/perplexity/perplexity.ts",
+    "extensions/perplexity/research-panel.ts",
+    "extensions/perplexity/source-check.ts",
+    "extensions/perplexity/source-fetch.ts",
+    "extensions/perplexity/sse-framer.ts",
+    "extensions/perplexity/web-tools.ts",
+    "package.json",
+    "pnpm-lock.yaml",
+    "tests/perplexity/cache-quota.test.ts",
+    "tests/perplexity/citations.test.ts",
+    "tests/perplexity/evidence-store.test.ts",
+    "tests/perplexity/evidence-tools.test.ts",
+    "tests/perplexity/panel.test.ts",
+    "tests/perplexity/provider.test.ts",
+    "tests/perplexity/source-check.test.ts",
+    "tests/perplexity/source-fetch.test.ts",
+    "tests/perplexity/sse-framer.test.ts",
+    "tests/perplexity/streaming.test.ts",
+    "tests/perplexity/tools.test.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/82/37805f241a/0/metadata.json",
+      "transcript": "/82/37805f241a/0/full.jsonl",
+      "compact_transcript": "/82/37805f241a/0/transcript.jsonl",
+      "content_hash": "/82/37805f241a/0/content_hash.txt",
+      "prompt": "/82/37805f241a/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 518,
+    "cache_creation_tokens": 1047583,
+    "cache_read_tokens": 25865660,
+    "output_tokens": 74967,
+    "api_call_count": 138
+  }
+}
