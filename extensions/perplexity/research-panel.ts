@@ -17,11 +17,17 @@
  *
  * Keys:
  *   Enter        send query (streamed answer appended to transcript)
- *   Ctrl+P       cycle Perplexity model
- *   Ctrl+T       toggle deep-research (sonar-deep-research) mode
  *   Ctrl+R       build recap from transcript (closes panel)
+ *   Ctrl+N       deliberate new session (idle/error only): clears the panel
+ *                transcript/render/source state, keeps the current input text
  *   Up / Down    scroll transcript (instant; auto-tails while streaming)
  *   Esc          cancel a running search, or close the panel when idle
+ *
+ * Queries are preflighted locally (exact shared request validation) before
+ * anything is committed: a rejected query is never added to the transcript and
+ * stays editable in the input. If accepted history alone already exhausts the
+ * provider replay budget, the panel says so explicitly and offers Ctrl+R recap
+ * or Ctrl+N new session; it never truncates or silently remaps history.
  */
 
 import { type Theme, getMarkdownTheme } from "@earendil-works/pi-coding-agent";
@@ -36,18 +42,23 @@ import {
 	wrapTextWithAnsi,
 } from "@earendil-works/pi-tui";
 import type { TUI } from "@earendil-works/pi-tui";
+import { scopeTranscriptCitations, unresolvedCitationMarkers } from "./citations.ts";
 import {
-	type PerplexityMessage,
-	type PerplexityModelInfo,
-	type PerplexitySource,
-	PERPLEXITY_MODELS,
+	preflightResearchRequest,
 	streamPerplexity,
+	type PerplexityMessage,
+	type PerplexitySource,
+	type RequestValidationError,
 } from "./perplexity.ts";
 
 export interface TranscriptTurn {
 	role: "user" | "assistant";
 	text: string;
 	citations?: PerplexitySource[];
+	responseId?: string;
+	unresolvedCitations?: string[];
+	/** External provider usage; not fabricated Pi-model accounting. */
+	usage?: unknown;
 }
 
 export interface ResearchResult {
@@ -57,6 +68,8 @@ export interface ResearchResult {
 }
 
 export interface ResearchPanelDeps {
+	/** Instance-local offline fixture seam; production uses the bounded Agent adapter. */
+	streamResearch?: typeof streamPerplexity;
 	/** Build a recap string from the transcript using the current pi model. */
 	synthesize: (transcript: TranscriptTurn[], signal: AbortSignal) => Promise<string>;
 	/** Called when the panel closes (null = cancelled). */
@@ -74,9 +87,6 @@ export class ResearchPanel implements Component, Focusable {
 
 	private input: Input;
 	private turns: TranscriptTurn[] = [];
-
-	private modelIndex = 1; // sonar-pro by default
-	private deepResearch = false;
 
 	private status: "idle" | "searching" | "recap" | "error" = "idle";
 	private statusMessage = "";
@@ -120,14 +130,6 @@ export class ResearchPanel implements Component, Focusable {
 		this.input.focused = value;
 	}
 
-	private get model(): PerplexityModelInfo {
-		if (this.deepResearch) {
-			const dr = PERPLEXITY_MODELS.find((m) => m.id === "sonar-deep-research");
-			if (dr) return dr;
-		}
-		return PERPLEXITY_MODELS[this.modelIndex];
-	}
-
 	/** Bump the content version so the rendered-transcript cache is rebuilt. */
 	private bump(): void {
 		this.version++;
@@ -147,7 +149,7 @@ export class ResearchPanel implements Component, Focusable {
 
 	handleInput(data: string): void {
 		// While searching, only Esc (cancel) and scroll are allowed.
-		if (this.status === "searching") {
+		if (this.status === "searching" || this.status === "recap") {
 			if (matchesKey(data, "escape") || matchesKey(data, "ctrl+c")) {
 				this.abortController?.abort();
 				return;
@@ -166,18 +168,12 @@ export class ResearchPanel implements Component, Focusable {
 			this.handleEscape();
 			return;
 		}
-		if (matchesKey(data, "ctrl+p")) {
-			this.cycleModel();
-			this.tui.requestRender();
-			return;
-		}
-		if (matchesKey(data, "ctrl+t")) {
-			this.deepResearch = !this.deepResearch;
-			this.tui.requestRender();
-			return;
-		}
 		if (matchesKey(data, "ctrl+r")) {
 			void this.requestRecap();
+			return;
+		}
+		if (matchesKey(data, "ctrl+n")) {
+			this.resetSession();
 			return;
 		}
 		if (matchesKey(data, "up")) {
@@ -197,7 +193,7 @@ export class ResearchPanel implements Component, Focusable {
 	}
 
 	private handleEscape(): void {
-		if (this.status === "searching") {
+		if (this.status === "searching" || this.status === "recap") {
 			this.abortController?.abort();
 			return;
 		}
@@ -220,42 +216,47 @@ export class ResearchPanel implements Component, Focusable {
 		}
 	}
 
-	private cycleModel(): void {
-		const nonDeep = PERPLEXITY_MODELS.filter((m) => !m.deepResearch);
-		const idx = nonDeep.findIndex((m) => m.id === this.model.id);
-		const next = nonDeep[(idx + 1) % nonDeep.length];
-		if (next) this.modelIndex = PERPLEXITY_MODELS.indexOf(next);
-	}
-
-	private buildMessages(): PerplexityMessage[] {
+	private buildMessages(turns: TranscriptTurn[]): PerplexityMessage[] {
 		const messages: PerplexityMessage[] = [{ role: "system", content: RESEARCH_SYSTEM_PROMPT }];
-		for (const turn of this.turns) {
-			messages.push({ role: turn.role, content: turn.text });
+		for (const turn of scopeTranscriptCitations(turns).turns) {
+			const sources = turn.citations?.map((source) => `[${source.id}] ${source.title} ${source.url}`).join("\n");
+			messages.push({ role: turn.role, content: turn.text + (sources ? `\n\nPrior-turn provider sources (not locally inspected):\n${sources}` : "") });
 		}
 		return messages;
 	}
 
 	private async submitQuery(rawQuery: string): Promise<void> {
 		const query = rawQuery.trim();
-		if (!query || this.status === "searching") return;
+		if (!query || this.status === "searching" || this.status === "recap") return;
+
+		// Candidate transcript: built and preflighted WITHOUT committing the query
+		// or clearing the input, so a locally rejected request cannot poison the
+		// session. Preflight uses the exact scoped replay messages (and stream=true,
+		// default maxTokens/preset) the transport call below sends; signal/callback
+		// options do not affect the encoded body or envelope validation.
+		const messages = this.buildMessages([...this.turns, { role: "user", text: query }]);
+		try {
+			preflightResearchRequest(messages, {});
+		} catch (err) {
+			this.rejectQueryLocally(err);
+			return;
+		}
 
 		this.input.setValue("");
 		this.turns.push({ role: "user", text: query });
 		this.partial = "";
 		this.partialCitations = [];
 		this.status = "searching";
-		this.statusMessage = `searching (${this.model.label})…`;
+		this.statusMessage = "researching (fast synthesis)…";
 		this.autoScroll = true;
 		this.scrollOffset = 0;
 		this.bump();
 		this.tui.requestRender();
 
 		this.abortController = new AbortController();
-		const messages = this.buildMessages();
-		const modelId = this.model.id;
 
 		try {
-			await streamPerplexity(messages, modelId, {
+			await (this.deps.streamResearch ?? streamPerplexity)(messages, {
 				signal: this.abortController.signal,
 				onDelta: (chunk) => {
 					this.partial += chunk;
@@ -268,10 +269,14 @@ export class ResearchPanel implements Component, Focusable {
 					this.tui.requestRender();
 				},
 			}).then((result) => {
+				if (this.abortController?.signal.aborted) throw new DOMException("Research cancelled", "AbortError");
 				this.turns.push({
 					role: "assistant",
-					text: this.partial || result.content,
-					citations: result.citations.length ? result.citations : this.partialCitations,
+					text: result.content, // Terminal structured text is authoritative.
+					citations: result.citations,
+					responseId: result.responseId,
+					unresolvedCitations: result.unresolvedCitations,
+					usage: result.usage,
 				});
 			});
 			this.status = "idle";
@@ -289,9 +294,11 @@ export class ResearchPanel implements Component, Focusable {
 						role: "assistant",
 						text: this.partial + "\n\n_(search cancelled)_",
 						citations: this.partialCitations,
+						unresolvedCitations: unresolvedCitationMarkers(this.partial, this.partialCitations),
 					});
 				}
 				this.status = "idle";
+				this.statusMessage = "";
 			} else {
 				this.status = "error";
 				this.statusMessage = err instanceof Error ? err.message : String(err);
@@ -303,6 +310,51 @@ export class ResearchPanel implements Component, Focusable {
 			this.abortController = null;
 			this.tui.requestRender();
 		}
+	}
+
+	/**
+	 * Local preflight rejection: no fetch, key lookup, or billable work. The
+	 * submitted text stays editable in the input and the transcript is untouched
+	 * (citation scopes therefore never shift). Classified by a second preflight
+	 * of the accepted history alone — if that also exceeds the replay budget,
+	 * say so explicitly and offer recap (Ctrl+R) or a deliberate new session
+	 * (Ctrl+N) instead of truncating or remapping anything.
+	 */
+	private rejectQueryLocally(err: unknown): void {
+		const detail = err instanceof Error ? err.message : String(err);
+		const code = (err as RequestValidationError | undefined)?.code;
+		let exhausted = false;
+		try {
+			preflightResearchRequest(this.buildMessages(this.turns), {});
+		} catch {
+			exhausted = true;
+		}
+		this.status = "error";
+		this.statusMessage = exhausted
+			? `${detail} — history replay budget exhausted; press ctrl+r to recap this transcript, or ctrl+n for a new session (input kept for retry)`
+			: `${detail} — query not sent${code ? ` (${code})` : ""}; edit it in the input and resubmit`;
+		this.partial = "";
+		this.partialCitations = [];
+		this.bump();
+		this.tui.requestRender();
+	}
+
+	/**
+	 * Deliberate Ctrl+N action (idle/error only, never mid-search/recap): clears
+	 * prior panel transcript/render/source state only on this explicit choice;
+	 * the current input text is retained for retry.
+	 */
+	private resetSession(): void {
+		if (this.status === "searching" || this.status === "recap") return;
+		this.turns = [];
+		this.partial = "";
+		this.partialCitations = [];
+		this.status = "idle";
+		this.statusMessage = "";
+		this.autoScroll = true;
+		this.scrollOffset = 0;
+		this.bump();
+		this.tui.requestRender();
 	}
 
 	private async requestRecap(): Promise<void> {
@@ -321,10 +373,16 @@ export class ResearchPanel implements Component, Focusable {
 		this.abortController = new AbortController();
 		try {
 			const recap = await this.deps.synthesize(this.turns, this.abortController.signal);
-			this.deps.done({ recap: true, transcript: this.turns, recapText: recap });
+			if (!this.abortController.signal.aborted) {
+				this.deps.done({ recap: true, transcript: this.turns, recapText: recap });
+			} else {
+				this.status = "idle";
+				this.statusMessage = "";
+			}
 		} catch (err) {
 			if (this.abortController.signal.aborted) {
 				this.status = "idle";
+				this.statusMessage = "";
 			} else {
 				this.status = "error";
 				this.statusMessage = err instanceof Error ? err.message : String(err);
@@ -349,8 +407,8 @@ export class ResearchPanel implements Component, Focusable {
 
 		if (citations && citations.length > 0) {
 			lines.push(this.theme.fg("dim", "─".repeat(Math.min(width, 48))));
-			citations.forEach((c, i) => {
-				const num = this.theme.fg("accent", `[${i + 1}]`);
+			citations.forEach((c) => {
+				const num = this.theme.fg("accent", `[${c.id}]`);
 				const title = this.theme.fg("muted", c.title);
 				const url = this.theme.fg("dim", c.url);
 				lines.push(truncateToWidth(`${num} ${title} ${url}`, width));
@@ -367,6 +425,13 @@ export class ResearchPanel implements Component, Focusable {
 				lines.push(...this.renderQuery(turn, width));
 			} else {
 				lines.push(...this.renderAnswer(turn.text, turn.citations, width));
+				if (turn.usage !== undefined) {
+					const usageText = JSON.stringify(turn.usage);
+					lines.push(...wrapTextWithAnsi(this.theme.fg("dim", `External provider usage: ${usageText.slice(0, 512)}${usageText.length > 512 ? "…" : ""}`), width));
+				}
+				if (turn.unresolvedCitations?.length) {
+					lines.push(...wrapTextWithAnsi(this.theme.fg("warning", `Unresolved citations: ${turn.unresolvedCitations.join(", ")}`), width));
+				}
 			}
 			lines.push("");
 		}
@@ -374,10 +439,16 @@ export class ResearchPanel implements Component, Focusable {
 		// in-flight streaming answer
 		if (this.partial || this.status === "searching") {
 			lines.push(...this.renderAnswer(this.partial || "…", this.partialCitations, width));
+			const unknown = unresolvedCitationMarkers(this.partial, this.partialCitations);
+			if (unknown.length) lines.push(...wrapTextWithAnsi(this.theme.fg("warning", `Pending/unresolved citations: ${unknown.join(", ")}`), width));
 		}
 
+		// Wrap (never truncate) so oversized error/status text — e.g. the deterministic
+		// local-rejection guidance for ctrl+r/ctrl+n — stays fully visible at narrow
+		// terminal widths instead of emitting an over-width line the host renderer
+		// cannot draw. Handles embedded newlines and ANSI codes.
 		if (this.status === "error" && this.statusMessage) {
-			lines.push(this.theme.fg("error", `Error: ${this.statusMessage}`));
+			lines.push(...wrapTextWithAnsi(this.theme.fg("error", `Error: ${this.statusMessage}`), width));
 			lines.push("");
 		}
 
@@ -401,10 +472,7 @@ export class ResearchPanel implements Component, Focusable {
 		const innerWidth = Math.max(10, width - 2);
 
 		// ---- top border: title · model · status ----
-		const model = this.model;
-		const modeTag = this.deepResearch
-			? this.theme.fg("warning", "deep-research")
-			: this.theme.fg("dim", model.label);
+		const modeTag = this.theme.fg("dim", "fast · provider synthesis, not inspected evidence");
 		const statusTag =
 			this.status === "searching"
 				? this.theme.fg("warning", ` ${this.statusMessage}`)
@@ -451,7 +519,7 @@ export class ResearchPanel implements Component, Focusable {
 		const help = truncateToWidth(
 			this.theme.fg(
 				"dim",
-				" ⏎ send · ctrl+p model · ctrl+t deep-research · ctrl+r recap · ↑↓ scroll · esc close",
+				" ⏎ send · fast only · ctrl+r recap · ctrl+n new session · ↑↓ scroll · esc cancel/close",
 			),
 			innerWidth,
 		);

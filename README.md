@@ -36,12 +36,18 @@ sof-pi/
 
 ### Perplexity (`extensions/perplexity/`)
 
-Web search and interactive research via the [Perplexity API](https://docs.perplexity.ai/), designed to keep raw search traffic out of the main pi context window. Two pieces:
+A narrow **evidence-first v1** with explicit synthesis via the first-party [Perplexity APIs](https://docs.perplexity.ai/), not a full `pi-web-access` compatibility shim:
 
-1. **Web tools (`web_search`, `fetch_content`, `get_search_content`)** — Perplexity-backed stand-ins for the `pi-web-access` tools that pi-subagents' `researcher` and `context-builder` agents list in their `tools:` frontmatter. Without them, subagent runs that reference `web_search` fail with an "unavailable tool" error. They synthesize answers with cited sources rather than returning raw result snippets.
-2. **`/research` command** — an interactive, full-screen research panel for back-and-forth Perplexity sessions (queries + streamed answers + sources). Build a recap you can shape in an editor and inject into your main thread; intermediate search content stays in the panel and is discarded unless you build a recap.
+- **`web_search`** discovers candidate sources/provider snippets using native Search API controls; optional `includeContent` explicitly fetches bounded public pages.
+- **`fetch_content`** directly fetches public text/Markdown/static HTML into private, hashed source snapshots — no synthesis fallback, PDF/browser/auth access.
+- **`get_search_content`** reads exact stored content by scoped handles without network/model activity; expiry/eviction fails explicitly.
+- **`source_check`** assembles exact lexical passages/provenance from deduplicated snapshots and preserves applicable artifact-reuse failures/uninspected gaps, never semantic verdicts/confidence. Explicit discovery exposes its scoped stored-search handle and supplied usage; absent usage stays unknown, and historical reuse performs no network.
+- **`perplexity_research`** explicitly requests fast-only Agent API synthesis, labelled separately from inspected evidence and external usage. Dynamic fast remains provider-managed, not a frozen cost/capability guarantee.
+- **`/research`** keeps human-driven streamed synthesis outside the main thread. Recap creation is explicit, turn-scoped citations are validated, and an editable approval preview only loads the main editor for manual submission. Rejected (over-limit/invalid) input fails locally before any commit — no fetch or key work, transcript untouched, input kept editable — with an explicit Ctrl+N new-session action from idle/error and Ctrl+R recap guidance when the replay budget is exhausted; streams end at the first authoritative completion regardless of chunk framing.
 
-See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for details.
+**Breaking migration:** old synthesized `fetch_content`/searching `get_search_content` arguments fail; use `perplexity_research` for synthesis. All five tools declare machine-readable output schemas. Partial retrieval errors remain visible; no hidden retries/provider fallback. Evidence uses a one-hour private per-session cache (128 records/64 MiB; host 2048 records/512 MiB) with a bounded root-private quota-metadata index so inserts do not rescan other records' payloads (one-time legacy rebuild on first post-upgrade write; safe to delete to force a rebuild). Independent audit children refetch public sources into their own scope.
+
+See [`extensions/perplexity/README.md`](./extensions/perplexity/README.md) for exact schemas, limits, data disclosure, child-loading policy, and validation limitations. The preserved [review proposal](./extensions/perplexity/REVIEW-AND-IMPLEMENTATION-PLAN.md) is historical; its recommended narrow v1 is now implemented, while live provider/quality evaluation remains opt-in.
 
 ### Background Terminals (`extensions/background-terminals/`)
 
@@ -60,6 +66,10 @@ A minimal, reliable software factory. `/factory <task>` validates the project (t
 ### `reviewer` override (`agents/reviewer.md`)
 
 Shadows the builtin pi-subagents `reviewer` for every project where sof-pi is installed (package agents load above builtins). It keeps the builtin review structure and appends the sof-pi **Review Rubric**: flagging discipline, untrusted-input checks, fail-fast error handling, `[P0]–[P3]` priority tags, and the required non-blocking **Human Reviewer Callouts** section. Every `subagent({ agent: "reviewer" })`, `/parallel-review`, and `/review-loop` run therefore applies the same rubric automatically. A project can still override locally by dropping its own `reviewer.md` into the project agents directory.
+
+### Research roles (`agents/researcher.md`, `agents/evidence-auditor.md`)
+
+These package-owned profiles replace the builtin `researcher` and `evidence-auditor` wholesale through package-over-builtin precedence; user/project profiles and settings overrides still win. Their prompts match the local evidence-v1 schemas (no upstream workflow/semantic-verdict assumptions). Researcher retains bounded brief writing/medium thinking; auditor is read-only/high thinking and defaults to fresh context. Both inherit the current model, explicitly disable ambient extensions, and load `../extensions/perplexity/index.ts` relative to their profile file via `subagentOnlyExtensions`, for foreground and background native children. Exact local resolution: `/Users/sofianebebert/workspace/sof-pi/extensions/perplexity/index.ts`; relocated installs resolve under their package root. No synthesis tool is allowlisted for either evidence role. Offline discovery/registry tests verify loading inputs and precedence, not an actual child model run; the installed-discovery smoke is opt-in (`SOF_PI_SUBAGENTS_INTEGRATION=1`) and is skipped with a prerequisite message — never silently counted as verified — when no compatible installed pi-subagents is present.
 
 ### `planner` (`agents/planner.md`)
 
