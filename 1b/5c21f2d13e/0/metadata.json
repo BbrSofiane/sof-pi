@@ -1,0 +1,52 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "1b5c21f2d13e",
+  "session_id": "01a14ac8-fb33-769b-a333-d26920382794",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-17T17:06:33.890916Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md",
+    "extensions/factory/README.md",
+    "extensions/factory/index.ts",
+    "extensions/factory/src/state.ts",
+    "extensions/factory/src/waterfall.ts",
+    "tests/factory/waterfall.test.ts"
+  ],
+  "agent": "Pi",
+  "model": "glm-5.3-flash",
+  "turn_id": "b80251e9b02e",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 96535,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 5235988,
+    "output_tokens": 44283,
+    "api_call_count": 85
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-17T17:06:33.858104Z",
+    "agent_lines": 703,
+    "agent_removed": 11,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 703,
+    "total_lines_changed": 714,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 156,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "docs/wacli-migration-review.md": 156
+      }
+    }
+  ]
+}

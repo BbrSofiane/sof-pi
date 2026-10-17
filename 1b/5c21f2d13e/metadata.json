@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "1b5c21f2d13e",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md",
+    "extensions/factory/README.md",
+    "extensions/factory/index.ts",
+    "extensions/factory/src/state.ts",
+    "extensions/factory/src/waterfall.ts",
+    "tests/factory/waterfall.test.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1b/5c21f2d13e/0/metadata.json",
+      "transcript": "/1b/5c21f2d13e/0/full.jsonl",
+      "compact_transcript": "/1b/5c21f2d13e/0/transcript.jsonl",
+      "content_hash": "/1b/5c21f2d13e/0/content_hash.txt",
+      "prompt": "/1b/5c21f2d13e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 96535,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 5235988,
+    "output_tokens": 44283,
+    "api_call_count": 85
+  }
+}

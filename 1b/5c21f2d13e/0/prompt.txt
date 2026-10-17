@@ -1,0 +1,7 @@
+/Users/sofianebebert/Desktop/Screenshot\ 2026-10-17\ at\ 17.53.47.png
+
+I want to improve the UX of the factory extension. At the moment, it look like the image above.
+
+I want to try something that's more like the swimlane waterfall below
+
+/Users/sofianebebert/Downloads/00_swimlane_waterfall.svg
