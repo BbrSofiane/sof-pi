@@ -132,11 +132,25 @@ export function piSubagentsCopy(): Promise<string> {
 				symlinkSync(join(source, entry.name), target);
 			}
 		};
-		linkAll(join(root, "node_modules")); // package-local deps (e.g. typebox)
+		const pkgNodeModules = join(root, "node_modules");
+		if (existsSync(pkgNodeModules)) linkAll(pkgNodeModules); // package-local deps (e.g. typebox)
 		linkAll(join(homedir(), ".pi/agent/npm/node_modules")); // hoisted deps (acorn, yaml, …)
 		return dir;
 	})();
 	return copyPromise;
+}
+
+/**
+ * Resolve a module path inside the pi-subagents copy. Newer releases ship
+ * compiled .js (no .ts sources), so prefer the requested .ts file and fall
+ * back to its compiled .js sibling.
+ */
+export async function piSubagentsImport(relTsPath: string): Promise<unknown> {
+	const dir = await piSubagentsCopy();
+	if (existsSync(join(dir, relTsPath))) return import(`${dir}${relTsPath}`);
+	const jsPath = relTsPath.replace(/\.ts$/, ".js");
+	if (existsSync(join(dir, jsPath))) return import(`${dir}${jsPath}`);
+	throw new Error(`Module not found in pi-subagents copy: ${relTsPath}`);
 }
 
 /** Synchronous git helper used by tests to build disposable repositories. */

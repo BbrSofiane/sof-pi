@@ -128,7 +128,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	): Promise<string> => {
 		const title = `Factory ${input.phase}: ${input.task.slice(0, 80)}`.replace(/[\r\n]+/g, " ");
 		const data = await rpcRequest<{ text?: string; details?: { runId?: string; asyncDir?: string } }>(pi.events, "spawn", {
-			workflowScript: script,
+			script,
 			mission: { title },
 			timeoutMs: config.timeoutMs,
 			globalConcurrencyLimit: config.maxConcurrency,

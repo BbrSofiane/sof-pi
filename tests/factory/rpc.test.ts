@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 
 import { FactoryRpcError, rpcPing, rpcRequest } from "../../extensions/factory/src/rpc.ts";
-import { piSubagentsCopy } from "./helpers.ts";
+import { piSubagentsImport } from "./helpers.ts";
 
 interface Bus {
 	seen: Array<{ event: string; data: unknown }>;
@@ -95,8 +95,7 @@ describe("factory RPC client (request/reply correlation)", () => {
 
 describe("smoke test against the real installed pi-subagents RPC bridge", () => {
 	it("pings, validates spawn params through the real bridge, and rejects invalid requests", async () => {
-		const dir = await piSubagentsCopy();
-		const { registerSubagentRpcBridge } = await import(`${dir}/src/extension/rpc.ts`);
+		const { registerSubagentRpcBridge } = (await piSubagentsImport("/src/extension/rpc.ts")) as typeof import("../../extensions/factory/src/rpc.ts");
 		const bus = createBus();
 		const fakeCtx = { cwd: "/tmp", sessionManager: { getSessionId: () => "smoke-session", getSessionFile: () => null } };
 		const executed: Array<{ id: string; params: Record<string, unknown> }> = [];
@@ -120,7 +119,7 @@ describe("smoke test against the real installed pi-subagents RPC bridge", () => 
 
 		// The exact spawn request shape the factory sends passes real validation.
 		const spawnParams = {
-			workflowScript: 'const scout = await runs.run("scout", { agent: "scout", task: "t" }); return scout.structuredOutput;',
+			script: 'const scout = await runs.run("scout", { agent: "scout", task: "t" }); return scout.structuredOutput;',
 			mission: { title: "Factory build: demo" },
 			timeoutMs: 1_800_000,
 			globalConcurrencyLimit: 4,
@@ -131,7 +130,7 @@ describe("smoke test against the real installed pi-subagents RPC bridge", () => 
 		assert.equal(executed.length, 1);
 		// The bridge normalized the launch to detached async.
 		assert.equal(executed[0].params.async, true);
-		assert.equal(executed[0].params.workflowScript, spawnParams.workflowScript);
+		assert.equal(executed[0].params.workflowScript, spawnParams.script);
 
 		// Invalid requests are rejected by the real boundary before dispatch.
 		await assert.rejects(
@@ -139,11 +138,11 @@ describe("smoke test against the real installed pi-subagents RPC bridge", () => 
 			(error: FactoryRpcError) => error.code === "invalid_params",
 		);
 		await assert.rejects(
-			rpcRequest(bus, "spawn", { workflowScript: "return 1", async: false }, { timeoutMs: 5_000 }),
+			rpcRequest(bus, "spawn", { script: "return 1", async: false }, { timeoutMs: 5_000 }),
 			(error: FactoryRpcError) => error.code === "invalid_params",
 		);
 		await assert.rejects(
-			rpcRequest(bus, "spawn", { workflowScript: "return 1", agent: "scout" }, { timeoutMs: 5_000 }),
+			rpcRequest(bus, "spawn", { script: "return 1", agent: "scout" }, { timeoutMs: 5_000 }),
 			(error: FactoryRpcError) => error.code === "invalid_params",
 		);
 		bridge.dispose();

@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 
 import { buildBuildWorkflowScript, buildReviewWorkflowScript } from "../../extensions/factory/src/workflow.ts";
-import { piSubagentsCopy } from "./helpers.ts";
+import { piSubagentsImport } from "./helpers.ts";
 
 const TASK = [
 	"Add a health-check endpoint with tests and documentation.",
@@ -13,8 +13,7 @@ const TASK = [
 ].join("\n");
 
 async function validator(): Promise<(script: string) => { ok: boolean; errors?: Array<{ message: string }> }> {
-	const dir = await piSubagentsCopy();
-	const mod = (await import(`${dir}/src/workflows/scripted-workflow.ts`)) as {
+	const mod = (await piSubagentsImport("/src/workflows/scripted-workflow.ts")) as {
 		validateWorkflowScript: (script: string) => { ok: boolean; errors?: Array<{ message: string }> };
 	};
 	return mod.validateWorkflowScript;

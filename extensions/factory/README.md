@@ -61,7 +61,7 @@ Never place prompts, credentials, secrets, or shell fragments from model output 
 
 ## Deliberate deviation: checks run in the extension, not via `runs.host`
 
-pi-subagents 0.61 grants `runs.host` authority only to named workflow resources (currently `npm test` / `npm run typecheck`); inline `workflowScript` launched through the public execution boundary cannot use it. The factory therefore runs the trusted validation commands **in this extension process**, between the two workflows, using strictly-validated human-authored configuration with bounded timeouts and output capture. The security property is preserved: model-proposed commands are never executed, and the commands come only from `.pi/factory.json`.
+pi-subagents 0.61 grants `runs.host` authority only to named workflow resources (currently `npm test` / `npm run typecheck`); inline workflow scripts launched through the public execution boundary (`script` RPC param) cannot use it. The factory therefore runs the trusted validation commands **in this extension process**, between the two workflows, using strictly-validated human-authored configuration with bounded timeouts and output capture. The security property is preserved: model-proposed commands are never executed, and the commands come only from `.pi/factory.json`.
 
 If a future pi-subagents version exposes a user/project workflow-resource registry, the check phase can migrate to `runs.host` without changing the pipeline shape.
 
