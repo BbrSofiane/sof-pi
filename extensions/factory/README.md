@@ -26,7 +26,7 @@ Execution, lifecycle, missions, artifacts, status, resume, and Herdr integration
 | Command | Purpose |
 | --- | --- |
 | `/factory <task>` | Validate trust/baseline/config, then launch the build workflow asynchronously. |
-| `/factory-status` | Show the latest run: phase, run/mission ids, check results, reviewer disposition, decisions, errors. |
+| `/factory-status` | Show the latest run: swimlane waterfall, live workflow state, checks, reviewer disposition, decisions, errors. |
 
 Baseline requirements: trusted project, inside a git work tree, clean working tree (unless `allowDirtyBaseline` is enabled), and `.pi/factory.json` present and valid.
 
@@ -65,10 +65,20 @@ pi-subagents 0.61 grants `runs.host` authority only to named workflow resources 
 
 If a future pi-subagents version exposes a user/project workflow-resource registry, the check phase can migrate to `runs.host` without changing the pipeline shape.
 
+## Live waterfall UX
+
+Instead of a flat text dump, a run is rendered as a **swimlane waterfall**: one bar per pipeline lane (scout, plan, implement, checks, review ×3, fix, final checks) on a shared time axis, colored by state (accent = running, success = done, error = failed, warning = paused).
+
+- A widget above the editor shows the chart for the latest run and updates live: the active lane grows toward "now" and the current sub-stage appears in the status bar (`factory: build · implement`).
+- Sub-stage spans come from a 3s poll of the pi-subagents `status` RPC (`Workflow child <key>: … <status>` lines). Coarse phase spans (build/checks/review/final) are always recorded exactly at phase transitions, so the chart degrades gracefully when polling is unavailable; fine sub-spans replace their coarse span at render time.
+- Spans are stored as milliseconds relative to the run start in the session entry, so the waterfall survives restarts and branch restores (fail-closed validation rejects malformed spans).
+- When a run finishes, the widget keeps the final chart and the completion notification stays short (task, verdict, final checks, changed files); `/factory-status` renders the full waterfall plus all details.
+- Layout and status parsing live in `src/waterfall.ts` as pure, unit-tested functions; the widget component (`WaterfallWidget`) only reads the shared model and applies theme colors.
+
 ## Tests
 
 ```bash
 pnpm test   # or: node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/factory/*.test.ts
 ```
 
-Covers: strict config validation, safe task encoding (quotes, Markdown fences, shell-like text, multiline prompts), sandboxed execution of the generated workflows (stage order, structured-verdict-only branching, bounded fix pass, fail-closed malformed output), deterministic check execution, RPC request/reply correlation and timeouts, and offline validation of both generated scripts against the **real** installed `validateWorkflowScript` plus a read-only smoke test against the **real** RPC bridge. The validator/RPC tests locate the installed package at `~/.pi/agent/npm/node_modules/pi-subagents` (override with `PI_SUBAGENTS_PATH`).
+Covers: strict config validation, safe task encoding (quotes, Markdown fences, shell-like text, multiline prompts), sandboxed execution of the generated workflows (stage order, structured-verdict-only branching, bounded fix pass, fail-closed malformed output), deterministic check execution, RPC request/reply correlation and timeouts, waterfall layout/round-trip (`waterfall.test.ts`), and offline validation of both generated scripts against the **real** installed `validateWorkflowScript` plus a read-only smoke test against the **real** RPC bridge. The validator/RPC tests locate the installed package at `~/.pi/agent/npm/node_modules/pi-subagents` (override with `PI_SUBAGENTS_PATH`).

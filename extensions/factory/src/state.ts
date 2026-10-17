@@ -35,6 +35,17 @@ export interface FactoryHandoffRecord {
 	workLeftUndone: string[];
 }
 
+export interface FactorySpanRecord {
+	/** Stable lane key: build | scout | plan | implement | checks | reviewers | fix | review | final */
+	key: string;
+	label: string;
+	/** ms relative to the run start (state.startedAt). */
+	startMs: number;
+	/** ms relative to run start; null while the lane is still open. */
+	endMs: number | null;
+	state: "running" | "success" | "failed" | "attention" | "queued";
+}
+
 export interface FactoryRunState {
 	task: string;
 	phase: FactoryPhase;
@@ -50,6 +61,8 @@ export interface FactoryRunState {
 	/** Workflow-level verdict from the review workflow (ok/fixed/blocked/…). */
 	outcome?: string;
 	error?: string;
+	/** Waterfall lanes, ms relative to startedAt. Optional; older entries lack it. */
+	spans?: FactorySpanRecord[];
 	startedAt: string;
 	updatedAt: string;
 }
@@ -146,6 +159,23 @@ if (record.reviewVerdict !== undefined) {
 if (record.decisions !== undefined) {
 	if (!Array.isArray(record.decisions)) return undefined;
 	state.decisions = boundedStringList(record.decisions);
+}
+if (record.spans !== undefined) {
+	if (!Array.isArray(record.spans)) return undefined;
+	const spans = record.spans.slice(0, MAX_LIST_ITEMS).map((raw): FactorySpanRecord | null => {
+		if (!raw || typeof raw !== "object") return null;
+		const span = raw as Record<string, unknown>;
+		const key = boundedString(span.key, 40);
+		const label = boundedString(span.label, 60);
+		if (!key || !label) return null;
+		if (typeof span.startMs !== "number" || span.startMs < 0 || !Number.isFinite(span.startMs)) return null;
+		if (span.endMs !== null && (typeof span.endMs !== "number" || span.endMs < span.startMs || !Number.isFinite(span.endMs))) return null;
+		const state = span.state;
+		if (state !== "running" && state !== "success" && state !== "failed" && state !== "attention" && state !== "queued") return null;
+		return { key, label, startMs: span.startMs, endMs: span.endMs, state };
+	});
+	if (spans.some((span) => span === null)) return undefined;
+	state.spans = spans as FactorySpanRecord[];
 }
 if (record.checks !== undefined) {
 	const checks = boundedCheckRecords(record.checks);

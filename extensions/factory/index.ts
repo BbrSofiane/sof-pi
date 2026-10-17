@@ -48,6 +48,16 @@ import {
 	type FactoryHandoffRecord,
 	type FactoryRunState,
 } from "./src/state.ts";
+import {
+	WaterfallWidget,
+	currentStageLabel,
+	formatDuration,
+	laneStateFromStatuses,
+	parseWorkflowChildStatuses,
+	renderWaterfall,
+	type WaterfallModel,
+	type WaterfallState,
+} from "./src/waterfall.ts";
 import { buildBuildWorkflowScript, buildReviewWorkflowScript } from "./src/workflow.ts";
 
 const ASYNC_COMPLETE_EVENT = "subagent:async-complete";
@@ -60,6 +70,43 @@ function nowIso(): string {
 	return new Date().toISOString();
 }
 
+/** Display labels for waterfall lanes. */
+const LANE_LABELS: Record<string, string> = {
+	build: "build workflow",
+	scout: "scout",
+	plan: "plan",
+	implement: "implement",
+	checks: "checks",
+	reviewers: "review ×3",
+	fix: "fix",
+	review: "review workflow",
+	final: "final checks",
+};
+
+/** Poll cadence for live sub-stage progress (pi-subagents status RPC). */
+const POLL_INTERVAL_MS = 3_000;
+
+/** Status line under the waterfall, derived from run state. */
+function waterfallStatusLine(state: FactoryRunState, nowMs: number): string {
+	switch (state.phase) {
+		case "build":
+		case "checks":
+		case "review":
+		case "final-checks": {
+			const stage = currentStageLabel(state.spans);
+			return `running — ${stage ?? state.phase} · elapsed ${formatDuration(nowMs)}`;
+		}
+		case "complete":
+			return `complete — ${formatDuration(Math.max(...(state.spans ?? [{ endMs: 0 }]).map((s) => s.endMs ?? 0)))}`;
+		case "failed":
+			return `failed — ${boundedSummary(state.error).slice(0, 120)}`;
+		case "needs_approval":
+			return "paused — decision required (see /factory-status)";
+		default:
+			return "paused — see /factory-status";
+	}
+}
+
 function formatChecks(checks: FactoryCheckRecord[]): string {
 	return checks
 		.map((check) => {
@@ -67,6 +114,19 @@ function formatChecks(checks: FactoryCheckRecord[]): string {
 			return `  - ${check.name}: ${status} (${check.durationMs}ms)`;
 		})
 		.join("\n");
+}
+
+/** Condensed completion notice; the waterfall widget and /factory-status carry the detail. */
+function formatCompletionDetails(state: FactoryRunState): string {
+	const lines: string[] = [`Task: ${state.task}`];
+	if (state.reviewVerdict) lines.push(`Reviewers: ${state.reviewVerdict}`);
+	if (state.finalChecks) {
+		const ok = state.finalChecks.filter((c) => !c.timedOut && c.exitCode === 0).length;
+		lines.push(`Final checks: ${ok}/${state.finalChecks.length} ok`);
+	}
+	if (state.handoff?.changedFiles.length) lines.push(`Changed files: ${state.handoff.changedFiles.join(", ")}`);
+	lines.push("Waterfall above the editor · full report: /factory-status");
+	return lines.join("\n");
 }
 
 function formatState(state: FactoryRunState): string {
@@ -95,6 +155,126 @@ function formatState(state: FactoryRunState): string {
 export default function factoryExtension(pi: ExtensionAPI) {
 	let state: FactoryRunState | undefined;
 
+	// ---- Swimlane waterfall ---------------------------------------------
+
+	interface WidgetHolder {
+		model?: WaterfallModel;
+		component?: WaterfallWidget;
+		tui?: { requestRender(): void };
+	}
+	const widget: WidgetHolder = {};
+	let pollTimer: ReturnType<typeof setTimeout> | undefined;
+
+	const runStartMs = (): number => {
+		const t = Date.parse(state?.startedAt ?? "");
+		return Number.isFinite(t) ? t : Date.now();
+	};
+	const relNow = (): number => Math.max(0, Date.now() - runStartMs());
+
+	const openSpan = (key: string, startMs = relNow()) => {
+		if (!state) return;
+		state.spans ??= [];
+		const existing = state.spans.find((s) => s.key === key);
+		if (existing) return; // Lanes open once; later observations only refine state.
+		state.spans.push({ key, label: LANE_LABELS[key] ?? key, startMs, endMs: null, state: "running" });
+	};
+
+	const setSpanState = (key: string, spanState: WaterfallState) => {
+		const span = state?.spans?.find((s) => s.key === key);
+		if (span && span.endMs === null) span.state = spanState;
+	};
+
+	const closeSpan = (key: string, finalState: WaterfallState, endMs = relNow()) => {
+		const span = state?.spans?.find((s) => s.key === key);
+		if (span && span.endMs === null) {
+			span.endMs = endMs;
+			span.state = finalState;
+		}
+	};
+
+	/** Close every still-open lane with the given terminal state. */
+	const closeAllOpenSpans = (finalState: WaterfallState) => {
+		for (const span of state?.spans ?? []) closeSpan(span.key, finalState);
+	};
+
+	const spanTotalMs = (): number => Math.max(0, ...(state?.spans ?? []).map((s) => s.endMs ?? relNow()));
+
+	const refreshWidget = (ctx: ExtensionContext) => {
+		if (!state || ctx.mode !== "tui") return;
+		const nowMs = relNow();
+		if (!widget.model) {
+			widget.model = { task: state.task, spans: state.spans ?? [], statusLine: waterfallStatusLine(state, nowMs), nowMs };
+			ctx.ui.setWidget(
+				"factory",
+				(t, theme) => {
+					const component = new WaterfallWidget(widget.model!, theme);
+					widget.component = component;
+					widget.tui = t;
+					return component;
+				},
+				{ placement: "aboveEditor" },
+				);
+		} else {
+			widget.model.task = state.task;
+			widget.model.spans = state.spans ?? [];
+			widget.model.statusLine = waterfallStatusLine(state, nowMs);
+			widget.model.nowMs = nowMs;
+		}
+		widget.component?.invalidate();
+		widget.tui?.requestRender();
+	};
+
+	/** Map parsed pi-subagents workflow child statuses onto waterfall lanes. */
+	const applyWorkflowStatus = (phase: "build" | "review", text: string) => {
+		if (!state) return;
+		const laneFor = (key: string): string | undefined => {
+			if (phase === "build") return key === "scout" || key === "plan" || key === "implement" ? key : undefined;
+			if (key.startsWith("review-")) return "reviewers";
+			return key === "fix" ? "fix" : undefined;
+		};
+		const statuses = parseWorkflowChildStatuses(text);
+		for (const [rawKey, sts] of statuses) {
+			const lane = laneFor(rawKey);
+			if (!lane) continue;
+			const laneState = laneStateFromStatuses(sts);
+			openSpan(lane);
+			if (laneState === "running" || laneState === "queued") setSpanState(lane, laneState);
+			else closeSpan(lane, laneState);
+		}
+	};
+
+	const stopPolling = () => {
+		if (pollTimer) clearTimeout(pollTimer);
+		pollTimer = undefined;
+	};
+
+	const pollOnce = async () => {
+		if (!state || !activeCtx) return;
+		const phase = state.phase === "build" ? "build" : state.phase === "review" ? "review" : undefined;
+		const runId = phase === "build" ? state.buildRunId : phase === "review" ? state.reviewRunId : undefined;
+		if (phase && runId) {
+			try {
+				const data = await rpcRequest<{ text?: string }>(pi.events, "status", { id: runId }, { timeoutMs: 10_000 });
+				applyWorkflowStatus(phase, data?.text ?? "");
+			} catch {
+				// Best-effort: sub-stage detail is display-only; coarse phase spans stay exact.
+			}
+		}
+		refreshWidget(activeCtx);
+		updateStatus(activeCtx);
+	};
+
+	const schedulePoll = () => {
+		stopPolling();
+		pollTimer = setTimeout(() => {
+			pollOnce()
+				.catch(() => {})
+				.finally(() => {
+					if (state && ACTIVE_PHASES.includes(state.phase)) schedulePoll();
+				});
+		}, POLL_INTERVAL_MS);
+	};
+
 	const restore = (ctx: ExtensionContext) => {
 		let restored: FactoryRunState | undefined;
 		for (const entry of ctx.sessionManager.getBranch()) {
@@ -115,8 +295,11 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		if (!state) return;
 		const active = ACTIVE_PHASES.includes(state.phase);
 		if (label) ctx.ui.setStatus("factory", label);
-		else if (active) ctx.ui.setStatus("factory", `factory: ${state.phase}`);
-		else ctx.ui.setStatus("factory", undefined);
+		else if (active) {
+			const stage = currentStageLabel(state.spans);
+			ctx.ui.setStatus("factory", `factory: ${state.phase}${stage ? ` · ${stage}` : ""}`);
+		} else ctx.ui.setStatus("factory", undefined);
+		refreshWidget(ctx);
 	};
 
 	// ---- RPC helpers ----------------------------------------------------
@@ -204,6 +387,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	const runChecksAndContinue = async (ctx: ExtensionContext, config: FactoryConfig) => {
 		if (!state) return;
 		state.phase = "checks";
+		closeAllOpenSpans("success");
+		openSpan("checks");
 		state.updatedAt = nowIso();
 		save();
 		updateStatus(ctx);
@@ -214,6 +399,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "failed";
 			state.error = `deterministic checks crashed: ${error instanceof Error ? error.message : String(error)}`;
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("failed");
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory failed: ${state.error}`, "error");
@@ -224,6 +410,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "failed";
 			state.error = "deterministic validation failed after implementation — no fix loop is attempted; fix and rerun /factory.";
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("failed");
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory failed validation:\n${formatChecks(checks)}`, "error");
@@ -238,8 +425,11 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			const runId = await spawnWorkflow(script, { task: state.task, phase: "review" }, config);
 			state.reviewRunId = runId;
 			state.phase = "review";
+			closeAllOpenSpans("success");
+			openSpan("review");
 			state.updatedAt = nowIso();
 			state.reviewMissionId = await queryMissionId(runId);
+			schedulePoll();
 		} catch (error) {
 			state.phase = "failed";
 			state.error = `failed to launch review workflow: ${error instanceof Error ? error.message : String(error)}`;
@@ -253,6 +443,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	const runFinalChecksAndFinish = async (ctx: ExtensionContext, config: FactoryConfig) => {
 		if (!state) return;
 		state.phase = "final-checks";
+		closeAllOpenSpans("success");
+		openSpan("final");
 		state.updatedAt = nowIso();
 		save();
 		updateStatus(ctx);
@@ -271,9 +463,11 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.error = `final checks crashed: ${error instanceof Error ? error.message : String(error)}`;
 		}
 		state.updatedAt = nowIso();
+		closeAllOpenSpans(state.phase === "complete" ? "success" : "failed");
 		save();
 		updateStatus(ctx);
-		if (state.phase === "complete") ctx.ui.notify(`Factory complete.\n${formatState(state)}`, "info");
+		stopPolling();
+		if (state.phase === "complete") ctx.ui.notify(`Factory complete — ${formatDuration(spanTotalMs())}\n\n${formatCompletionDetails(state)}`, "info");
 		else ctx.ui.notify(`Factory failed: ${state.error}`, "error");
 	};
 
@@ -283,6 +477,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		state.decisions = decisions;
 		state.error = `${source} requires human decisions before the factory can continue.`;
 		state.updatedAt = nowIso();
+		closeAllOpenSpans("attention");
+		stopPolling();
 		save();
 	};
 
@@ -297,6 +493,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "needs_attention";
 			state.error = `build workflow paused (detached child needs a decision). Inspect run ${state.buildRunId ?? "?"} with /factory-status or subagent status, then rerun /factory.`;
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("attention");
+			stopPolling();
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory needs attention: ${state.error}`, "warning");
@@ -306,6 +504,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "failed";
 			state.error = `build workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedSummary(payload.summary)}).`;
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("failed");
+			stopPolling();
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory failed: ${state.error}`, "error");
@@ -345,6 +545,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		state.phase = "needs_attention";
 		state.error = "build workflow finished without a valid implement handoff (missing or malformed structured output).";
 		state.updatedAt = nowIso();
+		closeAllOpenSpans("attention");
+		stopPolling();
 		save();
 		updateStatus(ctx);
 		ctx.ui.notify(`Factory needs attention: ${state.error}`, "warning");
@@ -358,6 +560,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "needs_attention";
 			state.error = `review workflow paused (detached child needs a decision). Inspect run ${state.reviewRunId ?? "?"} with /factory-status or subagent status, then rerun /factory.`;
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("attention");
+			stopPolling();
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory needs attention: ${state.error}`, "warning");
@@ -367,6 +571,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "failed";
 			state.error = `review workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedSummary(payload.summary)}).`;
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("failed");
+			stopPolling();
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory failed: ${state.error}`, "error");
@@ -381,6 +587,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			state.phase = "needs_attention";
 			state.error = "fix worker ran but did not return a valid acceptance handoff (missing or malformed structured output) — inspect the working tree and rerun /factory.";
 			state.updatedAt = nowIso();
+			closeAllOpenSpans("attention");
+			stopPolling();
 			save();
 			updateStatus(ctx);
 			ctx.ui.notify(`Factory needs attention: ${state.error}`, "warning");
@@ -484,11 +692,17 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		activeCtx = ctx;
 		restore(ctx);
 		updateStatus(ctx);
+		if (state && ACTIVE_PHASES.includes(state.phase)) schedulePoll();
 	});
 	pi.on("session_tree", async (_event, ctx) => {
 		activeCtx = ctx;
 		restore(ctx);
 		updateStatus(ctx);
+		if (state && ACTIVE_PHASES.includes(state.phase)) schedulePoll();
+		else stopPolling();
+	});
+	pi.on("session_shutdown", async () => {
+		stopPolling();
 	});
 
 	// ---- Commands -------------------------------------------------------
@@ -533,6 +747,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 				phase: "build",
 				startedAt: nowIso(),
 				updatedAt: nowIso(),
+				spans: [{ key: "build", label: LANE_LABELS.build ?? "build", startMs: 0, endMs: null, state: "running" }],
 			};
 			try {
 				const runId = await spawnWorkflow(script, { task, phase: "build" }, config);
@@ -552,17 +767,18 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			}
 			save();
 			updateStatus(ctx, "factory: building");
+			schedulePoll();
 			ctx.ui.notify(
-				`Factory launched (build run ${state.buildRunId}${state.buildMissionId ? `, mission ${state.buildMissionId}` : ""}). ` +
-					`Pipeline: scout → plan → implement → checks → review → fix? → final checks. ` +
-					`No commit, push, deploy, or release will be performed.`,
+				`Factory launched — pipeline running on the swimlane chart above the editor.\n` +
+					`Task: ${task}\n` +
+					`scout → plan → implement → checks → review → fix? → final checks. No commit, push, deploy, or release will be performed.`,
 				"info",
 			);
 		},
 	});
 
 	pi.registerCommand("factory-status", {
-		description: "Show the latest software factory run (phase, run/mission ids, checks, verdict)",
+		description: "Show the latest software factory run (waterfall, phase, checks, verdict)",
 		handler: async (_args, ctx) => {
 			if (!state) {
 				ctx.ui.notify("No factory run in this session yet. Start one with /factory <task>.", "info");
@@ -576,11 +792,22 @@ export default function factoryExtension(pi: ExtensionAPI) {
 					const data = await rpcRequest<{ text?: string }>(pi.events, "status", { id: liveRunId }, { timeoutMs: 20_000 });
 					const stateLine = /State:\s+(\S+)/.exec(data?.text ?? "")?.[1];
 					if (stateLine) liveLine = `  Live workflow state: ${stateLine}`;
+					if (state.phase === "build" || state.phase === "review") applyWorkflowStatus(state.phase, data?.text ?? "");
 				} catch (error) {
 					liveLine = `  Live workflow state: unavailable (${error instanceof FactoryRpcError ? error.code : "error"})`;
 				}
 			}
-			ctx.ui.notify(formatState(state) + (liveLine ? `\n${liveLine}` : ""), "info");
+			const waterfall = state.spans?.length
+				? renderWaterfall(
+						{ task: state.task, spans: state.spans, statusLine: waterfallStatusLine(state, relNow()), nowMs: relNow() },
+						72,
+					) 
+				: [];
+			ctx.ui.notify(
+				[...(waterfall.length ? ["", ...waterfall, ""] : []), formatState(state), ...(liveLine ? [liveLine] : [])].join("\n"),
+				"info",
+			);
+			updateStatus(ctx);
 		},
 	});
 }
