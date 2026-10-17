@@ -1,0 +1,5 @@
+I'm getting this error when trying to run /factory
+
+```
+ Error: Factory failed to start: failed to launch build workflow: RPC spawn workflowScript was removed; pass inline script text as script.
+```

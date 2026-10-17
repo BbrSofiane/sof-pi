@@ -1,0 +1,62 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "91868bb8acd0",
+  "session_id": "01a14a34-dd58-7496-99f3-ba7b4df54c0a",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-17T14:23:59.037978Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "extensions/factory/README.md",
+    "extensions/factory/index.ts",
+    "tests/factory/helpers.ts",
+    "tests/factory/rpc.test.ts",
+    "tests/factory/validator.test.ts"
+  ],
+  "agent": "Pi",
+  "model": "glm-5.3-flash",
+  "turn_id": "df0e4ffae78b",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 56663,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 613456,
+    "output_tokens": 4449,
+    "api_call_count": 31
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-17T14:23:59.022619Z",
+    "agent_lines": 25,
+    "agent_removed": 13,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 25,
+    "total_lines_changed": 38,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 156,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "docs/wacli-migration-review.md": 156
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 13
+    }
+  ]
+}
