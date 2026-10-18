@@ -87,6 +87,47 @@ describe("factory task encoding", () => {
 	});
 });
 
+describe("worker acceptance-report contract", () => {
+	// pi-subagents validates the structured_output "acceptanceReport" against a
+	// fixed field set and rejects unknown fields ("unsupported acceptance report
+	// field"), which fails the worker at the acceptance handoff. The worker
+	// prompts must keep the two channels separate.
+	const ACCEPTANCE_REPORT_ALLOWED_FIELDS = [
+		"changedFiles",
+		"testsAddedOrUpdated",
+		"commandsRun",
+		"residualRisks",
+		"validationOutput",
+		"noStagedFiles",
+		"diffSummary",
+		"reviewFindings",
+		"manualNotes",
+	];
+
+	it("worker prompts separate the handoff value from the acceptance report", () => {
+		for (const script of [
+			buildBuildWorkflowScript({ task: "T" }),
+			buildReviewWorkflowScript({ task: "T", handoff: implHandoff, checks: [{ name: "test", exitCode: 0 }] }),
+		]) {
+			// The value channel keeps the full handoff schema, workLeftUndone included.
+			assert.ok(script.includes("workLeftUndone"));
+			// The acceptance-report channel is restricted to the supported fields…
+			for (const field of ACCEPTANCE_REPORT_ALLOWED_FIELDS) {
+				assert.ok(script.includes(field), `prompt must mention ${field}`);
+			}
+			// …and explicitly forbids the unsupported handoff fields in the report.
+			assert.ok(script.includes("NEVER put workLeftUndone"));
+			assert.ok(script.includes("acceptance report"));
+		}
+	});
+
+	it("worker prompts keep the acceptance-report commandsRun shape distinct from the value", () => {
+		const script = buildBuildWorkflowScript({ task: "T" });
+		assert.ok(script.includes('result: \\"passed\\" | \\"failed\\" | \\"not-run\\"'));
+		assert.ok(script.includes("never exitCode"));
+	});
+});
+
 describe("factory build workflow (sandboxed)", () => {
 	it("runs scout → plan → implement in order and returns the implemented handoff", async () => {
 		const calls: string[] = [];

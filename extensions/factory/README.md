@@ -16,6 +16,7 @@ deterministic     the same trusted commands, rerun as final verification
 - Every machine-consumed child result uses a structured output schema, and branching happens **only** on the structured verdict — never on reviewer prose.
 - The plan or implement stage stopping with unresolved human-owned decisions pauses the factory (`needs_approval`) instead of proceeding.
 - Malformed or missing structured output fails the stage closed (`needs_attention`), never onward as success.
+- Writers report through pi-subagents' `structured_output` tool with two channels kept strictly separate: the `value` object carries the full handoff schema (`changedFiles`, `implementationSummary`, `commandsRun` with exit codes, `testsAddedOrUpdated`, `residualRisks`, `workLeftUndone`, `decisionsRequiringApproval`), while the `acceptanceReport` object may contain only pi-subagents' supported fields (`changedFiles`, `testsAddedOrUpdated`, `commandsRun` as `{command, result, summary}`, `residualRisks`, `validationOutput`, `noStagedFiles`, `diffSummary`, `reviewFindings`, `manualNotes`) — unsupported fields such as `workLeftUndone` are rejected there and would fail the worker at the acceptance handoff.
 - The fix loop is capped at exactly one pass by construction. Failed deterministic checks also stop the factory — no automated retry of side-effectful work.
 - **No commit, push, merge, publish, deploy, or release is ever performed.**
 

@@ -67,6 +67,36 @@ const PLAN_SCHEMA = {
 	additionalProperties: false,
 } as const;
 
+/**
+ * Fields pi-subagents accepts inside a structured_output "acceptanceReport"
+ * (pi-subagents src/runs/shared/acceptance.js ACCEPTANCE_REPORT_FIELDS). Any
+ * other field — notably workLeftUndone and decisionsRequiringApproval — is
+ * rejected with "unsupported acceptance report field", which fails the worker
+ * at the acceptance handoff. Keep in sync with the installed pi-subagents.
+ */
+const ACCEPTANCE_REPORT_ALLOWED_FIELDS = [
+	"changedFiles",
+	"testsAddedOrUpdated",
+	"commandsRun",
+	"residualRisks",
+	"validationOutput",
+	"noStagedFiles",
+	"diffSummary",
+	"reviewFindings",
+	"manualNotes",
+] as const;
+
+/**
+ * Shared two-channel reporting rules for the implement and fix workers.
+ * structured_output carries a "value" (validated against the factory handoff
+ * schema) and an "acceptanceReport" (validated against pi-subagents' fixed
+ * field set). Conflating the two fails the run at the acceptance handoff.
+ */
+const WORKER_REPORT_RULES = [
+	`- Finish with the structured_output tool. Its "value" must match the handoff\nschema exactly: changedFiles, implementationSummary, commandsRun (each\n{command, exitCode}), testsAddedOrUpdated, residualRisks, workLeftUndone,\ndecisionsRequiringApproval.`,
+	`- Its "acceptanceReport" must contain ONLY these fields:\n${ACCEPTANCE_REPORT_ALLOWED_FIELDS.join(", ")}. Acceptance-report commandsRun\nentries use {command, result: "passed" | "failed" | "not-run", summary} —\nnever exitCode. NEVER put workLeftUndone or decisionsRequiringApproval in\nthe acceptance report: unsupported fields are rejected there and the worker\nfails at the acceptance handoff. Summarize work left undone in manualNotes.`,
+];
+
 /** JSON Schema for the implement/fix worker's checked acceptance handoff. */
 const IMPL_SCHEMA = {
 	type: "object",
@@ -214,9 +244,7 @@ const IMPL_TASK_SUFFIX = [
 	"  code in commandsRun. Do not commit, push, merge, publish, deploy, or release.",
 	"- If a human-owned decision surfaces that the plan did not cover, stop and",
 	"  list it in decisionsRequiringApproval instead of deciding yourself.",
-	"- Report a checked acceptance handoff as structured output: changedFiles,",
-	"  implementationSummary, commandsRun (with exit codes), testsAddedOrUpdated,",
-	"  residualRisks, workLeftUndone, decisionsRequiringApproval.",
+	...WORKER_REPORT_RULES,
 ].join("\n");
 
 const REVIEW_TASK_PREFIX = [
@@ -267,10 +295,8 @@ const FIX_TASK_SUFFIX = [
 	"- Apply ONLY the listed findings. Do not expand scope or refactor beyond the",
 	"  findings. Do not invent additional work.",
 	"- Do not commit, push, merge, publish, deploy, or release.",
-	"- Report the same checked acceptance handoff as structured output as the",
-	"  implement phase (changedFiles, implementationSummary, commandsRun with exit",
-	"  codes, testsAddedOrUpdated, residualRisks, workLeftUndone,",
-	"  decisionsRequiringApproval).",
+	"- Report the same two-part structured output as the implement phase:",
+	...WORKER_REPORT_RULES,
 ].join("\n");
 
 /**
