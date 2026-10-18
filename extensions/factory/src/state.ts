@@ -69,6 +69,9 @@ export interface FactoryRunState {
 
 export const FACTORY_STATE_ENTRY = "factory-state";
 
+/** Persisted bound for state.error: failure diagnostics must survive the round-trip. */
+export const MAX_ERROR_LENGTH = 2_000;
+
 const MAX_LIST_ITEMS = 32;
 const MAX_STRING_LENGTH = 2_000;
 
@@ -129,6 +132,18 @@ function boundedHandoff(value: unknown): FactoryHandoffRecord | undefined {
 }
 
 /**
+ * Fullest useful failure diagnostic from a completion payload, within the
+ * persisted error bound: the summary plus any error/errorTail/message fields.
+ * Pure so tests can pin the truncation behavior.
+ */
+export function boundedFailureDiagnostics(payload: Record<string, unknown> | undefined): string {
+	const parts = ["summary", "error", "errorTail", "message"]
+		.map((field) => (typeof payload?.[field] === "string" ? (payload[field] as string).trim() : ""))
+		.filter((text) => text.length > 0);
+	return ([...new Set(parts)].join(" | ") || "(no summary)").slice(0, MAX_ERROR_LENGTH);
+}
+
+/**
  * Validate a restored/serialized factory state. Returns undefined for
  * incompatible data instead of guessing (fail closed on restore).
  */
@@ -146,11 +161,15 @@ export function isFactoryRunState(value: unknown): FactoryRunState | undefined {
 	startedAt: boundedString(record.startedAt, 40),
 	updatedAt: boundedString(record.updatedAt, 40),
 };
-for (const field of ["buildRunId", "buildMissionId", "reviewRunId", "reviewMissionId", "outcome", "error"] as const) {
+for (const field of ["buildRunId", "buildMissionId", "reviewRunId", "reviewMissionId", "outcome"] as const) {
 	const raw = record[field];
 	if (raw === undefined) continue;
 	if (typeof raw !== "string" || !raw) return undefined; // wrong-typed optional field fails closed
 	Object.assign(state, { [field]: boundedString(raw, 200) });
+}
+if (record.error !== undefined) {
+	if (typeof record.error !== "string" || !record.error) return undefined;
+	state.error = boundedString(record.error, MAX_ERROR_LENGTH);
 }
 if (record.reviewVerdict !== undefined) {
 	if (typeof record.reviewVerdict !== "string" || !record.reviewVerdict) return undefined;

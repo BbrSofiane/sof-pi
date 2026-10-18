@@ -2,10 +2,12 @@ import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 
 import {
+	boundedFailureDiagnostics,
 	childResults,
 	childStructuredOutput,
 	handoffFromStructuredOutput,
 	isFactoryRunState,
+	MAX_ERROR_LENGTH,
 } from "../../extensions/factory/src/state.ts";
 
 describe("factory run state", () => {
@@ -42,6 +44,43 @@ describe("factory run state", () => {
 		// Missing required fields → no handoff (fail closed).
 		assert.equal(handoffFromStructuredOutput({ changedFiles: ["a.ts"] }), undefined);
 		assert.equal(handoffFromStructuredOutput(null), undefined);
+	});
+
+	it("keeps a long failure diagnostic through the restore round-trip", () => {
+		const longError = `Acceptance rejected: ${"x".repeat(1_500)}`;
+		const restored = isFactoryRunState({
+			task: "Add endpoint",
+			phase: "failed",
+			error: longError,
+			startedAt: "2026-10-17T10:00:00.000Z",
+			updatedAt: "2026-10-17T10:05:00.000Z",
+		});
+		assert.ok(restored);
+		assert.equal(restored.error, longError); // well under the bound: unchanged
+
+		const overBound = isFactoryRunState({
+			task: "Add endpoint",
+			phase: "failed",
+			error: "Acceptance rejected: " + "x".repeat(MAX_ERROR_LENGTH + 500),
+			startedAt: "2026-10-17T10:00:00.000Z",
+			updatedAt: "2026-10-17T10:05:00.000Z",
+		});
+		assert.ok(overBound);
+		assert.equal(overBound.error?.length, MAX_ERROR_LENGTH);
+		assert.match(overBound.error ?? "", /^Acceptance rejected: /);
+	});
+
+	it("collects the fullest failure diagnostic from a completion payload", () => {
+		assert.equal(boundedFailureDiagnostics({ summary: "Acceptance rejected: Failed to p" }), "Acceptance rejected: Failed to p");
+		assert.equal(
+			boundedFailureDiagnostics({ summary: "one", error: "two", errorTail: "three", message: "one" }),
+			"one | two | three", // duplicates removed, order stable
+		);
+		assert.equal(boundedFailureDiagnostics({}), "(no summary)");
+		assert.equal(boundedFailureDiagnostics(undefined), "(no summary)");
+		assert.equal(boundedFailureDiagnostics({ summary: 42 }).slice(0, 1), "(");
+		const bounded = boundedFailureDiagnostics({ summary: "y".repeat(MAX_ERROR_LENGTH + 100) });
+		assert.equal(bounded.length, MAX_ERROR_LENGTH);
 	});
 
 	it("correlates completion payload children by stable workflow key", () => {

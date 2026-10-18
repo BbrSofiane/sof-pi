@@ -1,7 +1,7 @@
 import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 
-import { FactoryRpcError, rpcPing, rpcRequest } from "../../extensions/factory/src/rpc.ts";
+import { FactoryRpcError, readRunStateFromStatusText, rpcPing, rpcRequest } from "../../extensions/factory/src/rpc.ts";
 import { piSubagentsImport } from "./helpers.ts";
 
 interface Bus {
@@ -146,5 +146,21 @@ describe("smoke test against the real installed pi-subagents RPC bridge", () => 
 			(error: FactoryRpcError) => error.code === "invalid_params",
 		);
 		bridge.dispose();
+	});
+});
+
+describe("run status text classification (restore reconcile)", () => {
+	const statusText = (state: string) => `Run: run-1\nState: ${state}\nMode: workflow\nProgress: stage 2/3`;
+
+	it("reads the real `State:` line into terminal / running / unknown", () => {
+		for (const state of ["complete", "failed", "partial", "stopped", "rejected", "paused"]) {
+			assert.deepEqual(readRunStateFromStatusText(statusText(state)), { state, disposition: "terminal" }, state);
+		}
+		for (const state of ["queued", "running"]) {
+			assert.deepEqual(readRunStateFromStatusText(statusText(state)), { state, disposition: "running" }, state);
+		}
+		assert.deepEqual(readRunStateFromStatusText(statusText("warp")), { state: "warp", disposition: "unknown" });
+		assert.deepEqual(readRunStateFromStatusText("no state line here"), { state: undefined, disposition: "unknown" });
+		assert.deepEqual(readRunStateFromStatusText(""), { state: undefined, disposition: "unknown" });
 	});
 });

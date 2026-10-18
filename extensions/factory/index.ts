@@ -37,10 +37,13 @@ import {
 	FactoryRpcError,
 	rpcPing,
 	rpcRequest,
+	readRunStateFromStatusText,
 } from "./src/rpc.ts";
 import {
 	ACTIVE_PHASES,
 	FACTORY_STATE_ENTRY,
+	MAX_ERROR_LENGTH,
+	boundedFailureDiagnostics,
 	childStructuredOutput,
 	handoffFromStructuredOutput,
 	isFactoryRunState,
@@ -302,6 +305,51 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		refreshWidget(ctx);
 	};
 
+	/** Run keys already reconciled after a restore; session_start + session_tree both fire on resume. */
+	const reconciledRunKeys = new Set<string>();
+
+	/**
+	 * One-shot post-restore reconcile. The pipeline advances only on the
+	 * subagent:async-complete event, and completion ownership is per-process:
+	 * when a session resumes in a new process, that event may never arrive and
+	 * a restored active phase would poll forever, frozen. Query the run's real
+	 * status once; if it already reached a terminal state, record a clear
+	 * terminal failure (the full completion payload is unrecoverable from
+	 * status text — never fake a handoff) instead of waiting. A live
+	 * completion event landing first wins: reconcile re-checks that the phase
+	 * is still active and the state object unchanged before writing.
+	 */
+	const reconcileRestoredRun = async (ctx: ExtensionContext) => {
+		if (!state || !ACTIVE_PHASES.includes(state.phase)) return;
+		const phase = state.phase === "build" ? "build" : state.phase === "review" ? "review" : undefined;
+		const runId = phase === "build" ? state.buildRunId : phase === "review" ? state.reviewRunId : undefined;
+		if (!phase || !runId) return;
+		const key = `${phase}:${runId}`;
+		if (reconciledRunKeys.has(key)) return;
+		reconciledRunKeys.add(key);
+		const observed = state;
+		try {
+			const data = await rpcRequest<{ text?: string }>(pi.events, "status", { id: runId }, { timeoutMs: 10_000 });
+			const read = readRunStateFromStatusText(data?.text ?? "");
+			if (read.disposition !== "terminal" || state !== observed || !ACTIVE_PHASES.includes(state.phase)) return;
+			// "complete" still lands in needs_attention: without the lost completion
+			// payload there is no handoff to continue from — only guidance.
+			const paused = read.state === "complete" || read.state === "paused";
+			state.phase = paused ? "needs_attention" : "failed";
+			state.error =
+				`${phase} run ${runId} reached terminal state (${read.state}) while this session was away; the completion event was not delivered. ` +
+				`Inspect /factory-status and the run output, then rerun /factory if needed.`;
+			state.updatedAt = nowIso();
+			closeAllOpenSpans(paused ? "attention" : "failed");
+			stopPolling();
+			save();
+			updateStatus(ctx);
+			ctx.ui.notify(`Factory ${paused ? "needs attention" : "failed"}: ${state.error}`, paused ? "warning" : "error");
+		} catch {
+			// Status unavailable right after restore: the display poll keeps trying.
+		}
+	};
+
 	// ---- RPC helpers ----------------------------------------------------
 
 	const spawnWorkflow = async (
@@ -502,7 +550,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		}
 		if (payload.success === false || payload.stopped === true || payload.timedOut === true || payload.interrupted === true) {
 			state.phase = "failed";
-			state.error = `build workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedSummary(payload.summary)}).`;
+			state.error = `build workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedFailureDiagnostics(payload)}).`.slice(0, MAX_ERROR_LENGTH);
 			state.updatedAt = nowIso();
 			closeAllOpenSpans("failed");
 			stopPolling();
@@ -569,7 +617,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		}
 		if (payload.success === false || payload.stopped === true || payload.timedOut === true || payload.interrupted === true) {
 			state.phase = "failed";
-			state.error = `review workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedSummary(payload.summary)}).`;
+			state.error = `review workflow did not complete (state: ${String(payload.state ?? "unknown")}, summary: ${boundedFailureDiagnostics(payload)}).`.slice(0, MAX_ERROR_LENGTH);
 			state.updatedAt = nowIso();
 			closeAllOpenSpans("failed");
 			stopPolling();
@@ -692,14 +740,19 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		activeCtx = ctx;
 		restore(ctx);
 		updateStatus(ctx);
-		if (state && ACTIVE_PHASES.includes(state.phase)) schedulePoll();
+		if (state && ACTIVE_PHASES.includes(state.phase)) {
+			schedulePoll();
+			void reconcileRestoredRun(ctx);
+		}
 	});
 	pi.on("session_tree", async (_event, ctx) => {
 		activeCtx = ctx;
 		restore(ctx);
 		updateStatus(ctx);
-		if (state && ACTIVE_PHASES.includes(state.phase)) schedulePoll();
-		else stopPolling();
+		if (state && ACTIVE_PHASES.includes(state.phase)) {
+			schedulePoll();
+			void reconcileRestoredRun(ctx);
+		} else stopPolling();
 	});
 	pi.on("session_shutdown", async () => {
 		stopPolling();

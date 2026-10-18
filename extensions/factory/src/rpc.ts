@@ -98,6 +98,30 @@ export interface SubagentsCapabilities {
 	events: Record<string, string>;
 }
 
+/** Run-level states pi-subagents reports on the `State:` line (`AsyncRunSummary["state"]`). */
+const ACTIVE_RUN_STATES = new Set(["queued", "running"]);
+/** "paused" is terminal for the factory: a paused run needs a human decision before it can proceed. */
+const TERMINAL_RUN_STATES = new Set(["complete", "failed", "partial", "stopped", "rejected", "paused"]);
+
+export interface RunStateRead {
+	/** Raw state token from the `State:` line, when one is present. */
+	state: string | undefined;
+	disposition: "terminal" | "running" | "unknown";
+}
+
+/**
+ * Classify a pi-subagents `status` RPC text by its `State:` line. Unreadable
+ * text is "unknown", never assumed running or terminal (fail closed on data,
+ * fail open on polling).
+ */
+export function readRunStateFromStatusText(text: string): RunStateRead {
+	const state = /State:\s+(\S+)/.exec(text ?? "")?.[1];
+	if (!state) return { state: undefined, disposition: "unknown" };
+	if (ACTIVE_RUN_STATES.has(state)) return { state, disposition: "running" };
+	if (TERMINAL_RUN_STATES.has(state)) return { state, disposition: "terminal" };
+	return { state, disposition: "unknown" };
+}
+
 /**
  * Verify that the installed pi-subagents extension is alive and speaks the
  * expected RPC protocol. Pings with a short timeout, then retries once to

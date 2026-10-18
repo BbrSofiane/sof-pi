@@ -151,14 +151,14 @@ test("parseWorkflowChildStatuses extracts per-key statuses and ignores suffixes"
 	const text = [
 		"Run: abc123",
 		"State: running",
-		"Workflow child scout: scout (scout) complete, last activity 5s",
+		"Workflow child scout: scout (scout) completed, last activity 5s",
 		"Workflow child plan: plan (planner) running, tool: read",
 		"Workflow child review-correctness: correctness (reviewer) running",
 		"Workflow child review-tests: tests (reviewer) paused, needs attention",
 		"Not a workflow child line: ignored",
 	].join("\n");
 	const parsed = parseWorkflowChildStatuses(text);
-	assert.deepEqual(parsed.get("scout"), ["complete"]);
+	assert.deepEqual(parsed.get("scout"), ["completed"]);
 	assert.deepEqual(parsed.get("plan"), ["running"]);
 	assert.deepEqual(parsed.get("review-correctness"), ["running"]);
 	assert.deepEqual(parsed.get("review-tests"), ["paused"]);
@@ -166,11 +166,37 @@ test("parseWorkflowChildStatuses extracts per-key statuses and ignores suffixes"
 	assert.equal(parseWorkflowChildStatuses("no steps here").size, 0);
 });
 
+test("regression: realistic 'completed' child status lines close the lane as success", () => {
+	// pi-subagents 0.79 emits WorkflowNodeStatus "completed" for successful
+	// children; the old token list only accepted "complete", so successful
+	// lanes never closed and were force-stamped failed at the next phase.
+	const text = [
+		"Run: run-1",
+		"State: running",
+		"Workflow child scout: scout (scout) completed, last activity 5s",
+		"Workflow child plan: plan (planner) completed, last activity 2s",
+		"Workflow child implement: implement (worker) completed, acceptance: checked",
+	].join("\n");
+	const parsed = parseWorkflowChildStatuses(text);
+	for (const key of ["scout", "plan", "implement"]) {
+		const laneState = laneStateFromStatuses(parsed.get(key)!);
+		assert.equal(laneState, "success", key);
+		assert.notEqual(laneState, "queued");
+	}
+});
+
 test("laneStateFromStatuses aggregates children: failure dominates, success needs all", () => {
-	assert.equal(laneStateFromStatuses(["complete", "running"]), "running");
-	assert.equal(laneStateFromStatuses(["complete", "complete"]), "success");
+	assert.equal(laneStateFromStatuses(["completed", "running"]), "running");
+	assert.equal(laneStateFromStatuses(["completed", "completed"]), "success");
+	// Legacy/compat tokens stay accepted.
+	assert.equal(laneStateFromStatuses(["complete", "completed"]), "success");
+	assert.equal(laneStateFromStatuses(["complete", "stopped"]), "success");
 	assert.equal(laneStateFromStatuses(["running", "failed"]), "failed");
-	assert.equal(laneStateFromStatuses(["complete", "paused"]), "attention");
+	// Remaining WorkflowNodeStatus tokens map to safe states, never queued.
+	assert.equal(laneStateFromStatuses(["completed", "rejected"]), "failed");
+	assert.equal(laneStateFromStatuses(["completed", "paused"]), "attention");
+	assert.equal(laneStateFromStatuses(["completed", "detached"]), "attention");
+	assert.equal(laneStateFromStatuses(["completed", "partial"]), "attention");
 	assert.equal(laneStateFromStatuses(["pending", "pending"]), "queued");
 	assert.equal(laneStateFromStatuses([]), "success");
 });

@@ -181,7 +181,7 @@ export function currentStageLabel(spans: WaterfallSpan[] | undefined): string | 
  *
  * Workflow runs render one line per child, shaped like:
  *   `Workflow child scout: scout (scout) running, last activity 3s`
- *   `Workflow child fix: fix (worker) complete, acceptance: checked`
+ *   `Workflow child fix: fix (worker) completed, acceptance: checked`
  * The status token is the last word before the first ", " suffix. Best-effort:
  * keys or lines that do not match are ignored.
  */
@@ -198,13 +198,22 @@ export function parseWorkflowChildStatuses(text: string): Map<string, string[]> 
 }
 
 /**
- * Aggregate raw child step statuses into one lane state: failure dominates,
- * then pause; a lane is successful only when every child finished.
+ * WorkflowNodeStatus tokens that mean the child needs a human or was cut
+ * short: paused (detached supervisor child), detached, or partial output.
+ */
+const ATTENTION_STATUSES = new Set(["paused", "detached", "partial"]);
+
+/**
+ * Aggregate raw child step statuses (pi-subagents WorkflowNodeStatus tokens)
+ * into one lane state: failure dominates ("failed", "rejected"), then
+ * attention ("paused", "detached", "partial"); a lane is successful only when
+ * every child finished. Successful children emit "completed" in pi-subagents
+ * 0.79+; "complete" and "stopped" stay accepted for compatibility.
  */
 export function laneStateFromStatuses(statuses: string[]): WaterfallState {
-	if (statuses.includes("failed")) return "failed";
-	if (statuses.includes("paused")) return "attention";
-	if (statuses.every((s) => s === "complete" || s === "stopped")) return "success";
+	if (statuses.some((s) => s === "failed" || s === "rejected")) return "failed";
+	if (statuses.some((s) => ATTENTION_STATUSES.has(s))) return "attention";
+	if (statuses.every((s) => s === "complete" || s === "completed" || s === "stopped")) return "success";
 	if (statuses.includes("running")) return "running";
 	return "queued";
 }
