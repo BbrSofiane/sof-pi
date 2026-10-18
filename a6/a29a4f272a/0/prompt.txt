@@ -1,0 +1,6 @@
+The factory is blocked at the acceptance handoff, not complete.
+
+ I inspected the saved plan, worker output, and failed workflow receipt. The cause is a factory/runtime compatibility mismatch: the factory
+ requires workLeftUndone in its structured output, but pi-subagents rejects that field when parsing the acceptance report.
+
+Verify my assessment of the issue and implement a fix
