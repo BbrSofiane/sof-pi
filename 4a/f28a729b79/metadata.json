@@ -3,8 +3,14 @@
   "checkpoint_id": "4af28a729b79",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
-  "files_touched": null,
+  "checkpoints_count": 4,
+  "files_touched": [
+    "README.md",
+    "extensions/factory/README.md",
+    "extensions/factory/index.ts",
+    "extensions/factory/src/waterfall.ts",
+    "tests/factory/waterfall.test.ts"
+  ],
   "sessions": [
     {
       "metadata": "/4a/f28a729b79/0/metadata.json",
@@ -12,13 +18,20 @@
       "compact_transcript": "/4a/f28a729b79/0/transcript.jsonl",
       "content_hash": "/4a/f28a729b79/0/content_hash.txt",
       "prompt": "/4a/f28a729b79/0/prompt.txt"
+    },
+    {
+      "metadata": "/4a/f28a729b79/1/metadata.json",
+      "transcript": "/4a/f28a729b79/1/full.jsonl",
+      "compact_transcript": "/4a/f28a729b79/1/transcript.jsonl",
+      "content_hash": "/4a/f28a729b79/1/content_hash.txt",
+      "prompt": "/4a/f28a729b79/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 928782,
+    "input_tokens": 936211,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 7053076,
-    "output_tokens": 34982,
-    "api_call_count": 92
+    "cache_read_tokens": 7355208,
+    "output_tokens": 40391,
+    "api_call_count": 97
   }
 }
