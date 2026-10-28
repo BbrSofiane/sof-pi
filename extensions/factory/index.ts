@@ -90,14 +90,14 @@ const LANE_LABELS: Record<string, string> = {
 const POLL_INTERVAL_MS = 3_000;
 
 /** Status line under the waterfall, derived from run state. */
-function waterfallStatusLine(state: FactoryRunState, nowMs: number): string {
+function waterfallStatusLine(state: FactoryRunState, nowMs: number | undefined): string {
 	switch (state.phase) {
 		case "build":
 		case "checks":
 		case "review":
 		case "final-checks": {
 			const stage = currentStageLabel(state.spans);
-			return `running — ${stage ?? state.phase} · elapsed ${formatDuration(nowMs)}`;
+			return `running — ${stage ?? state.phase} · elapsed ${formatDuration(nowMs ?? 0)}`;
 		}
 		case "complete":
 			return `complete — ${formatDuration(Math.max(...(state.spans ?? [{ endMs: 0 }]).map((s) => s.endMs ?? 0)))}`;
@@ -167,6 +167,10 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	}
 	const widget: WidgetHolder = {};
 	let pollTimer: ReturnType<typeof setTimeout> | undefined;
+	// In-memory only: /factory-dismiss hides the widget for this session; a new
+	// /factory run resets it. Persisted state (/factory-status) is untouched.
+	let widgetDismissed = false;
+	let widgetHidden = false;
 
 	const runStartMs = (): number => {
 		const t = Date.parse(state?.startedAt ?? "");
@@ -204,9 +208,23 @@ export default function factoryExtension(pi: ExtensionAPI) {
 
 	const refreshWidget = (ctx: ExtensionContext) => {
 		if (!state || ctx.mode !== "tui") return;
-		const nowMs = relNow();
+		const active = ACTIVE_PHASES.includes(state.phase);
+		// Live "now" only while the run is active; a terminal run freezes the
+		// axis at max span end so wall-clock time can never crush the chart.
+		const nowMs = active ? relNow() : undefined;
+		if (!active && widgetDismissed) {
+			if (!widgetHidden) {
+				widgetHidden = true;
+				ctx.ui.setWidget("factory", undefined);
+				// Forget the cached model so a later run re-registers the widget.
+				widget.model = undefined;
+				widget.component = undefined;
+			}
+			return;
+		}
+		widgetHidden = false;
 		if (!widget.model) {
-			widget.model = { task: state.task, spans: state.spans ?? [], statusLine: waterfallStatusLine(state, nowMs), nowMs };
+			widget.model = { task: state.task, spans: state.spans ?? [], statusLine: waterfallStatusLine(state, nowMs), nowMs, card: active ? undefined : state };
 			ctx.ui.setWidget(
 				"factory",
 				(t, theme) => {
@@ -222,6 +240,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			widget.model.spans = state.spans ?? [];
 			widget.model.statusLine = waterfallStatusLine(state, nowMs);
 			widget.model.nowMs = nowMs;
+			widget.model.card = active ? undefined : state;
 		}
 		widget.component?.invalidate();
 		widget.tui?.requestRender();
@@ -802,6 +821,8 @@ export default function factoryExtension(pi: ExtensionAPI) {
 				updatedAt: nowIso(),
 				spans: [{ key: "build", label: LANE_LABELS.build ?? "build", startMs: 0, endMs: null, state: "running" }],
 			};
+			widgetDismissed = false;
+			widgetHidden = false;
 			try {
 				const runId = await spawnWorkflow(script, { task, phase: "build" }, config);
 				state.buildRunId = runId;
@@ -830,6 +851,22 @@ export default function factoryExtension(pi: ExtensionAPI) {
 		},
 	});
 
+	pi.registerCommand("factory-dismiss", {
+		description: "Hide the finished factory run widget for this session",
+		handler: async (_args, ctx) => {
+			if (!state) {
+				ctx.ui.notify("No factory run in this session yet.", "info");
+				return;
+			}
+			if (ACTIVE_PHASES.includes(state.phase)) {
+				ctx.ui.notify("A factory run is in progress — /factory-dismiss only works once it reaches a terminal state.", "warning");
+				return;
+			}
+			widgetDismissed = true;
+			refreshWidget(ctx);
+		},
+	});
+
 	pi.registerCommand("factory-status", {
 		description: "Show the latest software factory run (waterfall, phase, checks, verdict)",
 		handler: async (_args, ctx) => {
@@ -850,9 +887,11 @@ export default function factoryExtension(pi: ExtensionAPI) {
 					liveLine = `  Live workflow state: unavailable (${error instanceof FactoryRpcError ? error.code : "error"})`;
 				}
 			}
+			const active = ACTIVE_PHASES.includes(state.phase);
+			const statusNowMs = active ? relNow() : undefined; // terminal → frozen at max span end
 			const waterfall = state.spans?.length
 				? renderWaterfall(
-						{ task: state.task, spans: state.spans, statusLine: waterfallStatusLine(state, relNow()), nowMs: relNow() },
+						{ task: state.task, spans: state.spans, statusLine: waterfallStatusLine(state, statusNowMs), nowMs: statusNowMs },
 						72,
 					) 
 				: [];

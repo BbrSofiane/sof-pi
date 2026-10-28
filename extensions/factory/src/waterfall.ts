@@ -31,6 +31,8 @@ export interface WaterfallModel {
 	statusLine?: string;
 	/** Reference "now" in ms-relative coordinates for open spans; defaults to max span end. */
 	nowMs?: number;
+	/** Terminal verdict card input: when set, the widget renders a result card instead of the live chart. */
+	card?: RunCardState;
 }
 
 /** Theme token per lane state (semantic tokens exist in every pi theme). */
@@ -76,6 +78,112 @@ export function chartRows(spans: WaterfallSpan[]): WaterfallSpan[] {
 			const lb = LANE_ORDER.indexOf(b.key as (typeof LANE_ORDER)[number]);
 			return (la === -1 ? 99 : la) - (lb === -1 ? 99 : lb) || a.startMs - b.startMs;
 		});
+}
+
+/**
+ * Total run duration in ms-relative coordinates: the last real span end
+ * (open spans count as their start, so a frozen run never grows).
+ */
+export function runDurationMs(spans: WaterfallSpan[]): number {
+	return Math.max(0, ...spans.map((s) => s.endMs ?? s.startMs));
+}
+
+/** First sentence of a diagnostic, bounded for one display line. */
+export function firstSentence(text: string, max = 160): string {
+	const sentence = text.split(/(?<=[.!?])\s+|\n/)[0] ?? text;
+	return sentence.trim().slice(0, max);
+}
+
+/** Minimal terminal-state input for the run verdict card (FactoryRunState satisfies it). */
+export interface RunCardState {
+	task: string;
+	phase: string;
+	spans?: WaterfallSpan[];
+	error?: string;
+	decisions?: string[];
+	checks?: Array<{ exitCode: number | null; timedOut: boolean }>;
+	finalChecks?: Array<{ exitCode: number | null; timedOut: boolean }>;
+	handoff?: { changedFiles: string[] };
+}
+
+export interface RunSummary {
+	durationMs: number;
+	/** Primary card line without the leading marker: "complete — 2m14s · 3 files changed · checks 2/2". */
+	headline: string;
+}
+
+/**
+ * Compact verdict for a terminal run: duration plus one headline line whose
+ * trailing detail depends on the outcome (files/checks, error, decisions).
+ */
+export function summarizeRun(state: RunCardState): RunSummary {
+	const durationMs = runDurationMs(state.spans ?? []);
+	switch (state.phase) {
+		case "complete": {
+			const parts = [`complete — ${formatDuration(durationMs)}`];
+			const files = state.handoff?.changedFiles.length ?? 0;
+			if (files > 0) parts.push(`${files} file${files === 1 ? "" : "s"} changed`);
+			const checks = state.finalChecks ?? state.checks;
+			if (checks?.length) {
+				const pass = checks.filter((c) => !c.timedOut && c.exitCode === 0).length;
+				parts.push(`checks ${pass}/${checks.length}`);
+			}
+			return { durationMs, headline: parts.join(" · ") };
+		}
+		case "failed":
+			return { durationMs, headline: `failed — ${formatDuration(durationMs)} · ${firstSentence(state.error ?? "unknown error")}` };
+		case "needs_approval": {
+			const n = state.decisions?.length ?? 0;
+			return { durationMs, headline: `needs approval — ${n} decision${n === 1 ? "" : "s"} pending` };
+		}
+		default:
+			return { durationMs, headline: `needs attention — ${firstSentence(state.error ?? "inspect /factory-status")}` };
+	}
+}
+
+/** Pointer appended to widget-truncated error text; the full diagnostic lives in /factory-status. */
+export const FULL_DIAGNOSTIC_SUFFIX = " — /factory-status for the full diagnostic";
+
+/**
+ * Truncate error text for widget display: cut at a word boundary (never
+ * mid-word when a boundary exists), append '…', and always append the
+ * /factory-status pointer — the whole string fits within `width`.
+ */
+export function truncateForWidget(text: string, width: number, suffix: string = FULL_DIAGNOSTIC_SUFFIX): string {
+	if (width < 1) return "";
+	const clean = text.replace(/\s+/g, " ").trim();
+	if (suffix.length >= width) return suffix.slice(0, width);
+	if (clean.length + suffix.length <= width) return clean + suffix;
+	const budget = Math.max(1, width - suffix.length - 1); // 1 column for the ellipsis
+	let cut = clean.slice(0, budget);
+	const lastSpace = cut.lastIndexOf(" ");
+	if (lastSpace > 0) cut = cut.slice(0, lastSpace);
+	return `${cut.trimEnd()}…${suffix}`;
+}
+
+function clipLine(text: string, width: number): string {
+	return text.length > width ? text.slice(0, Math.max(0, width)) : text;
+}
+
+/** Card line budget below which the frozen chart is rendered muted under the verdict. */
+const RESULT_CARD_MAX_LINES = 8;
+
+/**
+ * Terminal widget view: one colorized verdict line (plus a truncated error
+ * pointer for failures), then the frozen waterfall muted — only when the
+ * whole card stays within the line budget; otherwise card only.
+ */
+export function renderResultCard(state: RunCardState, width: number, colorize: Colorize = identityColor): string[] {
+	const summary = summarizeRun(state);
+	const token = state.phase === "complete" ? "success" : state.phase === "failed" ? "error" : "warning";
+	const marker = state.phase === "complete" ? "✓" : state.phase === "failed" ? "✗" : "!";
+	const lines = [colorize(token, clipLine(`${marker} ${summary.headline}`, width))];
+	if (state.phase === "failed" && state.error) {
+		lines.push(colorize("muted", truncateForWidget(state.error, width)));
+	}
+	const chart = renderWaterfall({ task: state.task, spans: state.spans ?? [] }, width, (t, text) => colorize("muted", text));
+	if (lines.length + chart.length <= RESULT_CARD_MAX_LINES) lines.push(...chart);
+	return lines;
 }
 
 /** Format a duration compactly: `38s`, `2m14s`, `1h04m`. */
@@ -133,16 +241,27 @@ export function renderWaterfall(model: WaterfallModel, width: number, colorize: 
 	const title = `Factory — ${model.task}`;
 	lines.push(colorize("text", title.length > width ? title.slice(0, Math.max(0, width)) : title));
 
-	// Time axis: tick labels row, then a tick-mark row.
+	// Time axis: tick labels row, then a tick-mark row. Labels are stamped
+	// greedily left-to-right and skipped when they would overlap an already
+	// stamped one or the reserved right-edge total; the axis max (the run's
+	// total duration) is always stamped last at the right edge.
 	const ticks = axisTicks(maxMs);
+	const totalLabel = formatTick(maxMs);
+	const totalStart = Math.max(0, chartW - totalLabel.length);
 	const labelRow = " ".repeat(chartW).split("");
+	const stamped: Array<{ start: number; end: number }> = [];
 	for (const t of ticks) {
+		if (t === maxMs) continue; // covered by the total label
 		const label = formatTick(t);
 		const center = pos(t);
 		let start = center - Math.floor(label.length / 2);
 		start = Math.max(0, Math.min(chartW - label.length, start));
-		for (let i = 0; i < label.length && start + i < chartW; i++) labelRow[start + i] = label[i];
+		const end = start + label.length;
+		if (end > totalStart || stamped.some((s) => start < s.end && end > s.start)) continue;
+		stamped.push({ start, end });
+		for (let i = 0; i < label.length; i++) labelRow[start + i] = label[i];
 	}
+	for (let i = 0; i < totalLabel.length && totalStart + i < chartW; i++) labelRow[totalStart + i] = totalLabel[i];
 	lines.push(colorize("muted", " ".repeat(labelW + 2) + labelRow.join("")));
 	const markRow = " ".repeat(chartW).split("");
 	for (const t of ticks) markRow[pos(t)] = "·";
@@ -247,6 +366,7 @@ export class WaterfallWidget {
 	}
 
 	render(width: number): string[] {
+		if (this.model.card) return renderResultCard(this.model.card, width, (token, text) => this.theme.fg(token, text));
 		if (!this.model.spans.length) return [];
 		return renderWaterfall(this.model, width, (token, text) => this.theme.fg(token, text));
 	}

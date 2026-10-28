@@ -10,9 +10,14 @@ import {
 	chartRows,
 	currentStageLabel,
 	formatDuration,
+	FULL_DIAGNOSTIC_SUFFIX,
 	laneStateFromStatuses,
 	parseWorkflowChildStatuses,
+	renderResultCard,
 	renderWaterfall,
+	runDurationMs,
+	summarizeRun,
+	truncateForWidget,
 	waterfallColorToken,
 	type WaterfallSpan,
 } from "../../extensions/factory/src/waterfall.ts";
@@ -113,6 +118,155 @@ test("renderWaterfall omits empty models and clamps tiny spans to one column", (
 		60,
 	);
 	assert.match(lines.find((l) => l.startsWith("x"))!, /█/);
+});
+
+test("renderWaterfall freezes the axis at max span end when nowMs is omitted (terminal run)", () => {
+	const spans: WaterfallSpan[] = [
+		{ key: "a", label: "laneA", startMs: 0, endMs: 60_000, state: "success" },
+		{ key: "b", label: "laneB", startMs: 60_000, endMs: 120_000, state: "success" },
+	];
+	const lines = renderWaterfall({ task: "demo", spans }, 60);
+	const axis = lines[1]!;
+	// The axis max is the run's true duration (2m), stamped at the right edge —
+	// no wall-clock "now" can grow it after the run is over.
+	assert.ok(axis.trimEnd().endsWith("2m"), axis);
+	assert.match(axis, /\b1m\b/);
+});
+
+test("renderWaterfall skips overlapping tick labels and always reserves the right-edge total", () => {
+	const spans: WaterfallSpan[] = [{ key: "a", label: "laneA", startMs: 0, endMs: 200_000, state: "success" }];
+	// Narrow chart: several ticks would collide; greedy stamping must drop some.
+	const narrow = renderWaterfall({ task: "demo", nowMs: 200_000, spans }, 16);
+	const narrowRuns = narrow[1]!.trim().split(/\s+/);
+	assert.deepEqual(narrowRuns, ["0s", "1m", "3m20s"]); // total survives, colliding ticks dropped
+	// Wide axis with many ticks: every stamped label is complete (no digit soup)
+	// and the total duration sits at the right edge.
+	const wide = renderWaterfall({ task: "demo", nowMs: 3_600_000, spans }, 80);
+	const wideRuns = wide[1]!.trim().split(/\s+/);
+	assert.deepEqual(wideRuns, ["0s", "15m", "30m", "45m", "60m"]);
+	assert.ok(wide[1]!.trimEnd().endsWith("60m"));
+});
+
+test("runDurationMs is the last real span end and never grows for open spans", () => {
+	assert.equal(runDurationMs([]), 0);
+	assert.equal(
+		runDurationMs([
+			{ key: "a", label: "a", startMs: 0, endMs: 40_000, state: "success" },
+			{ key: "b", label: "b", startMs: 40_000, endMs: 130_000, state: "success" },
+		]),
+		130_000,
+	);
+	assert.equal(runDurationMs([{ key: "b", label: "b", startMs: 90_000, endMs: null, state: "running" }]), 90_000);
+});
+
+test("summarizeRun builds one outcome-specific headline per terminal phase", () => {
+	const spans: WaterfallSpan[] = [{ key: "final", label: "final", startMs: 0, endMs: 130_000, state: "success" }];
+	const complete = summarizeRun({
+		task: "t",
+		phase: "complete",
+		spans,
+		handoff: { changedFiles: ["a.ts", "b.ts", "c.ts"] },
+		finalChecks: [
+			{ exitCode: 0, timedOut: false },
+			{ exitCode: 1, timedOut: false },
+		],
+	});
+	assert.equal(complete.durationMs, 130_000);
+	assert.equal(complete.headline, "complete — 2m10s · 3 files changed · checks 1/2");
+
+	// Bits that don't apply are omitted.
+	assert.equal(summarizeRun({ task: "t", phase: "complete", spans }).headline, "complete — 2m10s");
+
+	const failed = summarizeRun({
+		task: "t",
+		phase: "failed",
+		spans,
+		error: "deterministic validation failed after implementation. Fix and rerun /factory.",
+	});
+	assert.equal(failed.headline, "failed — 2m10s · deterministic validation failed after implementation.");
+
+	assert.equal(
+		summarizeRun({ task: "t", phase: "needs_approval", spans, decisions: ["a", "b"] }).headline,
+		"needs approval — 2 decisions pending",
+	);
+	assert.equal(
+		summarizeRun({ task: "t", phase: "needs_approval", spans, decisions: ["a"] }).headline,
+		"needs approval — 1 decision pending",
+	);
+	assert.equal(
+		summarizeRun({
+			task: "t",
+			phase: "needs_attention",
+			spans,
+			error: "build workflow paused (detached child needs a decision). More detail elsewhere.",
+		}).headline,
+		"needs attention — build workflow paused (detached child needs a decision).",
+	);
+});
+
+test("truncateForWidget cuts at a word boundary and always appends the status pointer within the width", () => {
+	const short = "checks crashed: exit 1";
+	assert.equal(truncateForWidget(short, 80), short + FULL_DIAGNOSTIC_SUFFIX);
+
+	const long = "deterministic validation failed after implementation of the accepted plan";
+	const truncated = truncateForWidget(long, 60);
+	assert.ok(truncated.length <= 60, truncated);
+	assert.ok(truncated.endsWith(FULL_DIAGNOSTIC_SUFFIX));
+	assert.ok(truncated.includes("…"));
+	// Never mid-word: the text before the ellipsis ends on a word boundary.
+	const body = truncated.slice(0, truncated.indexOf("…"));
+	assert.ok(body.length > 0);
+	assert.ok(long.startsWith(body));
+	assert.ok(!body.endsWith(" "));
+	assert.ok(body.split(" ").every((word) => long.includes(word)));
+
+	// Fail-closed bound: even a tiny width yields at most one bounded line.
+	assert.ok(truncateForWidget(long, 10).length <= 10);
+	assert.equal(truncateForWidget(long, 0), "");
+});
+
+test("renderResultCard renders a colorized verdict card and the frozen chart only when it fits", () => {
+	const spans: WaterfallSpan[] = [{ key: "final", label: "final", startMs: 0, endMs: 130_000, state: "success" }];
+	const state = {
+		task: "demo",
+		phase: "complete",
+		spans,
+		handoff: { changedFiles: ["a.ts", "b.ts"] },
+	} as const;
+	const plain = renderResultCard(state, 80);
+	assert.match(plain[0]!, /^✓ complete — 2m10s · 2 files changed$/);
+	// Title + axis labels + axis marks + one lane fits under the 8-line budget.
+	assert.equal(plain.length, 5);
+	const colored = renderResultCard(state, 80, (token, text) => `<${token}>${text}</${token}>`);
+	assert.match(colored[0]!, /^<success>✓ complete/);
+	assert.ok(colored.slice(1).every((line) => line.startsWith("<muted>")));
+
+	const failedState = {
+		task: "demo",
+		phase: "failed",
+		spans,
+		error: "deterministic validation failed after implementation. Fix and rerun /factory.",
+	} as const;
+	const failed = renderResultCard(failedState, 80);
+	assert.match(failed[0]!, /^✗ failed — 2m10s · deterministic validation failed after implementation\.$/);
+	assert.match(failed[1]!, /… — \/factory-status for the full diagnostic$/);
+	assert.ok(failed.length <= 8);
+
+	assert.equal(
+		renderResultCard({ task: "t", phase: "needs_approval", spans, decisions: ["a"] }, 80)[0]!,
+		"! needs approval — 1 decision pending",
+	);
+
+	// Too many lanes: the chart no longer fits the line budget, card only.
+	const manyLanes: WaterfallSpan[] = ["scout", "plan", "implement", "checks", "reviewers", "review", "final"].map((key) => ({
+		key,
+		label: key,
+		startMs: 0,
+		endMs: 1_000,
+		state: "success" as const,
+	}));
+	const cardOnly = renderResultCard({ task: "t", phase: "needs_approval", spans: manyLanes, decisions: ["a"] }, 80);
+	assert.equal(cardOnly.length, 1);
 });
 
 test("currentStageLabel reports the newest open running lane", () => {
