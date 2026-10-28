@@ -1,0 +1,5 @@
+/Users/sofianebebert/Desktop/Screenshot\ 2026-10-28\ at\ 18.13.24.png - how can we better handle the UI after a factory run is done?
+
+---
+
+Ok go ahead and implement the changes
