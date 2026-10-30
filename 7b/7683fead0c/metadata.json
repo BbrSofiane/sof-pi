@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "7b7683fead0c",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "workflows/factory-terminal-ui.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7b/7683fead0c/0/metadata.json",
+      "transcript": "/7b/7683fead0c/0/full.jsonl",
+      "compact_transcript": "/7b/7683fead0c/0/transcript.jsonl",
+      "content_hash": "/7b/7683fead0c/0/content_hash.txt",
+      "prompt": "/7b/7683fead0c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 929309,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 7196564,
+    "output_tokens": 35540,
+    "api_call_count": 93
+  }
+}
