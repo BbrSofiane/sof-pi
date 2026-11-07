@@ -10,7 +10,7 @@
  *
  * Pipeline (two bounded async workflows, checks in between):
  *
- *   build workflow   scout → plan → implement (single writer)
+ *   build workflow   parallel scout research → synthesis → plan → implement (single writer)
  *   deterministic    human-authored validation commands from .pi/factory.json
  *   review workflow  3 parallel fresh reviewers → at most one fix pass
  *   deterministic    the same trusted commands, rerun as final verification
@@ -250,17 +250,30 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	const applyWorkflowStatus = (phase: "build" | "review", text: string) => {
 		if (!state) return;
 		const laneFor = (key: string): string | undefined => {
-			if (phase === "build") return key === "scout" || key === "plan" || key === "implement" ? key : undefined;
+			if (phase === "build") {
+				if (key === "scout" || key.startsWith("scout-")) return "scout";
+				return key === "plan" || key === "implement" ? key : undefined;
+			}
 			if (key.startsWith("review-")) return "reviewers";
 			return key === "fix" ? "fix" : undefined;
 		};
 		const statuses = parseWorkflowChildStatuses(text);
+		const laneStatuses = new Map<string, string[]>();
 		for (const [rawKey, sts] of statuses) {
 			const lane = laneFor(rawKey);
 			if (!lane) continue;
+			laneStatuses.set(lane, [...(laneStatuses.get(lane) ?? []), ...sts]);
+		}
+		// Aggregate parallel children before closing a shared lane: one finished
+		// collector/reviewer must not mark the whole lane successful early.
+		for (const [lane, sts] of laneStatuses) {
 			const laneState = laneStateFromStatuses(sts);
 			openSpan(lane);
-			if (laneState === "running" || laneState === "queued") setSpanState(lane, laneState);
+			// Synthesis starts only after the collectors, so it may not appear in
+			// one status snapshot. Their success alone must not close scout early.
+			const scoutSynthesisPending = phase === "build" && lane === "scout" && !statuses.has("scout") && laneState === "success";
+			if (scoutSynthesisPending) setSpanState(lane, "running");
+			else if (laneState === "running" || laneState === "queued") setSpanState(lane, laneState);
 			else closeSpan(lane, laneState);
 		}
 	};
@@ -780,7 +793,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 	// ---- Commands -------------------------------------------------------
 
 	pi.registerCommand("factory", {
-		description: "Run the bounded software factory: scout → plan → implement → checks → review → optional fix → final checks",
+		description: "Run the bounded software factory: parallel scout research → synthesis → plan → implement → checks → review → optional fix → final checks",
 		handler: async (args, ctx) => {
 			const task = (args ?? "").trim();
 			if (!task) {
@@ -845,7 +858,7 @@ export default function factoryExtension(pi: ExtensionAPI) {
 			ctx.ui.notify(
 				`Factory launched — pipeline running on the swimlane chart above the editor.\n` +
 					`Task: ${task}\n` +
-					`scout → plan → implement → checks → review → fix? → final checks. No commit, push, deploy, or release will be performed.`,
+					`parallel scout research → synthesis → plan → implement → checks → review → fix? → final checks. No commit, push, deploy, or release will be performed.`,
 				"info",
 			);
 		},
