@@ -1,0 +1,13 @@
+What's are the current steps of my factory extension?
+
+---
+
+Ok for the scout step, I want to pull from the /parallel-research command and have multiple subagents collect relevant information
+
+---
+
+Ok for the scout step, I want to pull from the /parallel-research command and have multiple subagents collect relevant information
+
+---
+
+Continue

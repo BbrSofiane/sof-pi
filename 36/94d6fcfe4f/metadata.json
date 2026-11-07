@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "3694d6fcfe4f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 19,
+  "files_touched": [
+    "README.md",
+    "extensions/factory/README.md",
+    "extensions/factory/index.ts",
+    "extensions/factory/src/workflow.ts",
+    "tests/factory/workflow.test.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/36/94d6fcfe4f/0/metadata.json",
+      "transcript": "/36/94d6fcfe4f/0/full.jsonl",
+      "compact_transcript": "/36/94d6fcfe4f/0/transcript.jsonl",
+      "content_hash": "/36/94d6fcfe4f/0/content_hash.txt",
+      "prompt": "/36/94d6fcfe4f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 185989,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 937024,
+    "output_tokens": 18533,
+    "api_call_count": 44
+  }
+}
