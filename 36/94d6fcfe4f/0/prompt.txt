@@ -11,3 +11,7 @@ Ok for the scout step, I want to pull from the /parallel-research command and ha
 ---
 
 Continue
+
+---
+
+Perfect, commit and push the changes
