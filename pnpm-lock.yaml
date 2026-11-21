@@ -26,6 +26,9 @@ importers:
       ipaddr.js:
         specifier: 2.5.0
         version: 2.5.0
+      mpl:
+        specifier: github:ivarvong/mpl#117503c
+        version: https://codeload.github.com/ivarvong/mpl/tar.gz/117503c
       typebox:
         specifier: '*'
         version: 1.1.38
@@ -504,6 +507,11 @@ packages:
   minipass@7.1.3:
     resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  mpl@https://codeload.github.com/ivarvong/mpl/tar.gz/117503c:
+    resolution: {tarball: https://codeload.github.com/ivarvong/mpl/tar.gz/117503c}
+    version: 0.1.0
+    engines: {node: '>=24'}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -1257,6 +1265,8 @@ snapshots:
       brace-expansion: 5.0.7
 
   minipass@7.1.3: {}
+
+  mpl@https://codeload.github.com/ivarvong/mpl/tar.gz/117503c: {}
 
   ms@2.1.3: {}
 

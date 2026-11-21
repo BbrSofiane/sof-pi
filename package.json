@@ -10,7 +10,7 @@
   "readme": "README.md",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/factory/*.test.ts tests/perplexity/*.test.ts",
+    "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/factory/*.test.ts tests/perplexity/*.test.ts tests/mpl/*.test.ts",
     "test:perplexity:integration": "SOF_PI_SUBAGENTS_INTEGRATION=1 node --experimental-strip-types --disable-warning=ExperimentalWarning --test tests/perplexity/tools.test.ts"
   },
   "pi": {
@@ -19,7 +19,8 @@
       "./extensions/perplexity/index.ts",
       "./extensions/background-terminals/index.ts",
       "./extensions/learning/index.ts",
-      "./extensions/factory/index.ts"
+      "./extensions/factory/index.ts",
+      "./extensions/mpl/index.ts"
     ],
     "skills": [
       "./skills"
@@ -38,13 +39,14 @@
   },
   "dependencies": {
     "htmlparser2": "10.0.0",
-    "ipaddr.js": "2.5.0"
+    "ipaddr.js": "2.5.0",
+    "mpl": "github:ivarvong/mpl#117503c"
   },
   "peerDependencies": {
-    "typebox": "*",
-    "@earendil-works/pi-coding-agent": "*",
     "@earendil-works/pi-ai": "*",
-    "@earendil-works/pi-tui": "*"
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*",
+    "typebox": "*"
   },
   "pnpm": {
     "overrides": {
